@@ -96,10 +96,6 @@
             <span>{{ item.diskSpace || '-' }}</span>
           </template>
 
-          <!-- 硬盘类型列 -->
-          <template #item.diskType="{ item }">
-            <span>{{ item.diskType || '-' }}</span>
-          </template>
 
           <!-- 网络速度列 -->
           <template #item.networkSpeed="{ item }">
@@ -445,7 +441,6 @@ const headers = computed(() => [
   { title: t('servers.cpuCores'), key: 'cpuCores', sortable: false, width: 100 },
   { title: t('servers.memory'), key: 'memory', sortable: false, width: 80 },
   { title: t('servers.diskSpace'), key: 'diskSpace', sortable: false, width: 100 },
-  { title: t('servers.diskType'), key: 'diskType', sortable: false, width: 100 },
   { title: t('servers.networkSpeed'), key: 'networkSpeed', sortable: false, width: 120 },
   { title: t('common.actions'), key: 'actions', sortable: false, width: 120 }
 ])
