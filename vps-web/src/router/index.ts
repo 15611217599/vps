@@ -1,0 +1,74 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import AuthView from '../views/AuthView.vue'
+import DashboardView from '../views/DashboardView.vue'
+import ProfileView from '../views/ProfileView.vue'
+import ForgotPasswordView from '../views/ForgotPasswordView.vue'
+import ServerGroupView from '../views/ServerGroupView.vue'
+import ServerCategoryManagementView from '../views/ServerCategoryManagementView.vue'
+
+
+
+const routes = [
+  {
+    path: '/',
+    redirect: '/auth'
+  },
+  {
+    path: '/auth',
+    name: 'Auth',
+    component: AuthView,
+    meta: { requiresGuest: true }
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: DashboardView,
+    meta: { requiresAuth: true }
+  },
+
+  {
+    path: '/groups',
+    name: 'ServerGroup',
+    component: ServerGroupView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/categories',
+    name: 'ServerCategories',
+    component: ServerCategoryManagementView,
+    meta: { requiresAuth: true }
+  },
+
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: ProfileView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPasswordView,
+    meta: { requiresGuest: true }
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/auth')
+  } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    next('/dashboard')
+  } else {
+    next()
+  }
+})
+
+export default router

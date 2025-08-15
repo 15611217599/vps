@@ -1,0 +1,280 @@
+/* 全局主题样式 - 确保所有组件在不同主题下的可见性 */
+
+/* 输入框基础样式 */
+.v-field {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 浅色主题输入框 */
+.v-theme--light .v-field {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.v-theme--light .v-field__input {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.v-theme--light .v-label {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.v-theme--light .v-field--outlined .v-field__outline {
+  color: rgba(0, 0, 0, 0.38) !important;
+}
+
+/* 深色主题输入框 */
+.v-theme--dark .v-field {
+  background-color: rgba(66, 66, 66, 0.9) !important;
+}
+
+.v-theme--dark .v-field__input {
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+
+.v-theme--dark .v-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.v-theme--dark .v-field--outlined .v-field__outline {
+  color: rgba(255, 255, 255, 0.38) !important;
+}
+
+/* 聚焦状态 - 使用CSS变量 */
+.v-field--focused .v-field__outline {
+  color: rgb(var(--v-theme-primary)) !important;
+}
+
+/* 图标颜色 */
+.v-theme--light .v-field__prepend-inner .v-icon,
+.v-theme--light .v-field__append-inner .v-icon {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.v-theme--dark .v-field__prepend-inner .v-icon,
+.v-theme--dark .v-field__append-inner .v-icon {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 按钮样式 */
+.v-btn {
+  transition: all 0.3s ease;
+}
+
+/* 卡片样式 */
+.v-card {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.v-theme--light .v-card {
+  background-color: transparent !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.v-theme--dark .v-card {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+
+/* 复选框和单选框 */
+.v-theme--light .v-checkbox .v-label,
+.v-theme--light .v-radio .v-label {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.v-theme--dark .v-checkbox .v-label,
+.v-theme--dark .v-radio .v-label {
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+
+/* 进度条 */
+.v-progress-linear {
+  transition: all 0.3s ease;
+}
+
+/* 警告框 */
+.v-alert {
+  transition: all 0.3s ease;
+}
+
+/* 菜单和列表 */
+.v-menu .v-list {
+  transition: background-color 0.3s ease;
+}
+
+.v-theme--light .v-menu .v-list {
+  background-color: transparent !important;
+}
+
+.v-theme--dark .v-menu .v-list {
+  background-color: transparent !important;
+}
+
+/* 确保文本在所有情况下都可见 */
+.v-theme--light .text-medium-emphasis {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.v-theme--dark .text-medium-emphasis {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 数据表格 */
+.v-theme--light .v-data-table {
+  background-color: transparent !important;
+}
+
+.v-theme--dark .v-data-table {
+  background-color: transparent !important;
+}
+
+/* 应用栏 */
+.v-app-bar {
+  transition: background-color 0.3s ease;
+}
+
+/* 导航抽屉 */
+.v-navigation-drawer {
+  transition: background-color 0.3s ease;
+}
+
+.v-theme--light .v-navigation-drawer {
+  background-color: transparent !important;
+}
+
+.v-theme--dark .v-navigation-drawer {
+  background-color: transparent !important;
+}
+
+/* 工具提示 */
+.v-tooltip .v-overlay__content {
+  transition: background-color 0.3s ease;
+}
+
+.v-theme--light .v-tooltip .v-overlay__content {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.v-theme--dark .v-tooltip .v-overlay__content {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+/* 确保所有文本输入都有足够的对比度 */
+.v-field__input input,
+.v-field__input textarea {
+  color: inherit !important;
+}
+
+/* 占位符文本 */
+.v-theme--light .v-field__input input::placeholder,
+.v-theme--light .v-field__input textarea::placeholder {
+  color: rgba(0, 0, 0, 0.38) !important;
+}
+
+.v-theme--dark .v-field__input input::placeholder,
+.v-theme--dark .v-field__input textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 增强文本可读性 - 修复黑白主题下的文本对比度问题 */
+
+/* 浅色主题 - 确保所有文本在白色背景上清晰可见 */
+.v-theme--light {
+  /* 主要文本颜色 */
+  --v-theme-on-background: 33, 33, 33; /* #212121 */
+  --v-theme-on-surface: 33, 33, 33; /* #212121 */
+}
+
+.v-theme--light .v-card-title,
+.v-theme--light .v-card-subtitle,
+.v-theme--light .v-card-text,
+.v-theme--light .v-list-item-title,
+.v-theme--light .v-list-item-subtitle,
+.v-theme--light .text-body-1,
+.v-theme--light .text-body-2,
+.v-theme--light .text-caption,
+.v-theme--light .text-subtitle-1,
+.v-theme--light .text-subtitle-2,
+.v-theme--light .text-h1,
+.v-theme--light .text-h2,
+.v-theme--light .text-h3,
+.v-theme--light .text-h4,
+.v-theme--light .text-h5,
+.v-theme--light .text-h6 {
+  color: rgba(33, 33, 33, 0.87) !important; /* 高对比度深灰色 */
+}
+
+/* 深色主题 - 确保所有文本在深色背景上清晰可见 */
+.v-theme--dark {
+  /* 主要文本颜色 */
+  --v-theme-on-background: 255, 255, 255; /* #ffffff */
+  --v-theme-on-surface: 255, 255, 255; /* #ffffff */
+}
+
+.v-theme--dark .v-card-title,
+.v-theme--dark .v-card-subtitle,
+.v-theme--dark .v-card-text,
+.v-theme--dark .v-list-item-title,
+.v-theme--dark .v-list-item-subtitle,
+.v-theme--dark .text-body-1,
+.v-theme--dark .text-body-2,
+.v-theme--dark .text-caption,
+.v-theme--dark .text-subtitle-1,
+.v-theme--dark .text-subtitle-2,
+.v-theme--dark .text-h1,
+.v-theme--dark .text-h2,
+.v-theme--dark .text-h3,
+.v-theme--dark .text-h4,
+.v-theme--dark .text-h5,
+.v-theme--dark .text-h6 {
+  color: rgba(255, 255, 255, 0.87) !important; /* 高对比度白色 */
+}
+
+/* 次要文本颜色 */
+.v-theme--light .text-medium-emphasis,
+.v-theme--light .v-list-item-subtitle {
+  color: rgba(33, 33, 33, 0.6) !important;
+}
+
+.v-theme--dark .text-medium-emphasis,
+.v-theme--dark .v-list-item-subtitle {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 禁用状态文本 */
+.v-theme--light .text-disabled {
+  color: rgba(33, 33, 33, 0.38) !important;
+}
+
+.v-theme--dark .text-disabled {
+  color: rgba(255, 255, 255, 0.38) !important;
+}
+
+/* 表格文本 */
+.v-theme--light .v-data-table .v-data-table__td,
+.v-theme--light .v-data-table .v-data-table__th {
+  color: rgba(33, 33, 33, 0.87) !important;
+}
+
+.v-theme--dark .v-data-table .v-data-table__td,
+.v-theme--dark .v-data-table .v-data-table__th {
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+
+/* 选项卡文本 */
+.v-theme--light .v-tab {
+  color: rgba(33, 33, 33, 0.6) !important;
+}
+
+.v-theme--light .v-tab--selected {
+  color: rgb(var(--v-theme-primary)) !important;
+}
+
+.v-theme--dark .v-tab {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.v-theme--dark .v-tab--selected {
+  color: rgb(var(--v-theme-primary)) !important;
+}

@@ -1,0 +1,49 @@
+/* 全局布局样式 - 让内容自然撑开，避免固定高度 */
+
+/* 确保卡片内容不会产生额外空白 */
+.v-card-text:last-child {
+  padding-bottom: 16px !important;
+}
+
+/* 修复表单底部空白 */
+.v-form:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 修复列表底部空白 */
+.v-list:last-child {
+  padding-bottom: 0 !important;
+}
+
+/* 修复 Vuetify 组件的底部空白 */
+.v-data-table {
+  margin-bottom: 0 !important;
+}
+
+.v-expansion-panels {
+  margin-bottom: 0 !important;
+}
+
+.v-alert:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 确保按钮组不会产生额外空白 */
+.v-btn-group:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 修复进度条底部空白 */
+.v-progress-linear:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 修复芯片组底部空白 */
+.v-chip-group:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 确保容器内容自然撑开 */
+.v-container {
+  padding-bottom: 20px; /* 给底部一些间距 */
+}
