@@ -232,7 +232,13 @@ const loadCategories = async () => {
     categories.value = response.data || []
     totalItems.value = response.totalElements || 0
   } catch (error) {
-    console.error('加载类别失败:', error)
+    console.error(t('serverCategory.loadFailed'), error)
+    // 显示详细的后端错误信息
+    if (error && typeof error === 'object' && 'message' in error) {
+      alert(error.message)
+    } else {
+      alert(t('serverCategory.loadFailed'))
+    }
     categories.value = []
     totalItems.value = 0
   } finally {
@@ -293,12 +299,19 @@ const editCategory = (category: ServerCategory) => {
 
 // 删除类别
 const deleteCategory = async (category: ServerCategory) => {
-  if (confirm(t('serverCategory.confirmDelete', { name: getLocalizedText(category.name) }))) {
+  const localizedName = getLocalizedText(category.name)
+  if (confirm(t('serverCategory.confirmDelete', { name: localizedName }))) {
     try {
       await deleteCategoryApi(category.id)
       await loadCategories()
     } catch (error) {
-      console.error('删除类别失败:', error)
+      console.error(t('serverCategory.deleteFailed'), error)
+      // 显示详细的后端错误信息
+      if (error && typeof error === 'object' && 'message' in error) {
+        alert(error.message)
+      } else {
+        alert(t('serverCategory.deleteFailed'))
+      }
     }
   }
 }
@@ -317,7 +330,13 @@ const saveCategory = async () => {
     closeDialog()
     await loadCategories()
   } catch (error) {
-    console.error('保存类别失败:', error)
+    console.error(t('serverCategory.saveFailed'), error)
+    // 显示详细的后端错误信息
+    if (error && typeof error === 'object' && 'message' in error) {
+      alert(error.message)
+    } else {
+      alert(t('serverCategory.saveFailed'))
+    }
   } finally {
     saving.value = false
   }

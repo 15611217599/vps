@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Random;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,7 +32,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("用户不存在: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.user.not.found", Locale.getDefault()) + ": " + username));
     }
 
     public User registerUser(String username, String email, String password, String acceptLanguage) {

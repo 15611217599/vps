@@ -211,6 +211,7 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PageLayout from '@/components/PageLayout.vue'
+import { getLocalizedText } from '@/utils/i18n'
 import {
   getLocalizedActiveCategories,
   getCategories,
@@ -322,12 +323,17 @@ const editCategory = (category: ServerCategory) => {
 
 // 删除类别
 const deleteCategory = async (category: ServerCategory) => {
-  if (confirm(t('categories.confirmDeleteCategory', { name: category.name }))) {
+  const localizedName = getLocalizedText(category.name)
+  if (confirm(t('categories.confirmDeleteCategory', { name: localizedName }))) {
     try {
       await deleteCategoryApi(category.id)
       await loadCategories()
     } catch (error) {
       console.error(t('categories.deleteCategoryFailed'), error)
+      // 显示详细的后端错误信息
+      if (error && typeof error === 'object' && 'message' in error) {
+        alert(error.message)
+      }
     }
   }
 }

@@ -28,6 +28,9 @@ public class ServerServiceImpl implements ServerService {
     @Autowired
     private ServerGroupRepository serverGroupRepository;
     
+    @Autowired
+    private I18nService i18nService;
+    
     @Override
     @Transactional(readOnly = true)
     public List<ServerResponseDTO> getAllServers() {
@@ -47,7 +50,7 @@ public class ServerServiceImpl implements ServerService {
     @Transactional(readOnly = true)
     public ServerResponseDTO getServerById(Long id) {
         Server server = serverRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("服务器不存在，ID: " + id));
+                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("server.notFound") + ": " + id));
         return ServerResponseDTO.fromEntity(server);
     }
     
@@ -55,7 +58,7 @@ public class ServerServiceImpl implements ServerService {
     public ServerResponseDTO createServer(ServerRequestDTO serverRequestDTO) {
         // 检查IP是否已存在
         if (serverRepository.existsByIp(serverRequestDTO.getIp())) {
-            throw new RuntimeException("IP地址已存在: " + serverRequestDTO.getIp());
+            throw new RuntimeException(i18nService.getMessage("server.ipExists") + ": " + serverRequestDTO.getIp());
         }
         
         // 创建服务器实体
@@ -79,7 +82,7 @@ public class ServerServiceImpl implements ServerService {
         // 设置分组关联
         if (serverRequestDTO.getGroupId() != null) {
             ServerGroup group = serverGroupRepository.findById(serverRequestDTO.getGroupId())
-                    .orElseThrow(() -> new RuntimeException("分组不存在，ID: " + serverRequestDTO.getGroupId()));
+                    .orElseThrow(() -> new RuntimeException(i18nService.getMessage("group.notFound") + ": " + serverRequestDTO.getGroupId()));
             server.setGroup(group);
         }
         
@@ -92,11 +95,11 @@ public class ServerServiceImpl implements ServerService {
     public ServerResponseDTO updateServer(Long id, ServerRequestDTO serverRequestDTO) {
         // 查找现有服务器
         Server existingServer = serverRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("服务器不存在，ID: " + id));
+                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("server.notFound") + ": " + id));
         
         // 检查IP是否被其他服务器使用
         if (serverRepository.existsByIpAndIdNot(serverRequestDTO.getIp(), id)) {
-            throw new RuntimeException("IP地址已被其他服务器使用: " + serverRequestDTO.getIp());
+            throw new RuntimeException(i18nService.getMessage("server.ipExists") + ": " + serverRequestDTO.getIp());
         }
         
         // 更新服务器字段
@@ -119,7 +122,7 @@ public class ServerServiceImpl implements ServerService {
         // 更新分组关联
         if (serverRequestDTO.getGroupId() != null) {
             ServerGroup group = serverGroupRepository.findById(serverRequestDTO.getGroupId())
-                    .orElseThrow(() -> new RuntimeException("分组不存在，ID: " + serverRequestDTO.getGroupId()));
+                    .orElseThrow(() -> new RuntimeException(i18nService.getMessage("group.notFound") + ": " + serverRequestDTO.getGroupId()));
             existingServer.setGroup(group);
         } else {
             existingServer.setGroup(null);
@@ -133,7 +136,7 @@ public class ServerServiceImpl implements ServerService {
     @Override
     public void deleteServer(Long id) {
         if (!serverRepository.existsById(id)) {
-            throw new RuntimeException("服务器不存在，ID: " + id);
+            throw new RuntimeException(i18nService.getMessage("server.notFound") + ": " + id);
         }
         serverRepository.deleteById(id);
     }

@@ -43,6 +43,12 @@ apiClient.interceptors.response.use(
       localStorage.removeItem('user')
       window.location.href = '/auth'
     }
+    
+    // 提取后端错误信息
+    if (error.response?.data?.message) {
+      error.message = error.response.data.message
+    }
+    
     return Promise.reject(error)
   }
 )
