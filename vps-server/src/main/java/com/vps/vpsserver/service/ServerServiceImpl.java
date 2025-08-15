@@ -63,21 +63,17 @@ public class ServerServiceImpl implements ServerService {
         
         // 创建服务器实体
         Server server = new Server();
-        server.setName(serverRequestDTO.getName());
         server.setIp(serverRequestDTO.getIp());
-        server.setType(serverRequestDTO.getType());
-        server.setLocation(serverRequestDTO.getLocation());
-        server.setStatus(Server.ServerStatus.fromValue(serverRequestDTO.getStatus()));
-        server.setProvider(serverRequestDTO.getProvider());
         server.setPort(serverRequestDTO.getPort());
-        server.setUsername(serverRequestDTO.getUsername());
-        server.setPassword(serverRequestDTO.getPassword());
+        server.setStatus(Server.ServerStatus.fromValue(serverRequestDTO.getStatus()));
         server.setCpuCores(serverRequestDTO.getCpuCores());
         server.setMemory(serverRequestDTO.getMemory());
         server.setDiskSpace(serverRequestDTO.getDiskSpace());
         server.setDiskType(serverRequestDTO.getDiskType());
         server.setNetworkSpeed(serverRequestDTO.getNetworkSpeed());
         server.setOperatingSystem(serverRequestDTO.getOperatingSystem());
+        server.setUsername(serverRequestDTO.getUsername());
+        server.setPassword(serverRequestDTO.getPassword());
         
         // 设置分组关联
         if (serverRequestDTO.getGroupId() != null) {
@@ -103,21 +99,17 @@ public class ServerServiceImpl implements ServerService {
         }
         
         // 更新服务器字段
-        existingServer.setName(serverRequestDTO.getName());
         existingServer.setIp(serverRequestDTO.getIp());
-        existingServer.setType(serverRequestDTO.getType());
-        existingServer.setLocation(serverRequestDTO.getLocation());
-        existingServer.setStatus(Server.ServerStatus.fromValue(serverRequestDTO.getStatus()));
-        existingServer.setProvider(serverRequestDTO.getProvider());
         existingServer.setPort(serverRequestDTO.getPort());
-        existingServer.setUsername(serverRequestDTO.getUsername());
-        existingServer.setPassword(serverRequestDTO.getPassword());
+        existingServer.setStatus(Server.ServerStatus.fromValue(serverRequestDTO.getStatus()));
         existingServer.setCpuCores(serverRequestDTO.getCpuCores());
         existingServer.setMemory(serverRequestDTO.getMemory());
         existingServer.setDiskSpace(serverRequestDTO.getDiskSpace());
         existingServer.setDiskType(serverRequestDTO.getDiskType());
         existingServer.setNetworkSpeed(serverRequestDTO.getNetworkSpeed());
         existingServer.setOperatingSystem(serverRequestDTO.getOperatingSystem());
+        existingServer.setUsername(serverRequestDTO.getUsername());
+        existingServer.setPassword(serverRequestDTO.getPassword());
         
         // 更新分组关联
         if (serverRequestDTO.getGroupId() != null) {
@@ -159,8 +151,8 @@ public class ServerServiceImpl implements ServerService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<ServerResponseDTO> getServersByType(String type) {
-        return serverRepository.findByType(type).stream()
+    public List<ServerResponseDTO> getServersByGroupId(Long groupId) {
+        return serverRepository.findByGroupId(groupId).stream()
                 .map(ServerResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }

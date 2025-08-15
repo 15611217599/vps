@@ -40,28 +40,17 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
     long countByStatus(Server.ServerStatus status);
     
     /**
-     * 根据类型查找服务器
+     * 根据分组查找服务器
      */
-    List<Server> findByType(String type);
+    List<Server> findByGroupId(Long groupId);
     
     /**
-     * 根据位置查找服务器
-     */
-    List<Server> findByLocation(String location);
-    
-    /**
-     * 根据服务商查找服务器
-     */
-    List<Server> findByProvider(String provider);
-    
-    /**
-     * 模糊搜索服务器（按名称、IP、类型、位置）
+     * 模糊搜索服务器（按IP、操作系统、用户名）
      */
     @Query("SELECT s FROM Server s WHERE " +
-           "LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
            "LOWER(s.ip) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(s.type) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(s.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+           "LOWER(s.operatingSystem) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(s.username) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Server> searchServers(@Param("keyword") String keyword, Pageable pageable);
     
     /**
@@ -75,9 +64,9 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
     Page<Server> findByStatusOrderByCreateTimeDesc(Server.ServerStatus status, Pageable pageable);
     
     /**
-     * 根据类型获取服务器（分页）
+     * 根据分组获取服务器（分页）
      */
-    Page<Server> findByTypeOrderByCreateTimeDesc(String type, Pageable pageable);
+    Page<Server> findByGroupIdOrderByCreateTimeDesc(Long groupId, Pageable pageable);
     
     /**
      * 获取服务器统计信息

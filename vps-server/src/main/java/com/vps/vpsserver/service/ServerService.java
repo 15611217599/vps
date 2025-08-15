@@ -53,9 +53,9 @@ public interface ServerService {
     List<ServerResponseDTO> getServersByStatus(String status);
     
     /**
-     * 根据类型获取服务器
+     * 根据分组获取服务器
      */
-    List<ServerResponseDTO> getServersByType(String type);
+    List<ServerResponseDTO> getServersByGroupId(Long groupId);
     
     /**
      * 获取服务器统计信息

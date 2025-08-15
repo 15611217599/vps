@@ -222,12 +222,12 @@ public class ServerController {
     }
     
     /**
-     * 根据类型获取服务器
+     * 根据分组获取服务器
      */
-    @GetMapping("/type/{type}")
-    public ResponseEntity<Map<String, Object>> getServersByType(@PathVariable String type) {
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<Map<String, Object>> getServersByGroupId(@PathVariable Long groupId) {
         try {
-            List<ServerResponseDTO> servers = serverService.getServersByType(type);
+            List<ServerResponseDTO> servers = serverService.getServersByGroupId(groupId);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("data", servers);
@@ -302,11 +302,7 @@ public class ServerController {
             serverRequestDTO.setPassword((String) requestData.get("password"));
             
             // 设置默认值
-            serverRequestDTO.setName("Server-" + serverRequestDTO.getIp());
-            serverRequestDTO.setType("VPS");
-            serverRequestDTO.setLocation("Europe - FR");
-            serverRequestDTO.setStatus("offline");
-            serverRequestDTO.setProvider("Customer Support");
+            serverRequestDTO.setStatus("OFFLINE");
             serverRequestDTO.setOperatingSystem("CentOS - 7.9.2111 - x64");
             serverRequestDTO.setCpuCores("32 Core");
             serverRequestDTO.setMemory("32G");

@@ -27,42 +27,20 @@ public class Server {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "名称不能为空")
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
-
     @NotBlank(message = "IP地址不能为空")
     @Pattern(regexp = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", 
              message = "IP地址格式不正确")
     @Column(nullable = false, unique = true, length = 15)
     private String ip;
 
-    @NotNull(message = "服务器类型不能为空")
-    @Column(name = "type", nullable = false, length = 50)
-    private String type;
-
-    @NotNull(message = "位置不能为空")
-    @Column(name = "location", nullable = false, length = 100)
-    private String location;
+    @Column(name = "port")
+    private Integer port;
 
     @NotNull(message = "状态不能为空")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ServerStatus status;
 
-    @Column(name = "provider", length = 100)
-    private String provider;
-
-    @Column(name = "port")
-    private Integer port;
-
-    @Column(length = 50)
-    private String username;
-
-    @Column(length = 255)
-    private String password;
-
-    // 硬件配置字段
     @Column(name = "cpu_cores")
     private String cpuCores;
 
@@ -81,6 +59,12 @@ public class Server {
     @Column(name = "operating_system", length = 100)
     private String operatingSystem;
 
+    @Column(length = 50)
+    private String username;
+
+    @Column(length = 255)
+    private String password;
+
     @CreationTimestamp
     @Column(name = "create_time", nullable = false, updatable = false)
     private LocalDateTime createTime;
@@ -97,11 +81,9 @@ public class Server {
     // 构造函数
     public Server() {}
     
-    public Server(String name, String ip, String type, String location, ServerStatus status) {
-        this.name = name;
+    public Server(String ip, Integer port, ServerStatus status) {
         this.ip = ip;
-        this.type = type;
-        this.location = location;
+        this.port = port;
         this.status = status;
     }
 
@@ -114,52 +96,12 @@ public class Server {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIp() {
         return ip;
     }
 
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    public String getType() {
-        return type;
-    }
-    
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-    
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public ServerStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ServerStatus status) {
-        this.status = status;
-    }
-
-    public String getProvider() {
-        return provider;
-    }
-    
-    public void setProvider(String provider) {
-        this.provider = provider;
     }
 
     public Integer getPort() {
@@ -170,44 +112,12 @@ public class Server {
         this.port = port;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
+    public ServerStatus getStatus() {
+        return status;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(LocalDateTime lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-    
-    public ServerGroup getGroup() {
-        return group;
-    }
-    
-    public void setGroup(ServerGroup group) {
-        this.group = group;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setStatus(ServerStatus status) {
+        this.status = status;
     }
 
     public String getCpuCores() {
@@ -258,19 +168,60 @@ public class Server {
         this.operatingSystem = operatingSystem;
     }
 
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
     
+    public ServerGroup getGroup() {
+        return group;
+    }
+    
+    public void setGroup(ServerGroup group) {
+        this.group = group;
+    }
+
     @Override
     public String toString() {
         return "Server{" +
                 "id=" + id +
-                ", name=" + name +
                 ", ip='" + ip + '\'' +
-                ", type=" + type +
-                ", location=" + location +
-                ", status=" + status +
-                ", provider=" + provider +
                 ", port=" + port +
+                ", status=" + status +
+                ", cpuCores='" + cpuCores + '\'' +
+                ", memory='" + memory + '\'' +
+                ", diskSpace='" + diskSpace + '\'' +
+                ", diskType='" + diskType + '\'' +
+                ", networkSpeed='" + networkSpeed + '\'' +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", username='" + username + '\'' +
                 ", createTime=" + createTime +
                 ", lastUpdate=" + lastUpdate +
                 '}';

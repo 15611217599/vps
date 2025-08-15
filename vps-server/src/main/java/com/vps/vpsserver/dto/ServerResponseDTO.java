@@ -6,23 +6,17 @@ import com.vps.vpsserver.entity.Server;
 public class ServerResponseDTO {
     
     private Long id;
-    private String name;
     private String ip;
-    private String type;
-    private String location;
-    private String status;
-    private String provider;
     private Integer port;
-    private String username;
-    private String password;
-    
-    // 硬件配置字段
+    private String status;
     private String cpuCores;
     private String memory;
     private String diskSpace;
     private String diskType;
     private String networkSpeed;
     private String operatingSystem;
+    private String username;
+    private String password;
     
     // 分组信息
     private Long groupId;
@@ -36,21 +30,17 @@ public class ServerResponseDTO {
 
     public ServerResponseDTO(Server server) {
         this.id = server.getId();
-        this.name = server.getName();
         this.ip = server.getIp();
-        this.type = server.getType();
-        this.location = server.getLocation();
-        this.status = server.getStatus().getValue();
-        this.provider = server.getProvider();
         this.port = server.getPort();
-        this.username = server.getUsername();
-        this.password = server.getPassword();
+        this.status = server.getStatus().getValue();
         this.cpuCores = server.getCpuCores();
         this.memory = server.getMemory();
         this.diskSpace = server.getDiskSpace();
         this.diskType = server.getDiskType();
         this.networkSpeed = server.getNetworkSpeed();
         this.operatingSystem = server.getOperatingSystem();
+        this.username = server.getUsername();
+        this.password = server.getPassword();
         
         // 设置分组信息
         if (server.getGroup() != null) {
@@ -76,52 +66,12 @@ public class ServerResponseDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIp() {
         return ip;
     }
 
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    public String getType() {
-        return type;
-    }
-    
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-    
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getProvider() {
-        return provider;
-    }
-    
-    public void setProvider(String provider) {
-        this.provider = provider;
     }
 
     public Integer getPort() {
@@ -132,36 +82,12 @@ public class ServerResponseDTO {
         this.port = port;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
+    public String getStatus() {
+        return status;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(LocalDateTime lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getCpuCores() {
@@ -212,6 +138,22 @@ public class ServerResponseDTO {
         this.operatingSystem = operatingSystem;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Long getGroupId() {
         return groupId;
     }
@@ -228,17 +170,38 @@ public class ServerResponseDTO {
         this.groupName = groupName;
     }
 
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     @Override
     public String toString() {
         return "ServerResponseDTO{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", ip='" + ip + '\'' +
-                ", type='" + type + '\'' +
-                ", location='" + location + '\'' +
-                ", status='" + status + '\'' +
-                ", provider='" + provider + '\'' +
                 ", port=" + port +
+                ", status='" + status + '\'' +
+                ", cpuCores='" + cpuCores + '\'' +
+                ", memory='" + memory + '\'' +
+                ", diskSpace='" + diskSpace + '\'' +
+                ", diskType='" + diskType + '\'' +
+                ", networkSpeed='" + networkSpeed + '\'' +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", username='" + username + '\'' +
+                ", groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
                 ", createTime=" + createTime +
                 ", lastUpdate=" + lastUpdate +
                 '}';
