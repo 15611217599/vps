@@ -85,9 +85,17 @@
   </PageLayout>
 
   <!-- 添加/编辑对话框 -->
-  <v-dialog v-model="showAddDialog" max-width="500px">
-    <v-card>
-      <v-card-title class="text-h6">
+  <v-dialog 
+    v-model="showAddDialog" 
+    max-width="500px"
+    :scrim="false"
+    persistent
+  >
+    <v-card elevation="8" class="mx-auto">
+      <v-card-title class="text-h6 bg-primary text-white pa-4">
+        <v-icon class="me-2">
+          {{ editingCategory ? 'mdi-pencil' : 'mdi-plus' }}
+        </v-icon>
         {{ editingCategory ? t('common.edit') : t('common.add') }}{{ t('serverCategory.category') }}
       </v-card-title>
       
@@ -131,16 +139,24 @@
         </v-form>
       </v-card-text>
 
-      <v-card-actions>
+      <v-card-actions class="pa-4 bg-grey-lighten-5">
         <v-spacer />
-        <v-btn variant="text" @click="closeDialog">
+        <v-btn 
+          variant="outlined" 
+          color="grey"
+          prepend-icon="mdi-close"
+          @click="closeDialog"
+          class="me-2"
+        >
           {{ t('common.cancel') }}
         </v-btn>
         <v-btn
           color="primary"
           :loading="saving"
           :disabled="!formValid"
+          prepend-icon="mdi-check"
           @click="saveCategory"
+          elevation="2"
         >
           {{ t('common.save') }}
         </v-btn>
