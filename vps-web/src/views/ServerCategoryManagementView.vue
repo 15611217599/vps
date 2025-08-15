@@ -32,15 +32,15 @@
           />
         </v-card-title>
 
-        <v-data-table
+        <v-data-table-server
           :headers="headers"
           :items="categories"
           :loading="loading"
+          :items-length="totalItems"
           :items-per-page="pageSize"
-          :server-items-length="totalItems"
           :items-per-page-options="[5, 10, 20, 50]"
-          @update:page="handlePageChange"
-          @update:items-per-page="handlePageSizeChange"
+          :items-per-page-text="t('common.itemsPerPage')"
+          @update:options="handleOptionsUpdate"
         >
           <!-- 名称列 -->
           <template #item.name="{ item }">
@@ -79,71 +79,74 @@
               @click="deleteCategory(item)"
             />
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card>
     </v-container>
   </PageLayout>
 
   <!-- 添加/编辑对话框 -->
-    <v-dialog v-model="showAddDialog" max-width="600px">
-      <v-card>
-        <v-card-title>
-          {{ editingCategory ? t('common.edit') : t('common.add') }}{{ t('serverCategory.category') }}
-        </v-card-title>
-        
-        <v-card-text>
-          <v-form ref="form" v-model="formValid">
-            <v-text-field
-              v-model="categoryForm.name"
-              :label="t('serverCategory.name')"
-              :rules="[rules.required]"
-              variant="outlined"
-              required
-              class="mb-4"
-            />
+  <v-dialog v-model="showAddDialog" max-width="500px">
+    <v-card>
+      <v-card-title class="text-h6">
+        {{ editingCategory ? t('common.edit') : t('common.add') }}{{ t('serverCategory.category') }}
+      </v-card-title>
+      
+      <v-card-text>
+        <v-form ref="form" v-model="formValid">
+          <v-text-field
+            v-model="categoryForm.name"
+            :label="t('serverCategory.name')"
+            :rules="[rules.required]"
+            variant="outlined"
+            density="compact"
+          />
 
-            <v-textarea
-              v-model="categoryForm.description"
-              :label="t('common.description')"
-              variant="outlined"
-              rows="3"
-              class="mb-4"
-            />
+          <v-textarea
+            v-model="categoryForm.description"
+            :label="t('common.description')"
+            variant="outlined"
+            density="compact"
+            rows="2"
+          />
 
-            <v-row>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="categoryForm.sortOrder"
-                  :label="t('common.sortOrder')"
-                  type="number"
-                  variant="outlined"
-                />
-              </v-col>
-              <v-col cols="6">
-                <v-switch
-                  v-model="categoryForm.isActive"
-                  :label="t('common.status')"
-                  color="primary"
-                />
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-card-text>
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                v-model.number="categoryForm.sortOrder"
+                :label="t('common.sortOrder')"
+                type="number"
+                variant="outlined"
+                density="compact"
+              />
+            </v-col>
+            <v-col cols="6" class="d-flex align-center">
+              <v-switch
+                v-model="categoryForm.isActive"
+                :label="t('common.status')"
+                color="primary"
+                hide-details
+              />
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-card-text>
 
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="closeDialog">{{ t('common.cancel') }}</v-btn>
-          <v-btn
-            color="primary"
-            :loading="saving"
-            :disabled="!formValid"
-            @click="saveCategory"
-          >
-            {{ t('common.save') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn variant="text" @click="closeDialog">
+          {{ t('common.cancel') }}
+        </v-btn>
+        <v-btn
+          color="primary"
+          :loading="saving"
+          :disabled="!formValid"
+          @click="saveCategory"
+        >
+          {{ t('common.save') }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -207,15 +210,11 @@ const loadCategories = async () => {
     }
     
     const response = await getCategories(params)
-    categories.value = response.data
-    totalItems.value = response.totalElements
     
-    // 调试输出
-    console.log('API Response:', response)
-    console.log('totalItems设置为:', totalItems.value)
-    console.log('categories长度:', categories.value.length)
-    console.log('currentPage:', currentPage.value)
-    console.log('pageSize:', pageSize.value)
+    // 根据后端API响应结构设置数据
+    // 后端返回格式: { success: true, data: [...], totalElements: N, totalPages: N, ... }
+    categories.value = response.data || []
+    totalItems.value = response.totalElements || 0
   } catch (error) {
     console.error('加载类别失败:', error)
     categories.value = []
@@ -240,19 +239,25 @@ const debouncedSearch = () => {
   }, 300)
 }
 
-// 分页处理
-const handlePageChange = (page: number) => {
-  console.log('Page change requested:', page, 'current:', currentPage.value)
+// 服务器端数据表选项更新处理
+const handleOptionsUpdate = (options: any) => {
+  const { page, itemsPerPage } = options
+  
+  let needsReload = false
+  
+  // v-data-table-server uses 1-based page indexing
   if (page !== currentPage.value) {
     currentPage.value = page
-    loadCategories()
+    needsReload = true
   }
-}
-
-const handlePageSizeChange = (size: number) => {
-  if (size !== pageSize.value) {
-    pageSize.value = size
+  
+  if (itemsPerPage !== pageSize.value) {
+    pageSize.value = itemsPerPage
     currentPage.value = 1 // 重置到第一页
+    needsReload = true
+  }
+  
+  if (needsReload) {
     loadCategories()
   }
 }
@@ -320,13 +325,3 @@ onMounted(() => {
   loadCategories()
 })
 </script>
-
-<style scoped>
-.v-card {
-  border-radius: 12px;
-}
-
-.v-btn {
-  text-transform: none;
-}
-</style>
