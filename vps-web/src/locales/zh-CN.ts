@@ -78,7 +78,26 @@ export default {
     location: '位置',
     provider: '提供商',
     specs: '配置',
-    actions: '操作'
+    actions: '操作',
+    newServer: '新建服务器',
+    editServer: '编辑服务器',
+    ip: 'IP地址',
+    port: '端口',
+    username: '用户名',
+    password: '密码',
+    selectGroup: '选择分组',
+    ungrouped: '未分组',
+    operatingSystem: '操作系统',
+    cpuCores: 'CPU核心数',
+    memory: '内存',
+    diskSpace: '硬盘空间',
+    diskType: '硬盘类型',
+    networkSpeed: '网络速度',
+    systemInfo: '系统信息',
+    confirmDelete: '确认删除服务器 {ip} 吗？',
+    loadFailed: '加载服务器失败',
+    saveFailed: '保存服务器失败',
+    deleteFailed: '删除服务器失败'
   },
 
   // 分组管理
@@ -180,6 +199,7 @@ export default {
     phone: '请输入有效的手机号码',
     url: '请输入有效的URL地址',
     ip: '请输入有效的IP地址',
+    invalidIp: '请输入有效的IP地址格式',
     invalidIP: '请输入有效的IP地址格式',
     port: '端口号范围应在 1-65535 之间'
   },

@@ -100,13 +100,31 @@
     </v-card>
 
     <!-- 添加/编辑对话框 -->
-    <v-dialog v-model="showAddDialog" max-width="600px">
-      <v-card>
-        <v-card-title>
-          {{ editingCategory ? $t('common.edit') : $t('common.add') }}{{ $t('servers.category') }}
+    <v-dialog 
+      v-model="showAddDialog" 
+      max-width="700px"
+      :scrim="false"
+      persistent
+      transition="dialog-bottom-transition"
+    >
+      <v-card elevation="24" class="mx-auto" rounded="xl">
+        <v-card-title class="text-h5 bg-gradient-to-r from-primary to-secondary text-white pa-6 d-flex align-center">
+          <v-avatar size="40" class="me-3" color="white" variant="flat">
+            <v-icon color="primary" size="24">
+              {{ editingCategory ? 'mdi-pencil' : 'mdi-plus' }}
+            </v-icon>
+          </v-avatar>
+          <div>
+            <div class="text-h5 font-weight-bold">
+              {{ editingCategory ? $t('common.edit') : $t('common.add') }}{{ $t('servers.category') }}
+            </div>
+            <div class="text-body-2 opacity-90">
+              {{ editingCategory ? $t('common.editDescription') : $t('common.addDescription') }}
+            </div>
+          </div>
         </v-card-title>
         
-        <v-card-text>
+        <v-card-text class="pa-8" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
           <v-form ref="form" v-model="formValid">
             <v-row>
               <v-col cols="12" md="6">
@@ -115,6 +133,11 @@
                   :label="$t('categories.categoryName')"
                   :rules="[rules.required]"
                   variant="outlined"
+                  prepend-inner-icon="mdi-folder"
+                  color="primary"
+                  density="comfortable"
+                  class="mb-2"
+                  bg-color="white"
                   required
                 />
               </v-col>
@@ -124,6 +147,11 @@
                   :label="$t('categories.sort')"
                   type="number"
                   variant="outlined"
+                  prepend-inner-icon="mdi-sort-numeric-ascending"
+                  color="primary"
+                  density="comfortable"
+                  class="mb-2"
+                  bg-color="white"
                 />
               </v-col>
             </v-row>
@@ -132,54 +160,15 @@
               v-model="categoryForm.description"
               :label="$t('categories.description')"
               variant="outlined"
+              prepend-inner-icon="mdi-text"
+              color="primary"
+              density="comfortable"
+              class="mb-2"
+              bg-color="white"
               rows="3"
+              auto-grow
             />
 
-            <!-- 国际化字段 -->
-            <v-expansion-panels class="mt-4">
-              <v-expansion-panel>
-                <v-expansion-panel-title>
-                  <v-icon class="me-2">mdi-translate</v-icon>
-                  {{ $t('categories.multiLanguageSettings') }}
-                </v-expansion-panel-title>
-                <v-expansion-panel-text>
-                  <v-row>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="categoryForm.nameZh"
-                        :label="$t('categories.chineseName')"
-                        variant="outlined"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="categoryForm.nameEn"
-                        :label="$t('categories.englishName')"
-                        variant="outlined"
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" md="6">
-                      <v-textarea
-                        v-model="categoryForm.descriptionZh"
-                        :label="$t('categories.chineseDescription')"
-                        variant="outlined"
-                        rows="2"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="6">
-                      <v-textarea
-                        v-model="categoryForm.descriptionEn"
-                        :label="$t('categories.englishDescription')"
-                        variant="outlined"
-                        rows="2"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-expansion-panel-text>
-              </v-expansion-panel>
-            </v-expansion-panels>
 
             <v-switch
               v-model="categoryForm.isActive"
@@ -190,14 +179,29 @@
           </v-form>
         </v-card-text>
 
-        <v-card-actions>
+        <v-card-actions class="pa-6" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-top: 1px solid rgba(0,0,0,0.05);">
           <v-spacer />
-          <v-btn @click="closeDialog">{{ $t('common.cancel') }}</v-btn>
+          <v-btn 
+            variant="outlined" 
+            color="grey-darken-1"
+            prepend-icon="mdi-close"
+            @click="closeDialog"
+            class="me-3"
+            size="large"
+            rounded="lg"
+          >
+            {{ $t('common.cancel') }}
+          </v-btn>
           <v-btn
             color="primary"
             :loading="saving"
             :disabled="!formValid"
+            prepend-icon="mdi-check"
             @click="saveCategory"
+            elevation="4"
+            size="large"
+            rounded="lg"
+            class="px-8"
           >
             {{ $t('common.save') }}
           </v-btn>
@@ -239,10 +243,6 @@ const editingCategory = ref<ServerCategory | null>(null)
 const categoryForm = reactive({
   name: '',
   description: '',
-  nameZh: '',
-  nameEn: '',
-  descriptionZh: '',
-  descriptionEn: '',
   sortOrder: 0,
   isActive: true
 })
@@ -311,10 +311,6 @@ const editCategory = (category: ServerCategory) => {
   Object.assign(categoryForm, {
     name: category.name,
     description: category.description || '',
-    nameZh: category.nameZh || '',
-    nameEn: category.nameEn || '',
-    descriptionZh: category.descriptionZh || '',
-    descriptionEn: category.descriptionEn || '',
     sortOrder: category.sortOrder || 0,
     isActive: category.isActive
   })
@@ -365,10 +361,6 @@ const closeDialog = () => {
   Object.assign(categoryForm, {
     name: '',
     description: '',
-    nameZh: '',
-    nameEn: '',
-    descriptionZh: '',
-    descriptionEn: '',
     sortOrder: 0,
     isActive: true
   })

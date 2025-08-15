@@ -52,7 +52,9 @@ public class ServerController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createTime") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam(required = false) String search) {
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Long groupId) {
         
         try {
             Sort sort = sortDir.equalsIgnoreCase("desc") ? 
@@ -62,18 +64,24 @@ public class ServerController {
             Page<ServerResponseDTO> serverPage;
             if (search != null && !search.trim().isEmpty()) {
                 serverPage = serverService.searchServers(search.trim(), pageable);
+            } else if (status != null || groupId != null) {
+                serverPage = serverService.getServersByFilters(status, groupId, pageable);
             } else {
                 serverPage = serverService.getServersPage(pageable);
             }
             
+            Map<String, Object> pageData = new HashMap<>();
+            pageData.put("content", serverPage.getContent());
+            pageData.put("totalElements", serverPage.getTotalElements());
+            pageData.put("totalPages", serverPage.getTotalPages());
+            pageData.put("size", serverPage.getSize());
+            pageData.put("number", serverPage.getNumber());
+            pageData.put("hasNext", serverPage.hasNext());
+            pageData.put("hasPrevious", serverPage.hasPrevious());
+            
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("data", serverPage.getContent());
-            response.put("currentPage", serverPage.getNumber());
-            response.put("totalItems", serverPage.getTotalElements());
-            response.put("totalPages", serverPage.getTotalPages());
-            response.put("hasNext", serverPage.hasNext());
-            response.put("hasPrevious", serverPage.hasPrevious());
+            response.put("data", pageData);
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {

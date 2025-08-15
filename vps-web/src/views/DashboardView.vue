@@ -129,8 +129,6 @@
               
               <v-card-text>
                 <v-row>
-
-                  
                   <v-col cols="12" sm="6" md="4">
                     <v-card 
                       elevation="1" 
@@ -153,8 +151,6 @@
                       </div>
                     </v-card>
                   </v-col>
-                  
-
                   
                   <v-col cols="12" sm="6" md="4">
                     <v-card 
@@ -189,13 +185,11 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 import PageLayout from '@/components/PageLayout.vue'
 
-const { t } = useI18n()
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
 const router = useRouter()

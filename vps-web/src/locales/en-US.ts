@@ -78,7 +78,26 @@ export default {
         location: 'Location',
         provider: 'Provider',
         specs: 'Specifications',
-        actions: 'Actions'
+        actions: 'Actions',
+        newServer: 'New Server',
+        editServer: 'Edit Server',
+        ip: 'IP Address',
+        port: 'Port',
+        username: 'Username',
+        password: 'Password',
+        selectGroup: 'Select Group',
+        ungrouped: 'Ungrouped',
+        operatingSystem: 'Operating System',
+        cpuCores: 'CPU Cores',
+        memory: 'Memory',
+        diskSpace: 'Disk Space',
+        diskType: 'Disk Type',
+        networkSpeed: 'Network Speed',
+        systemInfo: 'System Info',
+        confirmDelete: 'Are you sure you want to delete server {ip}?',
+        loadFailed: 'Failed to load servers',
+        saveFailed: 'Failed to save server',
+        deleteFailed: 'Failed to delete server'
     },
 
     // Group Management
@@ -182,6 +201,7 @@ export default {
         phone: 'Please enter a valid phone number',
         url: 'Please enter a valid URL',
         ip: 'Please enter a valid IP address',
+        invalidIp: 'Please enter a valid IP address format',
         invalidIP: 'Please enter a valid IP address format',
         port: 'Port number should be between 1-65535'
     },

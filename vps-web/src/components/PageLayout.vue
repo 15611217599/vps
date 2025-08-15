@@ -78,6 +78,11 @@ const navigationItems = computed(() => [
     to: '/groups'
   },
   {
+    title: t('nav.servers'),
+    icon: 'mdi-server',
+    to: '/servers'
+  },
+  {
     title: t('nav.profile'),
     icon: 'mdi-account',
     to: '/profile'

@@ -76,4 +76,9 @@ public interface ServerService {
      * 获取按分组组织的服务器数据
      */
     List<ServerGroupWithServersDTO> getGroupedServers();
+    
+    /**
+     * 根据状态和分组过滤获取服务器
+     */
+    Page<ServerResponseDTO> getServersByFilters(String status, Long groupId, Pageable pageable);
 }

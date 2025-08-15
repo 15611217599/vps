@@ -192,8 +192,6 @@ const pageSize = ref(10)
 const totalItems = ref(0)
 const editingCategory = ref<ServerCategory | null>(null)
 
-
-
 // 表单数据
 const categoryForm = reactive({
   name: '',
@@ -287,9 +285,8 @@ const handleOptionsUpdate = (options: any) => {
 // 编辑类别
 const editCategory = (category: ServerCategory) => {
   editingCategory.value = category
-  // 编辑时使用原始的多语言JSON文本，不使用解析后的文本
   Object.assign(categoryForm, {
-    name: category.name, // 保持原始JSON格式，如 {"cn": "中文", "en": "English"}
+    name: category.name,
     description: category.description || '',
     sortOrder: category.sortOrder || 0,
     isActive: category.isActive
@@ -353,7 +350,6 @@ const closeDialog = () => {
     isActive: true
   })
 }
-
 
 // 组件挂载时加载数据
 onMounted(() => {

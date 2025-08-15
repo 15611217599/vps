@@ -106,19 +106,29 @@
     <!-- 添加/编辑对话框 -->
     <v-dialog 
       v-model="showAddDialog" 
-      max-width="600px"
+      max-width="700px"
       :scrim="false"
       persistent
+      transition="dialog-bottom-transition"
     >
-      <v-card elevation="8" class="mx-auto">
-        <v-card-title class="text-h6 bg-primary text-white pa-4">
-          <v-icon class="me-2">
-            {{ editingGroup ? 'mdi-pencil' : 'mdi-plus' }}
-          </v-icon>
-          {{ editingGroup ? t('groups.editGroup') : t('groups.newGroup') }}
+      <v-card elevation="24" class="mx-auto" rounded="xl">
+        <v-card-title class="text-h5 bg-gradient-to-r from-primary to-secondary text-white pa-6 d-flex align-center">
+          <v-avatar size="40" class="me-3" color="white" variant="flat">
+            <v-icon color="primary" size="24">
+              {{ editingGroup ? 'mdi-pencil' : 'mdi-plus' }}
+            </v-icon>
+          </v-avatar>
+          <div>
+            <div class="text-h5 font-weight-bold">
+              {{ editingGroup ? t('groups.editGroup') : t('groups.newGroup') }}
+            </div>
+            <div class="text-body-2 opacity-90">
+              {{ editingGroup ? t('common.editDescription') : t('common.addDescription') }}
+            </div>
+          </div>
         </v-card-title>
         
-        <v-card-text class="pa-6">
+        <v-card-text class="pa-8" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
           <v-form ref="form" v-model="formValid">
             <!-- 类别选择 -->
             <div class="mb-4">
@@ -132,7 +142,9 @@
                 prepend-inner-icon="mdi-folder"
                 color="primary"
                 :rules="[rules.required]"
+                density="comfortable"
                 class="mb-2"
+                bg-color="white"
               />
             </div>
   
@@ -145,7 +157,9 @@
                 variant="outlined"
                 prepend-inner-icon="mdi-folder-network"
                 color="primary"
+                density="comfortable"
                 class="mb-2"
+                bg-color="white"
               />
             </div>
   
@@ -157,15 +171,16 @@
                 variant="outlined"
                 prepend-inner-icon="mdi-text"
                 color="primary"
-                rows="3"
-                auto-grow
+                density="comfortable"
                 class="mb-2"
+                bg-color="white"
+                auto-grow
               />
             </div>
   
             <!-- 地区信息 -->
             <v-row class="mb-2">
-              <v-col cols="6">
+              <v-col cols="4">
                 <v-text-field
                   v-model="groupForm.region"
                   :label="t('groups.region')"
@@ -174,7 +189,7 @@
                   color="primary"
                 />
               </v-col>
-              <v-col cols="6">
+              <v-col cols="4">
                 <v-text-field
                   v-model="groupForm.country"
                   :label="t('groups.country')"
@@ -183,11 +198,7 @@
                   color="primary"
                 />
               </v-col>
-            </v-row>
-  
-            <!-- 城市和排序 -->
-            <v-row class="mb-2">
-              <v-col cols="6">
+              <v-col cols="4">
                 <v-text-field
                   v-model="groupForm.city"
                   :label="t('groups.city')"
@@ -196,29 +207,36 @@
                   color="primary"
                 />
               </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model.number="groupForm.sortOrder"
-                  :label="t('common.sortOrder')"
-                  type="number"
-                  variant="outlined"
-                  prepend-inner-icon="mdi-sort-numeric-ascending"
-                  color="primary"
-                />
-              </v-col>
             </v-row>
+  
+            <!-- 排序 -->
+            <div class="mb-4">
+              <v-text-field
+                v-model.number="groupForm.sortOrder"
+                :label="t('common.sortOrder')"
+                type="number"
+                variant="outlined"
+                prepend-inner-icon="mdi-sort-numeric-ascending"
+                color="primary"
+                density="comfortable"
+                class="mb-2"
+                bg-color="white"
+              />
+            </div>
           </v-form>
         </v-card-text>
   
         <!-- 美化的操作按钮 -->
-        <v-card-actions class="pa-4 bg-grey-lighten-5">
+        <v-card-actions class="pa-6" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-top: 1px solid rgba(0,0,0,0.05);">
           <v-spacer />
           <v-btn 
             variant="outlined" 
-            color="grey"
+            color="grey-darken-1"
             prepend-icon="mdi-close"
             @click="closeDialog"
-            class="me-2"
+            class="me-3"
+            size="large"
+            rounded="lg"
           >
             {{ t('common.cancel') }}
           </v-btn>
@@ -228,16 +246,16 @@
             :disabled="!formValid"
             prepend-icon="mdi-check"
             @click="saveGroup"
-            elevation="2"
+            elevation="4"
+            size="large"
+            rounded="lg"
+            class="px-8"
           >
             {{ t('common.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  
-  
-  
   </template>
   
   <script setup lang="ts">
@@ -293,12 +311,26 @@
     try {
       loading.value = true
       
-      // 使用实际的API方法
-      const response = await groupAPI.getGroupedServers()
-      groups.value = response || []
-      totalItems.value = response.length || 0
+      const params = {
+        page: currentPage.value - 1, // 后端使用0基索引
+        size: pageSize.value,
+        ...(searchQuery.value && { search: searchQuery.value })
+      }
+      
+      const response = await groupAPI.getGroups(params)
+      
+      // 根据后端API响应结构设置数据
+      // 后端返回格式: { success: true, data: [...], totalElements: N, totalPages: N, ... }
+      groups.value = response.data || []
+      totalItems.value = response.totalElements || 0
     } catch (error) {
       console.error('加载分组失败:', error)
+      // 显示详细的后端错误信息
+      if (error && typeof error === 'object' && 'message' in error) {
+        alert(error.message)
+      } else {
+        alert('加载分组失败')
+      }
       groups.value = []
       totalItems.value = 0
     } finally {
@@ -438,95 +470,3 @@
   })
   </script>
   
-  <style scoped>
-  .group-card {
-    border-radius: 16px !important;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-  }
-  
-  .group-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  }
-  
-  .group-header {
-    background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.05) 0%, rgba(var(--v-theme-primary), 0.02) 100%);
-    border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-    padding: 20px !important;
-  }
-  
-  .empty-state {
-    background: rgba(var(--v-theme-surface), 0.3);
-    border-radius: 8px;
-    margin: 16px;
-  }
-  
-  .dialog-header {
-    background: linear-gradient(135deg, rgba(var(--v-theme-success), 0.05) 0%, rgba(var(--v-theme-success), 0.02) 100%);
-    border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-    padding: 24px !important;
-  }
-  
-  :deep(.v-text-field .v-field) {
-    border-radius: 8px;
-  }
-  
-  :deep(.v-select .v-field) {
-    border-radius: 8px;
-  }
-  
-  .v-btn {
-    border-radius: 8px !important;
-    text-transform: none;
-    font-weight: 500;
-  }
-  
-  .delete-dialog {
-    border-radius: 16px !important;
-    overflow: hidden;
-  }
-  
-  .delete-dialog-header {
-    background: linear-gradient(135deg, rgba(var(--v-theme-error), 0.05) 0%, rgba(var(--v-theme-error), 0.02) 100%);
-    border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-    padding: 24px !important;
-  }
-  
-  .delete-content {
-    text-align: left;
-  }
-  
-  .group-info {
-    background: rgba(var(--v-theme-surface), 0.5);
-    border-radius: 8px;
-    padding: 16px;
-    border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-  }
-  
-  .group-details {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .detail-item {
-    display: flex;
-    align-items: center;
-    color: rgba(var(--v-theme-on-surface), 0.87);
-  }
-  
-  @media (max-width: 768px) {
-    .dialog-header {
-      padding: 16px !important;
-    }
-    
-    .delete-dialog-header {
-      padding: 16px !important;
-    }
-    
-    .v-card-actions {
-      padding: 16px !important;
-    }
-  }
-  </style>

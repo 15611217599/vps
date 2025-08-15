@@ -6,6 +6,7 @@ import ProfileView from '../views/ProfileView.vue'
 import ForgotPasswordView from '../views/ForgotPasswordView.vue'
 import ServerGroupView from '../views/ServerGroupView.vue'
 import ServerCategoryManagementView from '../views/ServerCategoryManagementView.vue'
+import ServerView from '../views/ServerView.vue'
 
 
 
@@ -39,6 +40,12 @@ const routes = [
     component: ServerCategoryManagementView,
     meta: { requiresAuth: true }
   },
+  {
+    path: '/servers',
+    name: 'Servers',
+    component: ServerView,
+    meta: { requiresAuth: true }
+  },
 
   {
     path: '/profile',
@@ -59,7 +66,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
   
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {

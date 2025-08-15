@@ -64,6 +64,22 @@ export interface UpdateGroupRequest {
 
 // API方法 - 只保留分组相关的功能
 export const groupAPI = {
+  // 获取分组数据（分页）
+  async getGroups(params?: { page?: number; size?: number; search?: string }): Promise<any> {
+    const queryParams = new URLSearchParams()
+    if (params?.page !== undefined) queryParams.append('page', params.page.toString())
+    if (params?.size !== undefined) queryParams.append('size', params.size.toString())
+    if (params?.search) queryParams.append('search', params.search)
+    
+    const url = `/groups${queryParams.toString() ? '?' + queryParams.toString() : ''}`
+    const response = await apiClient.get(url)
+    
+    if (response.data.success) {
+      return response.data
+    }
+    throw new Error(response.data.message || '获取分组失败')
+  },
+
   // 获取分组的服务器数据
   async getGroupedServers(): Promise<ServerGroup[]> {
     const response = await apiClient.get('/servers/grouped')
