@@ -7,7 +7,7 @@ INSERT INTO users (username, email, password, created_at, updated_at) VALUES
 INSERT INTO server_categories (name, description, sort_order, is_active, create_time, update_time) VALUES
 ('{"cn": "VPS服务器", "en": "VPS Servers"}', '{"cn": "专用服务器，适用于大型应用", "en": "Virtual Private Servers for medium to big applications"}', 1, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- 插入服务器分组数据（使用新的JSON格式）
+-- 插入服务器分组数据（使用多语言JSON格式）
 INSERT INTO server_groups (name, description, region, country, city, sort_order, is_active, category_id, create_time, update_time) VALUES
 -- VPS服务器分组
 ('{"cn": "美国硅谷", "en": "Silicon Valley, USA"}', '{"cn": "美国硅谷数据中心", "en": "Silicon Valley Data Center"}', '{"cn": "美洲", "en": "Americas"}', '{"cn": "美国", "en": "United States"}', '{"cn": "硅谷", "en": "Silicon Valley"}', 1, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -89,3 +89,10 @@ INSERT INTO servers (ip, port, status, cpu_cores, memory, disk_space, disk_type,
 ('107.149.202.27', 43756, 'OFFLINE', '32 Core', '32G', '200G SSD', 'FR - SSD', '25M', 'CentOS - 7.9.2111 - x64', 'root', 'Ld4MBRw578Shbn', 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.149.202.28', 35473, 'OFFLINE', '32 Core', '32G', '200G SSD', 'FR - SSD', '25M', 'CentOS - 7.9.2111 - x64', 'root', 'Ld4MBRw578Shbn', 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.149.202.29', 11174, 'OFFLINE', '32 Core', '32G', '200G SSD', 'FR - SSD', '25M', 'CentOS - 7.9.2111 - x64', 'root', 'Ld4MBRw578Shbn', 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- 插入价格组数据（包含多语言和示例HTML）
+INSERT INTO price_groups (name, description, hourly_price, daily_price, monthly_price, quarterly_price, semi_annual_price, annual_price, sort_order, is_active, server_group_id, sales_page_html, create_time, last_update) VALUES
+('{"cn": "基础套餐", "en": "Basic Package"}', '{"cn": "适合初学者和测试环境的基础价格套餐", "en": "Basic pricing package suitable for beginners and testing environments"}', 0.50, 5.00, 100.00, 250.00, 450.00, 800.00, 0, true, 1, '<div class="price-card basic"><h2>基础套餐</h2><p>适合初学者使用</p><ul><li>32核CPU</li><li>32GB内存</li><li>200GB SSD</li><li>50M带宽</li></ul><div class="price">¥100/月起</div></div>', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('{"cn": "标准套餐", "en": "Standard Package"}', '{"cn": "适合个人用户和小型项目的标准价格套餐", "en": "Standard pricing package suitable for individual users and small projects"}', 1.00, 10.00, 200.00, 500.00, 900.00, 1500.00, 1, true, 2, '<div class="price-card standard"><h2>标准套餐</h2><p>个人用户首选</p><ul><li>32核CPU</li><li>32GB内存</li><li>200GB SSD</li><li>50M带宽</li><li>24/7技术支持</li></ul><div class="price">¥200/月起</div></div>', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('{"cn": "高级套餐", "en": "Premium Package"}', '{"cn": "适合企业用户和大型项目的高级价格套餐", "en": "Premium pricing package suitable for enterprise users and large projects"}', 1.50, 12.00, 240.00, 600.00, 1080.00, 1800.00, 2, true, 3, '<div class="price-card premium"><h2>高级套餐</h2><p>企业级性能</p><ul><li>32核CPU</li><li>32GB内存</li><li>200GB SSD</li><li>25M带宽</li><li>优先技术支持</li><li>免费备份服务</li></ul><div class="price">¥240/月起</div></div>', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('{"cn": "企业套餐", "en": "Enterprise Package"}', '{"cn": "适合大型企业和高性能需求的企业级价格套餐", "en": "Enterprise-grade pricing package suitable for large enterprises and high-performance requirements"}', 2.00, 20.00, 400.00, 1000.00, 1800.00, 3000.00, 3, true, 4, '<div class="price-card enterprise"><h2>企业套餐</h2><p>大型企业专属</p><ul><li>32核CPU</li><li>32GB内存</li><li>200GB SSD</li><li>25M带宽</li><li>专属客户经理</li><li>定制化服务</li><li>SLA保障</li></ul><div class="price">¥400/月起</div></div>', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

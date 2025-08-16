@@ -1,6 +1,5 @@
 <template>
   <v-footer
-    app
     :color="themeStore.currentColors.primary"
     :elevation="1"
     class="fixed-footer"
@@ -105,6 +104,11 @@ const openLink = (type: string) => {
 
 <style scoped>
 .fixed-footer {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
   z-index: 1000 !important;
   border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
   height: 60px !important; /* 固定底部栏高度 */

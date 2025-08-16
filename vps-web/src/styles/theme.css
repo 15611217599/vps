@@ -7,7 +7,8 @@
 
 /* 浅色主题输入框 */
 .v-theme--light .v-field {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .v-theme--light .v-field__input {
@@ -24,7 +25,8 @@
 
 /* 深色主题输入框 */
 .v-theme--dark .v-field {
-  background-color: rgba(66, 66, 66, 0.9) !important;
+  background-color: #424242 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .v-theme--dark .v-field__input {
@@ -66,13 +68,15 @@
 }
 
 .v-theme--light .v-card {
-  background-color: transparent !important;
+  background-color: #ffffff !important;
   color: rgba(0, 0, 0, 0.87) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .v-theme--dark .v-card {
-  background-color: transparent !important;
+  background-color: #2d2d2d !important;
   color: rgba(255, 255, 255, 0.87) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* 复选框和单选框 */
@@ -102,11 +106,13 @@
 }
 
 .v-theme--light .v-menu .v-list {
-  background-color: transparent !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 .v-theme--dark .v-menu .v-list {
-  background-color: transparent !important;
+  background-color: #2d2d2d !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* 确保文本在所有情况下都可见 */
@@ -120,11 +126,13 @@
 
 /* 数据表格 */
 .v-theme--light .v-data-table {
-  background-color: transparent !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .v-theme--dark .v-data-table {
-  background-color: transparent !important;
+  background-color: #2d2d2d !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* 应用栏 */
@@ -138,11 +146,13 @@
 }
 
 .v-theme--light .v-navigation-drawer {
-  background-color: transparent !important;
+  background-color: #ffffff !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .v-theme--dark .v-navigation-drawer {
-  background-color: transparent !important;
+  background-color: #2d2d2d !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* 工具提示 */
@@ -151,13 +161,15 @@
 }
 
 .v-theme--light .v-tooltip .v-overlay__content {
-  background-color: transparent !important;
+  background-color: rgba(0, 0, 0, 0.9) !important;
   color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
 .v-theme--dark .v-tooltip .v-overlay__content {
-  background-color: transparent !important;
+  background-color: rgba(66, 66, 66, 0.95) !important;
   color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* 确保所有文本输入都有足够的对比度 */
@@ -277,4 +289,47 @@
 
 .v-theme--dark .v-tab--selected {
   color: rgb(var(--v-theme-primary)) !important;
+}
+
+/* 应用背景 - 确保不透明 */
+.v-application {
+  background: rgb(var(--v-theme-background)) !important;
+}
+
+/* 主要内容区域 */
+.v-main {
+  background: rgb(var(--v-theme-background)) !important;
+}
+
+/* 按钮组 */
+.v-btn-toggle {
+  background: rgb(var(--v-theme-surface)) !important;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+}
+
+/* 扩展面板 */
+.v-expansion-panels {
+  background: rgb(var(--v-theme-surface)) !important;
+}
+
+.v-expansion-panel {
+  background: rgb(var(--v-theme-surface)) !important;
+}
+
+/* 对话框 */
+.v-dialog .v-card {
+  background: rgb(var(--v-theme-surface)) !important;
+}
+
+/* 菜单覆盖层 */
+.v-overlay__content {
+  background: rgb(var(--v-theme-surface)) !important;
+}
+
+/* 确保所有表单控件有实心背景 */
+.v-select .v-field,
+.v-text-field .v-field,
+.v-textarea .v-field,
+.v-autocomplete .v-field {
+  background: rgb(var(--v-theme-surface)) !important;
 }

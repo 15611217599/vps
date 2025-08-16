@@ -47,8 +47,9 @@ onMounted(() => {
 
 <style scoped>
 .main-content {
-  /* 为固定顶部栏留出空间，底部栏由Vuetify app属性自动处理 */
-  padding-top: 56px;
+  /* 为固定顶部栏和底部栏留出空间 */
+  padding-top: 56px; /* 56px (UnifiedTopBar - 访客模式) */
+  padding-bottom: 60px; /* 60px (FixedFooter) */
   /* 移除最小高度设置，让内容自然撑开 */
   background-color: transparent !important;
 }

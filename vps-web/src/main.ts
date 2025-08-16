@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify'
 import i18n from './locales'
 import './styles/theme.css'
 import './styles/layout.css'
+import './styles/unified-components.css'
 
 const app = createApp(App)
 const pinia = createPinia()

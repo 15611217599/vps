@@ -17,7 +17,7 @@
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="me-2">mdi-folder-multiple</v-icon>
-          {{ t('serverCategory.list') }}
+          {{ t('serverCategory.title') }}
           <v-spacer />
           <v-text-field
             v-model="searchQuery"
@@ -85,90 +85,87 @@
   </PageLayout>
 
   <!-- 添加/编辑对话框 -->
-  <v-dialog 
-    v-model="showAddDialog" 
-    max-width="500px"
-    :scrim="false"
-    persistent
+  <UnifiedDialog
+    v-model="showAddDialog"
+    :title="(editingCategory ? $t('common.edit') : $t('common.add')) + $t('servers.category')"
+    :is-edit="!!editingCategory"
+    :loading="saving"
+    :disabled="!formValid"
+    max-width="800px"
+    width="80vw"
+    @save="saveCategory"
+    @cancel="closeDialog"
   >
-    <v-card elevation="8" class="mx-auto">
-      <v-card-title class="text-h6 bg-primary text-white pa-4">
-        <v-icon class="me-2">
-          {{ editingCategory ? 'mdi-pencil' : 'mdi-plus' }}
-        </v-icon>
-        {{ editingCategory ? t('common.edit') : t('common.add') }}{{ t('serverCategory.category') }}
-      </v-card-title>
-      
-      <v-card-text>
-        <v-form ref="form" v-model="formValid">
+    <v-form ref="form" v-model="formValid">
+      <v-text-field
+        v-model="categoryForm.name"
+        :label="t('serverCategory.name')"
+        :rules="[rules.required]"
+        variant="outlined"
+        prepend-inner-icon="mdi-folder"
+        color="primary"
+        density="comfortable"
+        class="mb-2"
+        bg-color="white"
+      />
+
+      <v-textarea
+        v-model="categoryForm.description"
+        :label="t('common.description')"
+        variant="outlined"
+        prepend-inner-icon="mdi-text"
+        color="primary"
+        density="comfortable"
+        class="mb-2"
+        bg-color="white"
+        rows="2"
+        auto-grow
+      />
+
+      <v-row>
+        <v-col cols="6">
           <v-text-field
-            v-model="categoryForm.name"
-            :label="t('serverCategory.name')"
-            :rules="[rules.required]"
+            v-model.number="categoryForm.sortOrder"
+            :label="t('common.sortOrder')"
+            type="number"
             variant="outlined"
-            density="compact"
+            prepend-inner-icon="mdi-sort-numeric-ascending"
+            color="primary"
+            density="comfortable"
+            class="mb-2"
+            bg-color="white"
           />
-
-          <v-textarea
-            v-model="categoryForm.description"
-            :label="t('common.description')"
-            variant="outlined"
-            density="compact"
-            rows="2"
+        </v-col>
+        <v-col cols="6" class="d-flex align-center">
+          <v-switch
+            v-model="categoryForm.isActive"
+            :label="t('common.status')"
+            color="primary"
+            class="mt-4"
           />
+        </v-col>
+      </v-row>
+    </v-form>
+  </UnifiedDialog>
 
-          <v-row>
-            <v-col cols="6">
-              <v-text-field
-                v-model.number="categoryForm.sortOrder"
-                :label="t('common.sortOrder')"
-                type="number"
-                variant="outlined"
-                density="compact"
-              />
-            </v-col>
-            <v-col cols="6" class="d-flex align-center">
-              <v-switch
-                v-model="categoryForm.isActive"
-                :label="t('common.status')"
-                color="primary"
-                hide-details
-              />
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-card-text>
-
-      <v-card-actions class="pa-4 bg-grey-lighten-5">
-        <v-spacer />
-        <v-btn 
-          variant="outlined" 
-          color="grey"
-          prepend-icon="mdi-close"
-          @click="closeDialog"
-          class="me-2"
-        >
-          {{ t('common.cancel') }}
-        </v-btn>
-        <v-btn
-          color="primary"
-          :loading="saving"
-          :disabled="!formValid"
-          prepend-icon="mdi-check"
-          @click="saveCategory"
-          elevation="2"
-        >
-          {{ t('common.save') }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <!-- 删除确认对话框 -->
+  <ConfirmDeleteDialog
+    v-model="showDeleteDialog"
+    :title="t('serverCategory.deleteWarning')"
+    :message="t('serverCategory.confirmDelete', { name: getLocalizedText(deletingCategory?.name || '') })"
+    :item-name="getLocalizedText(deletingCategory?.name || '')"
+    :loading="deleting"
+    @confirm="confirmDelete"
+    @cancel="showDeleteDialog = false"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PageLayout from '@/components/PageLayout.vue'
+import UnifiedDialog from '@/components/UnifiedDialog.vue'
+import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
 import { getLocalizedText } from '@/utils/i18n'
 import {
   getCategories,
@@ -181,10 +178,13 @@ import {
 const { t } = useI18n()
 
 // 响应式数据
-const categories = ref<ServerCategory[]>([])
+const categories = ref<ServerCategory[]>([])  
 const loading = ref(false)
 const saving = ref(false)
+const deleting = ref(false)
 const showAddDialog = ref(false)
+const showDeleteDialog = ref(false)
+const deletingCategory = ref<ServerCategory | null>(null)
 const formValid = ref(false)
 const searchQuery = ref('')
 const currentPage = ref(1)
@@ -295,21 +295,30 @@ const editCategory = (category: ServerCategory) => {
 }
 
 // 删除类别
-const deleteCategory = async (category: ServerCategory) => {
-  const localizedName = getLocalizedText(category.name)
-  if (confirm(t('serverCategory.confirmDelete', { name: localizedName }))) {
-    try {
-      await deleteCategoryApi(category.id)
-      await loadCategories()
-    } catch (error) {
-      console.error(t('serverCategory.deleteFailed'), error)
-      // 显示详细的后端错误信息
-      if (error && typeof error === 'object' && 'message' in error) {
-        alert(error.message)
-      } else {
-        alert(t('serverCategory.deleteFailed'))
-      }
+const deleteCategory = (category: ServerCategory) => {
+  deletingCategory.value = category
+  showDeleteDialog.value = true
+}
+
+// 确认删除
+const confirmDelete = async () => {
+  if (!deletingCategory.value) return
+  
+  try {
+    deleting.value = true
+    await deleteCategoryApi(deletingCategory.value.id)
+    showDeleteDialog.value = false
+    await loadCategories()
+  } catch (error) {
+    console.error(t('serverCategory.deleteFailed'), error)
+    // 显示详细的后端错误信息
+    if (error && typeof error === 'object' && 'message' in error) {
+      alert(error.message)
+    } else {
+      alert(t('serverCategory.deleteFailed'))
     }
+  } finally {
+    deleting.value = false
   }
 }
 

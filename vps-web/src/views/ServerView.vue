@@ -3,7 +3,7 @@
     <v-container class="py-6">
       <!-- 页面标题和添加按钮 -->
       <div class="d-flex justify-space-between align-center mb-6">
-        <h1 class="text-h4 font-weight-bold">{{ t('servers.title') }}</h1>
+        <h1 class="text-h4 font-weight-bold">{{ t('servers.list') }}</h1>
         <v-btn
           color="primary"
           prepend-icon="mdi-plus"
@@ -16,7 +16,7 @@
       <!-- 服务器列表 -->
       <v-card>
         <v-card-title class="d-flex align-center">
-          <v-icon class="me-2">mdi-server</v-icon>
+          <v-icon class="me-2">mdi-server-network</v-icon>
           {{ t('servers.list') }}
           <v-spacer />
           <v-text-field
@@ -42,26 +42,27 @@
           :items-per-page-text="t('common.itemsPerPage')"
           @update:options="handleOptionsUpdate"
         >
-          <!-- IP地址列 -->
-          <template #item.ip="{ item }">
-            <span class="font-weight-medium">{{ item.ip }}</span>
-          </template>
+        <!-- IP地址列 -->
+        <template #item.ip="{ item }">
+          <span class="font-weight-medium">{{ item.ip }}</span>
+        </template>
 
-          <!-- 端口列 -->
-          <template #item.port="{ item }">
-            <span>{{ item.port || '-' }}</span>
-          </template>
+        <!-- 端口列 -->
+        <template #item.port="{ item }">
+          <span>{{ item.port || '-' }}</span>
+        </template>
 
-          <!-- 状态列 -->
-          <template #item.status="{ item }">
-            <v-chip
-              :color="item.status === 'online' ? 'success' : 'error'"
-              size="small"
-              variant="flat"
-            >
-              {{ item.status === 'online' ? t('servers.online') : t('servers.offline') }}
-            </v-chip>
-          </template>
+        <!-- 状态列 -->
+        <template #item.status="{ item }">
+          <StatusChip
+              :status="item.status"
+              type="status"
+              :custom-texts="{
+                online: t('servers.online'),
+                offline: t('servers.offline')
+              }"
+          />
+        </template>
 
           <!-- 分组列 -->
           <template #item.groupName="{ item }">
@@ -76,313 +77,220 @@
             <span v-else class="text-medium-emphasis">{{ t('servers.ungrouped') }}</span>
           </template>
 
-          <!-- 操作系统列 -->
-          <template #item.operatingSystem="{ item }">
-            <span>{{ item.operatingSystem || '-' }}</span>
-          </template>
+        <!-- 操作系统列 -->
+        <template #item.operatingSystem="{ item }">
+          <span>{{ item.operatingSystem || '-' }}</span>
+        </template>
 
-          <!-- CPU核心数列 -->
-          <template #item.cpuCores="{ item }">
-            <span>{{ item.cpuCores || '-' }}</span>
-          </template>
+        <!-- CPU核心数列 -->
+        <template #item.cpuCores="{ item }">
+          <span>{{ item.cpuCores || '-' }}</span>
+        </template>
 
-          <!-- 内存列 -->
-          <template #item.memory="{ item }">
-            <span>{{ item.memory || '-' }}</span>
-          </template>
+        <!-- 内存列 -->
+        <template #item.memory="{ item }">
+          <span>{{ item.memory || '-' }}</span>
+        </template>
 
-          <!-- 硬盘空间列 -->
-          <template #item.diskSpace="{ item }">
-            <span>{{ item.diskSpace || '-' }}</span>
-          </template>
+        <!-- 硬盘空间列 -->
+        <template #item.diskSpace="{ item }">
+          <span>{{ item.diskSpace || '-' }}</span>
+        </template>
 
 
-          <!-- 网络速度列 -->
-          <template #item.networkSpeed="{ item }">
-            <span>{{ item.networkSpeed || '-' }}</span>
-          </template>
+        <!-- 网络速度列 -->
+        <template #item.networkSpeed="{ item }">
+          <span>{{ item.networkSpeed || '-' }}</span>
+        </template>
 
-          <!-- 操作列 -->
-          <template #item.actions="{ item }">
-            <v-btn
-              icon="mdi-pencil"
-              size="small"
-              variant="text"
-              @click="editServer(item)"
-            />
-            <v-btn
-              icon="mdi-delete"
-              size="small"
-              variant="text"
-              color="error"
-              @click="deleteServer(item)"
-            />
-          </template>
+        <!-- 操作列 -->
+        <template #item.actions="{ item }">
+          <v-btn
+            icon="mdi-pencil"
+            size="small"
+            variant="text"
+            @click="editServer(item)"
+          />
+          <v-btn
+            icon="mdi-delete"
+            size="small"
+            variant="text"
+            color="error"
+            @click="deleteServer(item)"
+          />
+        </template>
         </v-data-table-server>
       </v-card>
     </v-container>
   </PageLayout>
 
-  <!-- 添加/编辑对话框 -->
-  <v-dialog 
-    v-model="showAddDialog" 
-    max-width="900px"
-    :scrim="false"
-    persistent
-    transition="dialog-bottom-transition"
+  <!-- 添加/编辑服务器对话框 -->
+  <UnifiedDialog
+      v-model="showAddDialog"
+      :title="editingServer ? t('servers.editServer') : t('servers.add')"
+      :loading="saving"
+      max-width="800px"
+      @save="saveServer"
+      @cancel="closeDialog"
   >
-    <v-card elevation="24" class="mx-auto" rounded="xl">
-      <v-card-title class="text-h5 bg-gradient-to-r from-primary to-secondary text-white pa-6 d-flex align-center">
-        <v-avatar size="40" class="me-3" color="white" variant="flat">
-          <v-icon color="primary" size="24">
-            {{ editingServer ? 'mdi-pencil' : 'mdi-plus' }}
-          </v-icon>
-        </v-avatar>
-        <div>
-          <div class="text-h5 font-weight-bold">
-            {{ editingServer ? t('servers.editServer') : t('servers.newServer') }}
-          </div>
-          <div class="text-body-2 opacity-90">
-            {{ editingServer ? t('common.editDescription') : t('common.addDescription') }}
-          </div>
-        </div>
-      </v-card-title>
-      
-      <v-card-text class="pa-8" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
-        <v-form ref="form" v-model="formValid">
-          <v-row>
-            <!-- IP地址 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.ip"
-                :label="t('servers.ip')"
-                :rules="[rules.required, rules.ip]"
-                variant="outlined"
-                prepend-inner-icon="mdi-ip"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-            
-            <!-- 端口 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model.number="serverForm.port"
-                :label="t('servers.port')"
-                type="number"
-                variant="outlined"
-                prepend-inner-icon="mdi-ethernet"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-          </v-row>
+    <v-form ref="form" v-model="formValid">
+      <v-row>
+        <!-- IP地址 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.ip"
+              type="text"
+              :label="t('servers.ip')"
+              icon="mdi-ip"
+              :rules="[rules.required, rules.ip]"
+              required
+          />
+        </v-col>
 
-          <v-row>
-            <!-- 用户名 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.username"
-                :label="t('servers.username')"
-                variant="outlined"
-                prepend-inner-icon="mdi-account"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-            
-            <!-- 密码 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.password"
-                :label="t('servers.password')"
-                type="password"
-                variant="outlined"
-                prepend-inner-icon="mdi-lock"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-          </v-row>
+        <!-- 端口 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.port"
+              type="number"
+              :label="t('servers.port')"
+              icon="mdi-ethernet"
+          />
+        </v-col>
+      </v-row>
 
-          <v-row>
-            <!-- 分组选择 -->
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="serverForm.groupId"
-                :items="groupOptions"
-                item-title="title"
-                item-value="value"
-                :label="t('servers.selectGroup')"
-                variant="outlined"
-                prepend-inner-icon="mdi-folder-network"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-                clearable
-              >
-                <template #item="{ props, item }">
-                  <v-list-item v-bind="props" :title="getLocalizedText((item.raw as any).originalName || item.raw.title)">
-                  </v-list-item>
-                </template>
-                <template #selection="{ item }">
-                  {{ getLocalizedText((item.raw as any).originalName || item.raw.title) }}
-                </template>
-              </v-select>
-            </v-col>
-            
-            <!-- 状态 -->
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="serverForm.status"
-                :items="statusOptions"
-                :label="t('servers.status')"
-                variant="outlined"
-                prepend-inner-icon="mdi-server"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-          </v-row>
+      <v-row>
+        <!-- 用户名 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.username"
+              type="text"
+              :label="t('servers.username')"
+              icon="mdi-account"
+          />
+        </v-col>
 
-          <v-row>
-            <!-- 操作系统 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.operatingSystem"
-                :label="t('servers.operatingSystem')"
-                variant="outlined"
-                prepend-inner-icon="mdi-desktop-classic"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-            
-            <!-- CPU核心数 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.cpuCores"
-                :label="t('servers.cpuCores')"
-                variant="outlined"
-                prepend-inner-icon="mdi-cpu-64-bit"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-          </v-row>
+        <!-- 密码 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.password"
+              type="password"
+              :label="t('servers.password')"
+              icon="mdi-lock"
+          />
+        </v-col>
+      </v-row>
 
-          <v-row>
-            <!-- 内存 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.memory"
-                :label="t('servers.memory')"
-                variant="outlined"
-                prepend-inner-icon="mdi-memory"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-            
-            <!-- 硬盘空间 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.diskSpace"
-                :label="t('servers.diskSpace')"
-                variant="outlined"
-                prepend-inner-icon="mdi-harddisk"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-          </v-row>
+      <v-row>
+        <!-- 分组选择 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.groupId"
+              type="select"
+              :label="t('servers.selectGroup')"
+              icon="mdi-folder-network"
+              :items="groupOptions"
+              item-title="title"
+              item-value="value"
+              clearable
+          >
+            <template #item="{ props, item }">
+              <v-list-item v-bind="props" :title="getLocalizedText((item.raw as any).originalName || item.raw.title)">
+              </v-list-item>
+            </template>
+            <template #selection="{ item }">
+              {{ getLocalizedText((item.raw as any).originalName || item.raw.title) }}
+            </template>
+          </UnifiedFormField>
+        </v-col>
 
-          <v-row>
-            <!-- 硬盘类型 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.diskType"
-                :label="t('servers.diskType')"
-                variant="outlined"
-                prepend-inner-icon="mdi-harddisk"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-            
-            <!-- 网络速度 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="serverForm.networkSpeed"
-                :label="t('servers.networkSpeed')"
-                variant="outlined"
-                prepend-inner-icon="mdi-speedometer"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-card-text>
+        <!-- 状态 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.status"
+              type="select"
+              :label="t('servers.status')"
+              icon="mdi-server"
+              :items="statusOptions"
+          />
+        </v-col>
+      </v-row>
 
-      <v-card-actions class="pa-6" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-top: 1px solid rgba(0,0,0,0.05);">
-        <v-spacer />
-        <v-btn 
-          variant="outlined" 
-          color="grey-darken-1"
-          prepend-icon="mdi-close"
-          @click="closeDialog"
-          class="me-3"
-          size="large"
-          rounded="lg"
-        >
-          {{ t('common.cancel') }}
-        </v-btn>
-        <v-btn
-          color="primary"
-          :loading="saving"
-          :disabled="!formValid"
-          prepend-icon="mdi-check"
-          @click="saveServer"
-          elevation="4"
-          size="large"
-          rounded="lg"
-          class="px-8"
-        >
-          {{ t('common.save') }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      <v-row>
+        <!-- 操作系统 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.operatingSystem"
+              type="text"
+              :label="t('servers.operatingSystem')"
+              icon="mdi-desktop-classic"
+          />
+        </v-col>
+
+        <!-- CPU核心数 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.cpuCores"
+              type="text"
+              :label="t('servers.cpuCores')"
+              icon="mdi-cpu-64-bit"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <!-- 内存 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.memory"
+              type="text"
+              :label="t('servers.memory')"
+              icon="mdi-memory"
+          />
+        </v-col>
+
+        <!-- 硬盘空间 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.diskSpace"
+              type="text"
+              :label="t('servers.diskSpace')"
+              icon="mdi-harddisk"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <!-- 硬盘类型 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.diskType"
+              type="text"
+              :label="t('servers.diskType')"
+              icon="mdi-harddisk"
+          />
+        </v-col>
+
+        <!-- 网络速度 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.networkSpeed"
+              type="text"
+              :label="t('servers.networkSpeed')"
+              icon="mdi-speedometer"
+          />
+        </v-col>
+      </v-row>
+    </v-form>
+  </UnifiedDialog>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PageLayout from '@/components/PageLayout.vue'
+import UnifiedFormField from '@/components/UnifiedFormField.vue'
+import UnifiedDialog from '@/components/UnifiedDialog.vue'
+import StatusChip from '@/components/StatusChip.vue'
 import { getLocalizedText } from '@/utils/i18n'
 import {
   getServers,
@@ -427,9 +335,10 @@ const serverForm = reactive({
 
 // 状态选项
 const statusOptions = computed(() => [
-  { title: t('servers.online'), value: 'online' },
-  { title: t('servers.offline'), value: 'offline' }
+  { title: t('servers.online'), value: 'ONLINE' },
+  { title: t('servers.offline'), value: 'OFFLINE' }
 ])
+
 
 // 表格头部
 const headers = computed(() => [
@@ -459,15 +368,15 @@ const rules = {
 const loadServers = async () => {
   try {
     loading.value = true
-    
+
     const params = {
       page: currentPage.value - 1, // 后端使用0基索引
       size: pageSize.value,
       ...(searchQuery.value && { search: searchQuery.value })
     }
-    
+
     const response = await getServers(params)
-    
+
     // 根据后端API响应结构设置数据
     if (response && response.data && response.data.content) {
       // 处理服务器数据
@@ -478,7 +387,7 @@ const loadServers = async () => {
           status: server.status || 'offline'
         }
       })
-      
+
       servers.value = processedServers
       totalItems.value = response.data.totalElements || 0
     } else {
@@ -515,39 +424,45 @@ const loadGroupOptions = async () => {
   } catch (error) {
     console.error('加载分组选项失败:', error)
     // 尝试备用API
-      groupOptions.value = []
+    groupOptions.value = []
   }
 }
 
+
+// 搜索处理
+const handleSearch = () => {
+  currentPage.value = 1
+  loadServers()
+}
 
 // 防抖搜索
 let searchTimeout: number
 const debouncedSearch = () => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
-    currentPage.value = 1 // 搜索时重置到第一页
-    loadServers()
+    handleSearch()
   }, 300)
 }
+
 
 // 服务器端数据表选项更新处理
 const handleOptionsUpdate = (options: any) => {
   const { page, itemsPerPage } = options
-  
+
   let needsReload = false
-  
+
   // v-data-table-server uses 1-based page indexing
   if (page !== currentPage.value) {
     currentPage.value = page
     needsReload = true
   }
-  
+
   if (itemsPerPage !== pageSize.value) {
     pageSize.value = itemsPerPage
     currentPage.value = 1 // 重置到第一页
     needsReload = true
   }
-  
+
   if (needsReload) {
     loadServers()
   }
@@ -561,7 +476,7 @@ const editServer = (server: Server) => {
     port: server.port,
     username: server.username || '',
     password: server.password || '',
-    status: server.status || 'online',
+    status: server.status || 'ONLINE',
     groupId: server.groupId,
     operatingSystem: server.operatingSystem || '',
     cpuCores: server.cpuCores || '',
@@ -595,7 +510,7 @@ const deleteServer = async (server: Server) => {
 const saveServer = async () => {
   try {
     saving.value = true
-    
+
     const serverData: ServerRequest = {
       ip: serverForm.ip,
       port: serverForm.port,
@@ -610,13 +525,13 @@ const saveServer = async () => {
       diskType: serverForm.diskType,
       networkSpeed: serverForm.networkSpeed
     }
-    
+
     if (editingServer.value) {
       await updateServer(editingServer.value.id, serverData)
     } else {
       await createServer(serverData)
     }
-    
+
     closeDialog()
     await loadServers()
   } catch (error) {
@@ -641,7 +556,7 @@ const closeDialog = () => {
     port: undefined,
     username: '',
     password: '',
-    status: 'online',
+    status: 'ONLINE',
     groupId: undefined,
     operatingSystem: '',
     cpuCores: '',

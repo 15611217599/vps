@@ -40,7 +40,6 @@ import { onMounted, watch, ref, computed } from 'vue'
 import { useTheme } from 'vuetify'
 import { useThemeStore } from '@/stores/theme'
 import { useAuthStore } from '@/stores/auth'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import UnifiedTopBar from './UnifiedTopBar.vue'
 import FixedFooter from './FixedFooter.vue'
@@ -54,7 +53,6 @@ defineProps<Props>()
 const themeStore = useThemeStore()
 const authStore = useAuthStore()
 const vuetifyTheme = useTheme()
-const route = useRoute()
 const { t } = useI18n()
 
 // 侧边栏状态
@@ -81,6 +79,11 @@ const navigationItems = computed(() => [
     title: t('nav.servers'),
     icon: 'mdi-server',
     to: '/servers'
+  },
+  {
+    title: t('nav.priceGroups'),
+    icon: 'mdi-currency-usd',
+    to: '/price-groups'
   },
   {
     title: t('nav.profile'),
@@ -115,8 +118,9 @@ onMounted(() => {
 
 <style scoped>
 .main-content {
-  /* 为固定顶部栏留出空间，底部栏由Vuetify app属性自动处理 */
+  /* 为固定顶部栏和底部栏留出空间 */
   padding-top: 64px; /* 64px (UnifiedTopBar) */
+  padding-bottom: 60px; /* 60px (FixedFooter) */
   /* 移除最小高度设置，让内容自然撑开 */
   background-color: transparent !important;
 }

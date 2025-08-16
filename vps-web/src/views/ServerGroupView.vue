@@ -104,164 +104,126 @@
     </PageLayout>
   
     <!-- 添加/编辑对话框 -->
-    <v-dialog 
-      v-model="showAddDialog" 
-      max-width="700px"
-      :scrim="false"
-      persistent
-      transition="dialog-bottom-transition"
-    >
-      <v-card elevation="24" class="mx-auto" rounded="xl">
-        <v-card-title class="text-h5 bg-gradient-to-r from-primary to-secondary text-white pa-6 d-flex align-center">
-          <v-avatar size="40" class="me-3" color="white" variant="flat">
-            <v-icon color="primary" size="24">
-              {{ editingGroup ? 'mdi-pencil' : 'mdi-plus' }}
-            </v-icon>
-          </v-avatar>
-          <div>
-            <div class="text-h5 font-weight-bold">
-              {{ editingGroup ? t('groups.editGroup') : t('groups.newGroup') }}
-            </div>
-            <div class="text-body-2 opacity-90">
-              {{ editingGroup ? t('common.editDescription') : t('common.addDescription') }}
-            </div>
-          </div>
-        </v-card-title>
-        
-        <v-card-text class="pa-8" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
-          <v-form ref="form" v-model="formValid">
-            <!-- 类别选择 -->
-            <div class="mb-4">
-              <v-select
-                v-model="groupForm.categoryId"
-                :items="categoryOptions"
-                item-title="title"
-                item-value="value"
-                :label="t('groups.selectCategory')"
-                variant="outlined"
-                prepend-inner-icon="mdi-folder"
-                color="primary"
-                :rules="[rules.required]"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </div>
-  
-            <!-- 名称输入框 -->
-            <div class="mb-4">
-              <v-text-field
-                v-model="groupForm.name"
-                :label="t('groups.groupName')"
-                :rules="[rules.required]"
-                variant="outlined"
-                prepend-inner-icon="mdi-folder-network"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </div>
-  
-            <!-- 描述输入框 -->
-            <div class="mb-4">
-              <v-textarea
-                v-model="groupForm.description"
-                :label="t('common.description')"
-                variant="outlined"
-                prepend-inner-icon="mdi-text"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-                auto-grow
-              />
-            </div>
-  
-            <!-- 地区信息 -->
-            <v-row class="mb-2">
-              <v-col cols="4">
-                <v-text-field
-                  v-model="groupForm.region"
-                  :label="t('groups.region')"
-                  variant="outlined"
-                  prepend-inner-icon="mdi-earth"
-                  color="primary"
-                />
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="groupForm.country"
-                  :label="t('groups.country')"
-                  variant="outlined"
-                  prepend-inner-icon="mdi-flag"
-                  color="primary"
-                />
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="groupForm.city"
-                  :label="t('groups.city')"
-                  variant="outlined"
-                  prepend-inner-icon="mdi-city"
-                  color="primary"
-                />
-              </v-col>
-            </v-row>
-  
-            <!-- 排序 -->
-            <div class="mb-4">
-              <v-text-field
-                v-model.number="groupForm.sortOrder"
-                :label="t('common.sortOrder')"
-                type="number"
-                variant="outlined"
-                prepend-inner-icon="mdi-sort-numeric-ascending"
-                color="primary"
-                density="comfortable"
-                class="mb-2"
-                bg-color="white"
-              />
-            </div>
-          </v-form>
-        </v-card-text>
-  
-        <!-- 美化的操作按钮 -->
-        <v-card-actions class="pa-6" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-top: 1px solid rgba(0,0,0,0.05);">
-          <v-spacer />
-          <v-btn 
-            variant="outlined" 
-            color="grey-darken-1"
-            prepend-icon="mdi-close"
-            @click="closeDialog"
-            class="me-3"
-            size="large"
-            rounded="lg"
-          >
-            {{ t('common.cancel') }}
-          </v-btn>
-          <v-btn
+  <UnifiedDialog
+    v-model="showAddDialog"
+    :title="(editingGroup ? $t('common.edit') : $t('common.add')) + $t('servers.group')"
+    :is-edit="!!editingGroup"
+    :loading="saving"
+    :disabled="!formValid"
+    max-width="800px"
+    width="80vw"
+    @save="saveGroup"
+    @cancel="closeDialog"
+  >  
+      <v-form ref="form" v-model="formValid">
+        <!-- 类别选择 -->
+        <div class="mb-4">
+          <v-select
+            v-model="groupForm.categoryId"
+            :items="categoryOptions"
+            item-title="title"
+            item-value="value"
+            :label="t('groups.selectCategory')"
+            variant="outlined"
+            prepend-inner-icon="mdi-folder"
             color="primary"
-            :loading="saving"
-            :disabled="!formValid"
-            prepend-icon="mdi-check"
-            @click="saveGroup"
-            elevation="4"
-            size="large"
-            rounded="lg"
-            class="px-8"
-          >
-            {{ t('common.save') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            :rules="[rules.required]"
+            density="comfortable"
+            class="mb-2"
+            bg-color="white"
+          />
+        </div>
+
+        <!-- 名称输入框 -->
+        <div class="mb-4">
+          <v-text-field
+            v-model="groupForm.name"
+            :label="t('groups.groupName')"
+            :rules="[rules.required]"
+            variant="outlined"
+            prepend-inner-icon="mdi-folder-network"
+            color="primary"
+            density="comfortable"
+            class="mb-2"
+            bg-color="white"
+          />
+        </div>
+
+        <!-- 描述输入框 -->
+        <div class="mb-4">
+          <v-textarea
+            v-model="groupForm.description"
+            :label="t('common.description')"
+            variant="outlined"
+            prepend-inner-icon="mdi-text"
+            color="primary"
+            density="comfortable"
+            class="mb-2"
+            bg-color="white"
+            auto-grow
+          />
+        </div>
+
+        <!-- 地区信息 -->
+        <v-row class="mb-2">
+          <v-col cols="4">
+            <v-text-field
+              v-model="groupForm.region"
+              :label="t('groups.region')"
+              variant="outlined"
+              prepend-inner-icon="mdi-earth"
+              color="primary"
+              density="comfortable"
+              bg-color="white"
+            />
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              v-model="groupForm.country"
+              :label="t('groups.country')"
+              variant="outlined"
+              prepend-inner-icon="mdi-flag"
+              color="primary"
+              density="comfortable"
+              bg-color="white"
+            />
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              v-model="groupForm.city"
+              :label="t('groups.city')"
+              variant="outlined"
+              prepend-inner-icon="mdi-city"
+              color="primary"
+              density="comfortable"
+              bg-color="white"
+            />
+          </v-col>
+        </v-row>
+
+        <!-- 排序 -->
+        <div class="mb-4">
+          <v-text-field
+            v-model.number="groupForm.sortOrder"
+            :label="t('common.sortOrder')"
+            type="number"
+            variant="outlined"
+            prepend-inner-icon="mdi-sort-numeric-ascending"
+            color="primary"
+            density="comfortable"
+            class="mb-2"
+            bg-color="white"
+          />
+        </div>
+      </v-form>
+    </UnifiedDialog>
   </template>
   
   <script setup lang="ts">
   import { ref, reactive, onMounted, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import PageLayout from '@/components/PageLayout.vue'
+  import UnifiedDialog from '@/components/UnifiedDialog.vue'
   import { getLocalizedText } from '@/utils/i18n'
   import { groupAPI, type ServerGroup } from '@/api/group'
   
