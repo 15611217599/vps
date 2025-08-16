@@ -1,135 +1,163 @@
 <template>
   <PageLayout :title="$t('nav.profile')">
-    <v-container class="py-8">
+    <v-container class="py-6">
       <v-row justify="center">
-        <v-col cols="12" md="8" lg="6">
-          <v-card elevation="2">
-            <v-card-title class="d-flex align-center">
-              <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-account-edit</v-icon>
-              {{ $t('profile.title') }}
-            </v-card-title>
-            
-            <v-card-text>
+        <v-col cols="12" md="10" lg="8" xl="6">
+          <!-- 用户信息卡片 -->
+          <v-card elevation="3" class="mb-6" rounded="lg">
+            <v-card-text class="pa-6">
+              <div class="text-center">
+                <v-avatar size="100" :color="themeStore.currentColors.primary" class="mb-4 elevation-2">
+                  <span class="text-h3 font-weight-bold">{{ form.username?.charAt(0).toUpperCase() }}</span>
+                </v-avatar>
+                <h2 class="text-h5 mb-2">{{ form.username }}</h2>
+                <div class="text-body-2 text-medium-emphasis">
+                  <v-icon size="small" class="me-1">mdi-calendar</v-icon>
+                  {{ $t('profile.memberSince') }}: {{ formatDate(authStore.user?.createdAt) }}
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+
+          <!-- 个人资料编辑卡片 -->
+          <v-card elevation="3" rounded="lg">
+            <v-card-text class="pa-6">
               <v-form @submit.prevent="handleUpdateProfile" ref="profileForm">
-                <!-- 用户头像 -->
-                <div class="text-center mb-6">
-                  <v-avatar size="120" :color="themeStore.currentColors.primary" class="mb-4">
-                    <span class="text-h2">{{ form.username?.charAt(0).toUpperCase() }}</span>
-                  </v-avatar>
-                  <div class="text-h6">{{ form.username }}</div>
-                  <div class="text-body-2 text-medium-emphasis">{{ $t('profile.memberSince') }}: {{ formatDate(authStore.user?.createdAt) }}</div>
+                
+                <!-- 基本信息区域 -->
+                <div class="mb-6">
+                  <h3 class="text-h6 mb-4 d-flex align-center">
+                    <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-account-details</v-icon>
+                    基本信息
+                  </h3>
+                  
+                  <v-row>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="form.username"
+                        :label="$t('profile.username')"
+                        prepend-inner-icon="mdi-account"
+                        variant="outlined"
+                        required
+                        :rules="[rules.required, rules.username]"
+                        density="comfortable"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="form.email"
+                        :label="$t('profile.email')"
+                        type="email"
+                        prepend-inner-icon="mdi-email"
+                        variant="outlined"
+                        required
+                        :rules="[rules.required, rules.email]"
+                        density="comfortable"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
                 </div>
                 
-                <!-- 用户名 -->
-                <v-text-field
-                  v-model="form.username"
-                  :label="$t('profile.username')"
-                  prepend-inner-icon="mdi-account"
-                  variant="outlined"
-                  required
-                  :rules="[rules.required, rules.username]"
-                  class="mb-4"
-                ></v-text-field>
-                
-                <!-- 邮箱 -->
-                <v-text-field
-                  v-model="form.email"
-                  :label="$t('profile.email')"
-                  type="email"
-                  prepend-inner-icon="mdi-email"
-                  variant="outlined"
-                  required
-                  :rules="[rules.required, rules.email]"
-                  class="mb-4"
-                ></v-text-field>
-                
                 <!-- 密码修改区域 -->
-                <v-expansion-panels class="mb-4">
-                  <v-expansion-panel>
-                    <v-expansion-panel-title>
-                      <v-icon class="me-2">mdi-lock</v-icon>
-                      {{ $t('profile.changePassword') }}
-                    </v-expansion-panel-title>
-                    <v-expansion-panel-text>
-                      <v-text-field
-                        v-model="form.currentPassword"
-                        :label="$t('profile.currentPassword')"
-                        :type="showCurrentPassword ? 'text' : 'password'"
-                        prepend-inner-icon="mdi-lock"
-                        variant="outlined"
-                        :rules="passwordChangeRules.current"
-                        class="mb-4"
-                      >
-                        <template v-slot:append-inner>
-                          <v-btn
-                            icon
-                            variant="text"
-                            size="small"
-                            @click="showCurrentPassword = !showCurrentPassword"
-                          >
-                            <v-icon>
-                              {{ showCurrentPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                      </v-text-field>
-                      
-                      <v-text-field
-                        v-model="form.newPassword"
-                        :label="$t('profile.newPassword')"
-                        :type="showNewPassword ? 'text' : 'password'"
-                        prepend-inner-icon="mdi-lock-plus"
-                        variant="outlined"
-                        :rules="passwordChangeRules.new"
-                        class="mb-4"
-                      >
-                        <template v-slot:append-inner>
-                          <v-btn
-                            icon
-                            variant="text"
-                            size="small"
-                            @click="showNewPassword = !showNewPassword"
-                          >
-                            <v-icon>
-                              {{ showNewPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                      </v-text-field>
-                      
-                      <v-text-field
-                        v-model="form.confirmNewPassword"
-                        :label="$t('profile.confirmNewPassword')"
-                        :type="showConfirmPassword ? 'text' : 'password'"
-                        prepend-inner-icon="mdi-lock-check"
-                        variant="outlined"
-                        :rules="passwordChangeRules.confirm"
-                        class="mb-4"
-                      >
-                        <template v-slot:append-inner>
-                          <v-btn
-                            icon
-                            variant="text"
-                            size="small"
-                            @click="showConfirmPassword = !showConfirmPassword"
-                          >
-                            <v-icon>
-                              {{ showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                      </v-text-field>
-                    </v-expansion-panel-text>
-                  </v-expansion-panel>
-                </v-expansion-panels>
+                <div class="mb-6">
+                  <v-expansion-panels variant="accordion" class="elevation-1">
+                    <v-expansion-panel>
+                      <v-expansion-panel-title class="text-subtitle-1">
+                        <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-lock</v-icon>
+                        {{ $t('profile.changePassword') }}
+                      </v-expansion-panel-title>
+                      <v-expansion-panel-text class="pt-4">
+                        <v-row>
+                          <v-col cols="12">
+                            <v-text-field
+                              v-model="form.currentPassword"
+                              :label="$t('profile.currentPassword')"
+                              :type="showCurrentPassword ? 'text' : 'password'"
+                              prepend-inner-icon="mdi-lock"
+                              variant="outlined"
+                              :rules="passwordChangeRules.current"
+                              density="comfortable"
+                            >
+                              <template v-slot:append-inner>
+                                <v-btn
+                                  icon
+                                  variant="text"
+                                  size="small"
+                                  @click="showCurrentPassword = !showCurrentPassword"
+                                >
+                                  <v-icon>
+                                    {{ showCurrentPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+                                  </v-icon>
+                                </v-btn>
+                              </template>
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
+                        
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              v-model="form.newPassword"
+                              :label="$t('profile.newPassword')"
+                              :type="showNewPassword ? 'text' : 'password'"
+                              prepend-inner-icon="mdi-lock-plus"
+                              variant="outlined"
+                              :rules="passwordChangeRules.new"
+                              density="comfortable"
+                            >
+                              <template v-slot:append-inner>
+                                <v-btn
+                                  icon
+                                  variant="text"
+                                  size="small"
+                                  @click="showNewPassword = !showNewPassword"
+                                >
+                                  <v-icon>
+                                    {{ showNewPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+                                  </v-icon>
+                                </v-btn>
+                              </template>
+                            </v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              v-model="form.confirmNewPassword"
+                              :label="$t('profile.confirmNewPassword')"
+                              :type="showConfirmPassword ? 'text' : 'password'"
+                              prepend-inner-icon="mdi-lock-check"
+                              variant="outlined"
+                              :rules="passwordChangeRules.confirm"
+                              density="comfortable"
+                            >
+                              <template v-slot:append-inner>
+                                <v-btn
+                                  icon
+                                  variant="text"
+                                  size="small"
+                                  @click="showConfirmPassword = !showConfirmPassword"
+                                >
+                                  <v-icon>
+                                    {{ showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+                                  </v-icon>
+                                </v-btn>
+                              </template>
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-expansion-panel-text>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </div>
                 
                 <!-- 操作按钮 -->
-                <div class="d-flex gap-3">
+                <div class="d-flex flex-wrap gap-3 justify-center justify-sm-start">
                   <v-btn
                     type="submit"
                     :color="themeStore.currentColors.primary"
                     :loading="loading"
                     prepend-icon="mdi-content-save"
+                    size="large"
+                    class="px-6"
                   >
                     {{ $t('profile.saveChanges') }}
                   </v-btn>
@@ -138,6 +166,8 @@
                     variant="outlined"
                     @click="resetForm"
                     prepend-icon="mdi-refresh"
+                    size="large"
+                    class="px-6"
                   >
                     {{ $t('profile.reset') }}
                   </v-btn>
@@ -291,7 +321,15 @@ const handleUpdateProfile = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // 确保用户数据已加载
+  if (!authStore.user && authStore.token) {
+    try {
+      await authStore.getProfile()
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error)
+    }
+  }
   resetForm()
 })
 </script>
