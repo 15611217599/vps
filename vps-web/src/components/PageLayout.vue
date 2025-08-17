@@ -137,6 +137,12 @@ onMounted(() => {
 .nav-item {
   margin-bottom: 4px;
   transition: all 0.2s ease;
+  font-size: 18px !important;
+  font-weight: 500;
+}
+
+.nav-item :deep(.v-list-item__content) {
+  font-size: 18px !important;
 }
 
 .nav-item:hover {

@@ -17,7 +17,6 @@ export interface Server {
   diskSpace?: string
   diskType?: string
   networkSpeed?: string
-  operatingSystem?: string
   groupId?: number
   groupName?: string
   createTime?: string

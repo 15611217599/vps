@@ -10,7 +10,6 @@ export interface Server {
   diskSpace?: string
   diskType?: string
   networkSpeed?: string
-  operatingSystem?: string
   username?: string
   password?: string
   groupId?: number
@@ -28,7 +27,6 @@ export interface ServerRequest {
   diskSpace?: string
   diskType?: string
   networkSpeed?: string
-  operatingSystem?: string
   username?: string
   password?: string
   groupId?: number | undefined
