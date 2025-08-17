@@ -18,6 +18,7 @@
     "vuetify": "*"
   },
   "devDependencies": {
+    "@types/node": "^24.3.0",
     "@vitejs/plugin-vue": "*",
     "@vue/tsconfig": "*",
     "typescript": "*",
