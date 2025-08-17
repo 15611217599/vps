@@ -193,48 +193,9 @@ watch(searchQuery, (newValue) => {
 </script>
 
 <style scoped>
-.unified-data-table {
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-}
-
-.table-header {
-  background: linear-gradient(135deg, 
-    rgba(var(--v-theme-primary), 0.05) 0%, 
-    rgba(var(--v-theme-surface), 1) 100%);
-  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-}
-
-.search-field {
-  background: rgb(var(--v-theme-surface));
-}
-
-.table-content {
-  background: transparent;
-}
-
-/* 表格行悬停效果 */
+/* 简化样式 - 保留必要的交互效果 */
 .table-content :deep(.v-data-table__tr:hover) {
   background-color: rgba(var(--v-theme-primary), 0.04) !important;
-}
-
-/* 表格头部样式 */
-.table-content :deep(.v-data-table-header) {
-  background: rgba(var(--v-theme-surface-variant), 0.3);
-}
-
-.table-content :deep(.v-data-table-header th) {
-  font-weight: 600;
-  color: rgb(var(--v-theme-on-surface-variant));
-  border-bottom: 2px solid rgba(var(--v-theme-primary), 0.2);
-}
-
-/* 加载状态样式 */
-.table-content :deep(.v-data-table-progress) {
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(var(--v-theme-primary), 0.1), 
-    transparent);
 }
 
 /* 响应式设计 */
@@ -247,12 +208,6 @@ watch(searchQuery, (newValue) => {
   
   .search-field {
     max-width: none !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .table-header {
-    padding: 16px;
   }
 }
 </style>

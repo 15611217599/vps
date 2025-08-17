@@ -279,99 +279,14 @@ defineEmits<Emits>()
 </script>
 
 <style scoped>
+/* 简化样式 - 使用 Vuetify 默认样式 */
 .unified-form-field {
   margin-bottom: 8px;
-}
-
-.form-field {
-  transition: all 0.3s ease;
-}
-
-.form-field :deep(.v-field) {
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.form-field :deep(.v-field:hover) {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.form-field :deep(.v-field--focused) {
-  box-shadow: 0 0 0 2px rgba(var(--v-theme-primary), 0.2);
-}
-
-.form-field :deep(.v-field__input) {
-  padding: 12px 16px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.form-field :deep(.v-label) {
-  font-weight: 500;
-  color: rgba(var(--v-theme-on-surface), 0.7);
-}
-
-.form-field :deep(.v-field--focused .v-label) {
-  color: rgb(var(--v-theme-primary));
-}
-
-/* 开关字段样式 */
-.switch-field {
-  margin-top: 16px;
-}
-
-.switch-field :deep(.v-switch__track) {
-  border-radius: 12px;
-}
-
-.switch-field :deep(.v-switch__thumb) {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* 复选框字段样式 */
-.checkbox-field {
-  margin-top: 8px;
-}
-
-.checkbox-field :deep(.v-checkbox .v-selection-control__wrapper) {
-  margin-right: 12px;
-}
-
-/* 单选框组样式 */
-.radio-field {
-  margin-top: 8px;
-}
-
-.radio-field :deep(.v-radio) {
-  margin-bottom: 8px;
-}
-
-.radio-field :deep(.v-selection-control__wrapper) {
-  margin-right: 12px;
-}
-
-/* 错误状态样式 */
-.form-field :deep(.v-field--error) {
-  border-color: rgb(var(--v-theme-error));
-  box-shadow: 0 0 0 2px rgba(var(--v-theme-error), 0.2);
-}
-
-/* 禁用状态样式 */
-.form-field :deep(.v-field--disabled) {
-  opacity: 0.6;
-  background-color: rgba(var(--v-theme-surface-variant), 0.3);
-}
-
-/* 只读状态样式 */
-.form-field :deep(.v-field--readonly) {
-  background-color: rgba(var(--v-theme-surface-variant), 0.1);
 }
 
 /* 响应式设计 */
 @media (max-width: 600px) {
   .form-field :deep(.v-field__input) {
-    padding: 10px 14px;
     font-size: 16px; /* 防止iOS缩放 */
   }
 }

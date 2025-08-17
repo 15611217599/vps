@@ -4,8 +4,7 @@
     :variant="variant"
     :size="size"
     :prepend-icon="icon"
-    class="status-chip"
-    :class="chipClass"
+    class="chip-hover"
   >
     <span class="chip-text">{{ displayText }}</span>
   </v-chip>
@@ -135,69 +134,15 @@ const chipClass = computed(() => {
 </script>
 
 <style scoped>
-.status-chip {
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease-in-out;
-}
-
-.status-chip:hover {
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* .chip-text 样式已移除 text-transform: capitalize 以保持原始文本格式 */
-
-/* 状态类型特定样式 */
-.status-chip--status {
-  border-radius: 16px;
-}
-
-.status-chip--boolean {
-  border-radius: 12px;
-}
-
-.status-chip--priority {
-  border-radius: 8px;
-  font-weight: 700;
-}
-
-.status-chip--category {
-  border-radius: 20px;
-}
-
-/* 颜色特定样式 */
-.status-chip--success {
-  background: linear-gradient(135deg, rgb(var(--v-theme-success)) 0%, rgba(var(--v-theme-success), 0.8) 100%);
-}
-
-.status-chip--error {
-  background: linear-gradient(135deg, rgb(var(--v-theme-error)) 0%, rgba(var(--v-theme-error), 0.8) 100%);
-}
-
-.status-chip--warning {
-  background: linear-gradient(135deg, rgb(var(--v-theme-warning)) 0%, rgba(var(--v-theme-warning), 0.8) 100%);
-}
-
-.status-chip--info {
-  background: linear-gradient(135deg, rgb(var(--v-theme-info)) 0%, rgba(var(--v-theme-info), 0.8) 100%);
-}
-
-.status-chip--primary {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgba(var(--v-theme-primary), 0.8) 100%);
-}
+/* 使用 unified-components.css 中的 chip-hover 类 */
 
 /* 响应式设计 */
 @media (max-width: 600px) {
-  .status-chip {
-    font-size: 0.75rem;
-  }
-  
   .chip-text {
     display: none;
   }
   
-  .status-chip :deep(.v-chip__prepend) {
+  :deep(.v-chip__prepend) {
     margin-inline-end: 0;
   }
 }

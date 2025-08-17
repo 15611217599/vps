@@ -9,7 +9,7 @@
       :variant="variant"
       :loading="loading"
       :disabled="disabled"
-      class="action-btn action-btn--add"
+      class="btn-hover"
       elevation="2"
       rounded="lg"
       @click="$emit('add')"
@@ -24,7 +24,7 @@
       :icon="editIcon"
       :size="iconSize"
       variant="text"
-      class="action-btn action-btn--edit"
+      class="btn-hover"
       :disabled="disabled"
       @click="$emit('edit')"
     >
@@ -41,7 +41,7 @@
       :icon="deleteIcon"
       :size="iconSize"
       variant="text"
-      class="action-btn action-btn--delete"
+      class="btn-hover"
       :disabled="disabled"
       @click="$emit('delete')"
     >
@@ -58,7 +58,7 @@
       :icon="viewIcon"
       :size="iconSize"
       variant="text"
-      class="action-btn action-btn--view"
+      class="btn-hover"
       :disabled="disabled"
       @click="$emit('view')"
     >
@@ -75,7 +75,7 @@
         :icon="action.icon"
         :size="iconSize"
         :variant="action.variant || 'text'"
-        class="action-btn"
+        class="btn-hover"
         :disabled="disabled"
         @click="$emit('custom', action.key)"
       >
@@ -147,43 +147,13 @@ defineEmits<Emits>()
 </script>
 
 <style scoped>
-.action-button-group {
-  gap: 8px;
-}
-
-.action-btn {
-  transition: all 0.2s ease-in-out;
-}
-
-.action-btn--add {
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.action-btn--edit:hover {
-  background-color: rgba(33, 150, 243, 0.1);
-  transform: scale(1.05);
-}
-
-.action-btn--delete:hover {
-  background-color: rgba(244, 67, 54, 0.1);
-  transform: scale(1.05);
-}
-
-.action-btn--view:hover {
-  background-color: rgba(76, 175, 80, 0.1);
-  transform: scale(1.05);
-}
+/* 使用 Vuetify gap utility 和 unified-components.css 中的 btn-hover 类 */
 
 /* 响应式设计 */
 @media (max-width: 600px) {
   .action-button-group {
     flex-direction: column;
     align-items: stretch;
-  }
-  
-  .action-btn--add {
-    width: 100%;
   }
 }
 </style>

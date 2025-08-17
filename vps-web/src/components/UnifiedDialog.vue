@@ -249,32 +249,9 @@ const headerIcon = computed(() => {
 </script>
 
 <style scoped>
-.unified-dialog {
-  z-index: 2000;
-}
-
-/* 修复对话框四角白边问题 */
-.unified-dialog :deep(.v-overlay__content) {
-  background: transparent !important;
-}
-
-.unified-dialog :deep(.v-card) {
-  background: rgb(var(--v-theme-surface)) !important;
-  border-radius: 24px !important;
-  overflow: hidden !important;
-}
-
-/* 确保对话框容器也是透明的 */
-.unified-dialog :deep(.v-dialog) {
-  background: transparent !important;
-}
-
+/* 简化样式 - 保留必要的功能 */
 .dialog-card {
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  overflow: hidden;
-  min-width: 320px; /* 最小宽度确保可用性 */
-  border-radius: 24px;
+  min-width: 320px;
 }
 
 /* 自动宽度模式 */
@@ -283,154 +260,24 @@ const headerIcon = computed(() => {
   max-width: 90vw;
 }
 
-.unified-dialog.auto-width .dialog-content {
-  width: auto;
-  min-width: 300px;
-}
-
-.unified-dialog.auto-width .dialog-actions {
-  width: auto;
-}
-
-/* 对话框头部样式 */
-.dialog-header {
-  background: linear-gradient(135deg, 
-    rgba(var(--v-theme-primary), 0.1) 0%, 
-    rgba(var(--v-theme-primary), 0.05) 50%,
-    rgba(var(--v-theme-surface), 1) 100%);
-  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  position: relative;
-}
-
-.dialog-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, 
-    rgb(var(--v-theme-primary)) 0%, 
-    rgb(var(--v-theme-secondary)) 100%);
-}
-
-.dialog-avatar {
-  box-shadow: 0 2px 8px rgba(var(--v-theme-primary), 0.3);
-  border: 2px solid rgba(var(--v-theme-primary), 0.1);
-}
-
-.dialog-title {
-  color: rgb(var(--v-theme-on-surface));
-  line-height: 1.2;
-}
-
-.dialog-subtitle {
-  color: rgba(var(--v-theme-on-surface), 0.7);
-  line-height: 1.4;
-}
-
-.dialog-close-btn {
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-}
-
-.dialog-close-btn:hover {
-  opacity: 1;
-}
-
-/* 对话框内容样式 */
 .dialog-content {
-  background: linear-gradient(135deg, 
-    rgba(var(--v-theme-surface-variant), 0.1) 0%, 
-    rgb(var(--v-theme-surface)) 100%);
-  min-height: 100px;
   max-height: 70vh;
   overflow-y: auto;
 }
 
-.dialog-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.dialog-content::-webkit-scrollbar-track {
-  background: rgba(var(--v-theme-surface-variant), 0.1);
-  border-radius: 3px;
-}
-
-.dialog-content::-webkit-scrollbar-thumb {
-  background: rgba(var(--v-theme-primary), 0.3);
-  border-radius: 3px;
-}
-
-.dialog-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--v-theme-primary), 0.5);
-}
-
-/* 对话框操作区域样式 */
-.dialog-actions {
-  background: linear-gradient(135deg, 
-    rgba(var(--v-theme-surface-variant), 0.05) 0%, 
-    rgb(var(--v-theme-surface)) 100%);
-  border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-}
-
-.left-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.right-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* 按钮样式 */
-.cancel-btn {
-  transition: all 0.2s ease;
-}
-
-.cancel-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.save-btn {
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-  background: linear-gradient(135deg, 
-    rgb(var(--v-theme-primary)) 0%, 
-    rgba(var(--v-theme-primary), 0.9) 100%);
-}
-
+/* 按钮悬停效果 */
+.cancel-btn:hover,
 .save-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(var(--v-theme-primary), 0.4);
-}
-
-.save-btn:active {
-  transform: translateY(0);
 }
 
 /* 响应式设计 */
 @media (max-width: 960px) {
-  .unified-dialog :deep(.v-dialog) {
-    margin: 16px;
-  }
-  
-  .dialog-header {
-    padding: 16px;
-  }
-  
   .dialog-content {
-    padding: 16px;
     max-height: 60vh;
   }
   
   .dialog-actions {
-    padding: 16px;
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
@@ -449,76 +296,8 @@ const headerIcon = computed(() => {
 }
 
 @media (max-width: 600px) {
-  .unified-dialog :deep(.v-dialog) {
-    margin: 8px;
-  }
-  
-  .dialog-header {
-    padding: 12px;
-  }
-  
   .dialog-content {
-    padding: 12px;
     max-height: 50vh;
   }
-  
-  .dialog-actions {
-    padding: 12px;
-  }
-  
-  .dialog-title {
-    font-size: 1.25rem;
-  }
-  
-  .dialog-avatar {
-    width: 32px;
-    height: 32px;
-  }
-}
-
-/* 全屏模式样式 */
-.unified-dialog :deep(.v-dialog--fullscreen .dialog-card) {
-  border-radius: 0;
-  height: 100vh;
-}
-
-.unified-dialog :deep(.v-dialog--fullscreen .dialog-content) {
-  max-height: calc(100vh - 200px);
-}
-
-/* 动画效果 */
-.dialog-card {
-  animation: dialogSlideIn 0.3s ease-out;
-}
-
-@keyframes dialogSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* 深色主题适配 */
-.v-theme--dark .dialog-header {
-  background: linear-gradient(135deg, 
-    rgba(var(--v-theme-primary), 0.15) 0%, 
-    rgba(var(--v-theme-primary), 0.08) 50%,
-    rgba(var(--v-theme-surface), 1) 100%);
-}
-
-.v-theme--dark .dialog-content {
-  background: linear-gradient(135deg, 
-    rgba(var(--v-theme-surface-variant), 0.05) 0%, 
-    rgb(var(--v-theme-surface)) 100%);
-}
-
-.v-theme--dark .dialog-actions {
-  background: linear-gradient(135deg, 
-    rgba(var(--v-theme-surface-variant), 0.03) 0%, 
-    rgb(var(--v-theme-surface)) 100%);
 }
 </style>
