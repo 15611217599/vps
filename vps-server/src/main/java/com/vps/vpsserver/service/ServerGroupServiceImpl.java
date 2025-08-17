@@ -104,6 +104,7 @@ public class ServerGroupServiceImpl implements ServerGroupService {
         existingGroup.setCountry(groupDTO.getCountry());
         existingGroup.setCity(groupDTO.getCity());
         existingGroup.setSortOrder(groupDTO.getSortOrder());
+        existingGroup.setIsActive(groupDTO.getIsActive());
         existingGroup.setCategory(category);
         
         // 保存更新

@@ -80,7 +80,17 @@
               <span v-if="item.city">{{ getLocalizedText(item.city) }}</span>
               <span v-else class="text-medium-emphasis">-</span>
             </template>
-  
+
+            <!-- 激活状态列 -->
+            <template #item.isActive="{ item }">
+              <v-chip
+                :color="item.isActive ? 'success' : 'error'"
+                size="small"
+                variant="flat"
+              >
+                {{ item.isActive ? t('common.active') : t('common.inactive') }}
+              </v-chip>
+            </template>
   
             <!-- 操作列 -->
             <template #item.actions="{ item }">
@@ -215,6 +225,17 @@
             bg-color="white"
           />
         </div>
+
+        <!-- 激活状态 -->
+        <div class="mb-4">
+          <v-switch
+            v-model="groupForm.isActive"
+            :label="t('common.active')"
+            color="primary"
+            density="comfortable"
+            class="mb-2"
+          />
+        </div>
       </v-form>
     </UnifiedDialog>
 
@@ -265,7 +286,8 @@
     region: '',
     country: '',
     city: '',
-    sortOrder: 0
+    sortOrder: 0,
+    isActive: true
   })
   
   // 表格头部
@@ -275,6 +297,7 @@
     { title: t('groups.region'), key: 'region', sortable: false, width: 120 },
     { title: t('groups.country'), key: 'country', sortable: false, width: 120 },
     { title: t('groups.city'), key: 'city', sortable: false, width: 120 },
+    { title: t('common.status'), key: 'isActive', sortable: false, width: 100 },
     { title: t('common.actions'), key: 'actions', sortable: false, width: 120 }
   ])
   
@@ -376,7 +399,8 @@
       region: group.region || '',
       country: group.country || '',
       city: group.city || '',
-      sortOrder: 0
+      sortOrder: group.sortOrder || 0,
+      isActive: group.isActive !== undefined ? group.isActive : true
     })
     showAddDialog.value = true
   }
@@ -443,7 +467,8 @@
       region: '',
       country: '',
       city: '',
-      sortOrder: 0
+      sortOrder: 0,
+      isActive: true
     })
   }
   

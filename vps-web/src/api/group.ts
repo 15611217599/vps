@@ -33,6 +33,8 @@ export interface ServerGroup {
   city?: string
   categoryId?: number
   categoryName?: string
+  sortOrder?: number
+  isActive?: boolean
   servers?: Server[]
 }
 
@@ -50,6 +52,7 @@ export interface CreateGroupRequest {
   country?: string
   city?: string
   sortOrder?: number
+  isActive?: boolean
 }
 
 export interface UpdateGroupRequest {
@@ -60,6 +63,7 @@ export interface UpdateGroupRequest {
   country?: string
   city?: string
   sortOrder?: number
+  isActive?: boolean
 }
 
 // API方法 - 只保留分组相关的功能

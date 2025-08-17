@@ -28,8 +28,8 @@ spring:
   # 邮件配置
   mail:
     host: smtp.163.com
-    username: commonutil@163.com
-    password: XMaUr3BBZFKCdJBw
+    username: rabbitvps@163.com
+    password: FTgbv34HJxAgKimZ
     properties:
       mail:
         smtp:

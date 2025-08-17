@@ -2,10 +2,10 @@
   <PageLayout :title="$t('nav.sales')">
     <div class="sales-page">
       <v-container fluid class="pa-0">
-        <v-row no-gutters class="fill-height">
+        <v-row no-gutters>
           <!-- 左侧菜单栏 -->
           <v-col cols="12" md="4" lg="3" class="sidebar-col">
-            <div class="sidebar-card h-100">
+            <div class="sidebar-card">
               <div class="pa-0">
                 <v-list class="category-list" density="compact">
                   <template v-for="category in categories" :key="category.id">
@@ -86,165 +86,171 @@
           <v-col cols="12" md="8" lg="9" class="content-col">
             <div class="content-area">
               <!-- 默认欢迎页面 -->
-              <div v-if="!selectedGroup" class="welcome-section text-center">
-                <v-icon size="120" color="primary" class="mb-6">mdi-rocket-launch</v-icon>
-                <h2 class="text-h3 font-weight-bold mb-4">{{ $t('sales.welcome') }}</h2>
-                <p class="text-h6 text-medium-emphasis mb-8 max-w-600 mx-auto">
-                  {{ $t('sales.selectGroupHint') }}
-                </p>
-                
-                <!-- 快速统计 -->
-                <v-row justify="center" class="mb-8">
-                  <v-col cols="auto">
-                    <v-card class="stats-mini-card" elevation="2">
-                      <v-card-text class="pa-4 text-center">
-                        <div class="text-h4 font-weight-bold text-primary mb-1">{{ categories.length }}</div>
-                        <div class="text-caption text-medium-emphasis">{{ $t('sales.categories') }}</div>
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
-                  <v-col cols="auto">
-                    <v-card class="stats-mini-card" elevation="2">
-                      <v-card-text class="pa-4 text-center">
-                        <div class="text-h4 font-weight-bold text-success mb-1">{{ serverGroups.length }}</div>
-                        <div class="text-caption text-medium-emphasis">{{ $t('sales.groups') }}</div>
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
-                  <v-col cols="auto">
-                    <v-card class="stats-mini-card" elevation="2">
-                      <v-card-text class="pa-4 text-center">
-                        <div class="text-h4 font-weight-bold text-info mb-1">{{ priceGroups.length }}</div>
-                        <div class="text-caption text-medium-emphasis">{{ $t('sales.products') }}</div>
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
-                </v-row>
-                
-                <!-- 联系我们按钮 -->
-                <v-btn
-                  size="large"
-                  color="primary"
-                  variant="flat"
-                  prepend-icon="mdi-phone"
-                  @click="contactUs"
-                  class="px-8"
-                  rounded="xl"
-                >
-                  {{ $t('sales.contactUs') }}
-                </v-btn>
-              </div>
-              
-              <!-- 选中分组的价格组展示 -->
-              <div v-else class="price-groups-section">
-                <!-- 分组信息头部 -->
-                <v-card class="group-header-card mb-6" elevation="2">
-                  <v-card-text class="pa-6">
-                    <div class="d-flex align-center mb-4">
-                      <v-avatar size="48" color="primary" class="me-4">
-                        <v-icon size="24" color="white">mdi-server-network</v-icon>
-                      </v-avatar>
-                      <div>
-                        <h2 class="text-h4 font-weight-bold mb-1">{{ getLocalizedText(selectedGroup.name) }}</h2>
-                        <p class="text-body-1 text-medium-emphasis mb-0">
-                          {{ getLocalizedText(selectedGroup.description) || $t('sales.noDescription') }}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <!-- 分组统计信息 -->
+              <div v-if="!selectedGroup" class="welcome-section">
+
+                <!-- 核心配置规格 -->
+                <v-card class="specs-section-card mb-6" elevation="3">
+                  <v-card-title class="d-flex align-center pa-6">
+                    <v-icon size="28" color="primary" class="me-3">mdi-rocket-launch</v-icon>
+                    <span class="text-h5 font-weight-bold">核心配置</span>
+                  </v-card-title>
+                  <v-card-text class="pa-6 pt-0">
                     <v-row>
-                      <v-col cols="auto">
-                        <v-chip color="info" variant="flat" size="small">
-                          <v-icon start size="16">mdi-package-variant</v-icon>
-                          {{ getPriceGroupCount(selectedGroup.id) }} {{ $t('sales.products') }}
-                        </v-chip>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="spec-item-card h-100" elevation="1">
+                          <v-card-text class="pa-4 text-center">
+                            <div class="spec-icon mb-3">💻</div>
+                            <div class="spec-title text-subtitle-1 font-weight-bold mb-2">CPU处理器</div>
+                            <div class="spec-value text-h6 text-primary font-weight-bold mb-1">高性能多核处理器</div>
+                            <div class="spec-desc text-caption text-medium-emphasis">企业级CPU，稳定高效</div>
+                          </v-card-text>
+                        </v-card>
                       </v-col>
-                      <v-col cols="auto">
-                        <v-chip color="success" variant="flat" size="small">
-                          <v-icon start size="16">mdi-check-circle</v-icon>
-                          {{ $t('sales.available') }}
-                        </v-chip>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="spec-item-card h-100" elevation="1">
+                          <v-card-text class="pa-4 text-center">
+                            <div class="spec-icon mb-3">🧠</div>
+                            <div class="spec-title text-subtitle-1 font-weight-bold mb-2">内存配置</div>
+                            <div class="spec-value text-h6 text-primary font-weight-bold mb-1">大容量内存</div>
+                            <div class="spec-desc text-caption text-medium-emphasis">根据套餐配置提供</div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="spec-item-card h-100" elevation="1">
+                          <v-card-text class="pa-4 text-center">
+                            <div class="spec-icon mb-3">💾</div>
+                            <div class="spec-title text-subtitle-1 font-weight-bold mb-2">存储空间</div>
+                            <div class="spec-value text-h6 text-primary font-weight-bold mb-1">高速SSD存储</div>
+                            <div class="spec-desc text-caption text-medium-emphasis">快速读写，稳定可靠</div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="spec-item-card h-100" elevation="1">
+                          <v-card-text class="pa-4 text-center">
+                            <div class="spec-icon mb-3">🌐</div>
+                            <div class="spec-title text-subtitle-1 font-weight-bold mb-2">网络带宽</div>
+                            <div class="spec-value text-h6 text-primary font-weight-bold mb-1">CN2+BGP网络</div>
+                            <div class="spec-desc text-caption text-medium-emphasis">优质线路，低延迟</div>
+                          </v-card-text>
+                        </v-card>
                       </v-col>
                     </v-row>
                   </v-card-text>
                 </v-card>
-                
-                <!-- 价格组列表 -->
-                <div v-if="getGroupPriceGroups(selectedGroup.id).length > 0">
-                  <v-row>
-                    <v-col
-                      v-for="priceGroup in getGroupPriceGroups(selectedGroup.id)"
-                      :key="priceGroup.id"
-                      cols="12"
-                      md="6"
-                      lg="4"
-                    >
-                      <v-card class="price-group-card h-100" elevation="3">
-                        <v-card-text class="pa-6">
-                          <div class="d-flex align-center mb-4">
-                            <v-avatar size="40" color="success" class="me-3">
-                              <v-icon size="20" color="white">mdi-package-variant</v-icon>
-                            </v-avatar>
-                            <div>
-                              <h3 class="text-h6 font-weight-bold mb-1">{{ getLocalizedText(priceGroup.name) }}</h3>
-                              <p class="text-caption text-medium-emphasis mb-0">
-                                {{ $t('sales.priceGroup') }}
-                              </p>
+
+                <!-- 技术特性 -->
+                <v-card class="features-section-card mb-6" elevation="3">
+                  <v-card-title class="d-flex align-center pa-6">
+                    <v-icon size="28" color="success" class="me-3">mdi-lightning-bolt</v-icon>
+                    <span class="text-h5 font-weight-bold">技术特性</span>
+                  </v-card-title>
+                  <v-card-text class="pa-6 pt-0">
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4" v-for="feature in techFeatures" :key="feature.title">
+                        <v-card class="feature-item-card h-100" elevation="1" hover>
+                          <v-card-text class="pa-4 text-center">
+                            <div class="feature-icon mb-3">{{ feature.icon }}</div>
+                            <div class="feature-title text-subtitle-1 font-weight-bold mb-2">{{ feature.title }}</div>
+                            <div class="feature-desc text-body-2 text-medium-emphasis">{{ feature.desc }}</div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+
+                <!-- 操作系统支持 -->
+                <v-card class="os-section-card mb-6" elevation="3">
+                  <v-card-title class="d-flex align-center pa-6">
+                    <v-icon size="28" color="info" class="me-3">mdi-monitor</v-icon>
+                    <span class="text-h5 font-weight-bold">操作系统支持</span>
+                  </v-card-title>
+                  <v-card-text class="pa-6 pt-0">
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4" v-for="os in operatingSystems" :key="os.name">
+                        <v-card class="os-item-card" elevation="1" hover>
+                          <v-card-text class="pa-4 d-flex align-center">
+                            <div class="os-logo me-3">{{ os.logo }}</div>
+                            <div class="os-name text-body-1 font-weight-medium">{{ os.name }}</div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+
+                <!-- 适用场景 -->
+                <v-card class="scenarios-section-card mb-6" elevation="3">
+                  <v-card-title class="d-flex align-center pa-6">
+                    <v-icon size="28" color="purple" class="me-3">mdi-target</v-icon>
+                    <span class="text-h5 font-weight-bold">适用场景</span>
+                  </v-card-title>
+                  <v-card-text class="pa-6 pt-0">
+                    <v-row>
+                      <v-col cols="12" md="6" v-for="scenario in usageScenarios" :key="scenario.title">
+                        <v-card class="scenario-item-card h-100" elevation="1" hover>
+                          <v-card-text class="pa-4">
+                            <div class="d-flex align-center mb-3">
+                              <div class="scenario-icon me-3">{{ scenario.icon }}</div>
+                              <div class="scenario-title text-h6 font-weight-bold">{{ scenario.title }}</div>
                             </div>
-                          </div>
-                          
-                          <p class="text-body-2 text-medium-emphasis mb-4">
-                            {{ getLocalizedText(priceGroup.description) || $t('sales.noDescription') }}
-                          </p>
-                          
-                          <!-- 价格信息 -->
-                          <div class="price-info mb-4">
-                            <div class="d-flex align-center justify-space-between">
-                              <span class="text-body-2">{{ $t('sales.startingPrice') }}:</span>
-                              <span class="text-h6 font-weight-bold text-primary">
-                                ¥{{ priceGroup.minPrice || '0' }}/{{ $t('sales.month') }}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          <!-- 操作按钮 -->
-                          <v-btn
-                            block
-                            color="primary"
-                            variant="flat"
-                            @click="viewPriceGroup(priceGroup)"
-                            class="mt-4"
-                          >
-                            {{ $t('sales.viewDetails') }}
-                          </v-btn>
-                        </v-card-text>
-                      </v-card>
-                    </v-col>
-                  </v-row>
-                </div>
+                            <div class="scenario-desc text-body-2 text-medium-emphasis">{{ scenario.desc }}</div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+
+                <!-- 服务保障 -->
+                <v-card class="guarantee-section-card mb-6" elevation="3">
+                  <v-card-title class="d-flex align-center pa-6">
+                    <v-icon size="28" color="success" class="me-3">mdi-shield-check</v-icon>
+                    <span class="text-h5 font-weight-bold">服务保障</span>
+                  </v-card-title>
+                  <v-card-text class="pa-6 pt-0">
+                    <v-row>
+                      <v-col cols="12" sm="6" md="3" v-for="guarantee in serviceGuarantees" :key="guarantee.title">
+                        <v-card class="guarantee-item-card h-100" elevation="1" hover>
+                          <v-card-text class="pa-4 text-center">
+                            <div class="guarantee-icon mb-3">{{ guarantee.icon }}</div>
+                            <div class="guarantee-title text-subtitle-1 font-weight-bold mb-2">{{ guarantee.title }}</div>
+                            <div class="guarantee-desc text-caption text-medium-emphasis">{{ guarantee.desc }}</div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+
                 
-                <!-- 无产品提示 -->
-                <div v-else class="no-products-section text-center">
-                  <v-card class="no-products-card" elevation="1">
-                    <v-card-text class="pa-8">
-                      <v-icon size="80" color="grey-lighten-1" class="mb-4">mdi-package-variant-closed</v-icon>
-                      <h3 class="text-h5 font-weight-medium mb-3">{{ $t('sales.noProducts') }}</h3>
-                      <p class="text-body-1 text-medium-emphasis mb-6">
-                        {{ $t('sales.noProductsHint') }}
-                      </p>
-                      <v-btn
-                        color="primary"
-                        variant="outlined"
-                        prepend-icon="mdi-phone"
-                        @click="contactUs"
-                      >
-                        {{ $t('sales.contactUs') }}
-                      </v-btn>
-                    </v-card-text>
-                  </v-card>
+                <!-- 联系我们按钮 -->
+                <div class="text-center">
+                  <v-btn
+                    size="x-large"
+                    color="primary"
+                    variant="flat"
+                    prepend-icon="mdi-phone"
+                    @click="contactUs"
+                    class="px-12 py-4"
+                    rounded="xl"
+                    elevation="4"
+                  >
+                    <span class="text-h6">{{ $t('sales.contactUs') }}</span>
+                  </v-btn>
                 </div>
               </div>
+              
+              <!-- 选中分组的价格组展示 -->
+              <ServerDetailsCard
+                v-else
+                :selected-group="selectedGroup"
+                :price-groups="priceGroups"
+                @contact-purchase="contactForPurchase"
+                @contact-us="contactUs"
+              />
             </div>
           </v-col>
         </v-row>
@@ -269,16 +275,16 @@
             <!-- 联系方式 -->
             <div class="contact-info">
               <div class="contact-item mb-3">
-                <v-icon class="me-2" color="primary">mdi-phone</v-icon>
-                <span>{{ $t('sales.phone') }}: +86 400-123-4567</span>
+                <v-icon class="me-2" color="primary">mdi-qqchat</v-icon>
+                <span>{{ $t('sales.qqGroup') }}: 736757426</span>
               </div>
               <div class="contact-item mb-3">
                 <v-icon class="me-2" color="primary">mdi-email</v-icon>
-                <span>{{ $t('sales.email') }}: sales@example.com</span>
+                <span>{{ $t('sales.email') }}: rabbitvps@163.com</span>
               </div>
               <div class="contact-item">
                 <v-icon class="me-2" color="primary">mdi-wechat</v-icon>
-                <span>{{ $t('sales.wechat') }}: VPS_Sales</span>
+                <span>{{ $t('sales.wechat') }}: rabbitvps</span>
               </div>
             </div>
           </div>
@@ -319,6 +325,7 @@ import { getLocalizedActiveCategories } from '@/api/category'
 import { serverGroupApi } from '@/api/serverGroup'
 import { priceGroupApi } from '@/api/priceGroup'
 import PageLayout from '@/components/PageLayout.vue'
+import ServerDetailsCard from '@/components/sales/ServerDetailsCard.vue'
 import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
 import { getLocalizedText } from '@/utils/i18n'
 import { useNotification } from '@/composables/useNotification'
@@ -327,6 +334,7 @@ export default {
   name: 'SalesView',
   components: {
     PageLayout,
+    ServerDetailsCard,
     NotificationSnackbar
   },
   setup() {
@@ -395,10 +403,6 @@ export default {
       return priceGroups.value.filter(pg => pg.serverGroupId === serverGroupId).length
     }
     
-    // 获取分组下的价格组
-    const getGroupPriceGroups = (serverGroupId) => {
-      return priceGroups.value.filter(pg => pg.serverGroupId === serverGroupId)
-    }
 
     // 获取类别图标
     const getCategoryIcon = (category) => {
@@ -442,10 +446,11 @@ export default {
       selectedGroup.value = group
     }
     
-    // 查看价格组详情
-    const viewPriceGroup = (priceGroup) => {
-      console.log('查看价格组详情:', priceGroup)
-      // 这里可以添加跳转到价格组详情页面的逻辑
+
+    // 联系购买
+    const contactForPurchase = (priceGroup) => {
+      console.log('联系购买:', priceGroup)
+      showContactDialog.value = true
     }
 
     // 联系我们
@@ -455,7 +460,7 @@ export default {
 
     // 复制联系方式
     const copyContact = () => {
-      const contactInfo = `电话: +86 400-123-4567\n邮箱: sales@example.com\n微信: VPS_Sales`
+      const contactInfo = `QQ群: 736757426\n邮箱: rabbitvps@163.com\n微信: rabbitvps`
       navigator.clipboard.writeText(contactInfo).then(() => {
         showNotification(t('sales.contactCopied'), 'success')
         showContactDialog.value = false
@@ -478,6 +483,42 @@ export default {
       }
     })
 
+    // 技术特性数据
+    const techFeatures = ref([
+      { icon: '🛡️', title: 'DDoS防护', desc: '免费提供10Gbps DDoS攻击防护' },
+      { icon: '🔄', title: '自动备份', desc: '每日自动备份，保留7天历史数据' },
+      { icon: '📊', title: '实时监控', desc: '24/7系统监控，异常自动告警' },
+      { icon: '🔧', title: '一键部署', desc: '支持WordPress、Docker等快速部署' },
+      { icon: '🌍', title: '全球CDN', desc: '免费提供全球CDN加速服务' },
+      { icon: '🔐', title: 'SSL证书', desc: '免费提供Let\'s Encrypt SSL证书' }
+    ])
+
+    // 操作系统数据
+    const operatingSystems = ref([
+      { logo: '🐧', name: 'Ubuntu' },
+      { logo: '🎩', name: 'CentOS' },
+      { logo: '🔴', name: 'Red Hat Enterprise Linux' },
+      { logo: '🟢', name: 'openSUSE' },
+      { logo: '🪟', name: 'Windows Server' },
+      { logo: '🐋', name: 'Docker预装镜像' }
+    ])
+
+    // 使用场景数据
+    const usageScenarios = ref([
+      { icon: '🌐', title: 'Web应用托管', desc: '适合中小型网站、博客、电商平台等Web应用部署' },
+      { icon: '⚙️', title: '开发测试环境', desc: '为开发团队提供稳定的开发、测试和预生产环境' },
+      { icon: '📊', title: '数据库服务', desc: 'MySQL、PostgreSQL、MongoDB等数据库服务部署' },
+      { icon: '🤖', title: 'AI/ML工作负载', desc: '机器学习模型训练、推理服务等AI应用场景' }
+    ])
+
+    // 服务保障数据
+    const serviceGuarantees = ref([
+      { icon: '⏱️', title: '99.9% SLA保证', desc: '服务可用性保障，不达标按比例赔付' },
+      { icon: '🎧', title: '7×24技术支持', desc: '专业技术团队全天候在线支持' },
+      { icon: '💰', title: '7天无理由退款', desc: '不满意可在7天内申请全额退款' },
+      { icon: '🚀', title: '5分钟快速交付', desc: '支付完成后5分钟内自动开通服务' }
+    ])
+
     return {
       loading,
       categories,
@@ -487,17 +528,20 @@ export default {
       productsSection,
       expandedCategories,
       selectedGroup,
+      techFeatures,
+      operatingSystems,
+      usageScenarios,
+      serviceGuarantees,
       getGroupsByCategory,
       getServerGroupCount,
       getPriceGroupCount,
-      getGroupPriceGroups,
       getCategoryIcon,
       hasProducts,
       getAvailableProductsCount,
       scrollToProducts,
       toggleCategory,
       selectServerGroup,
-      viewPriceGroup,
+      contactForPurchase,
       contactUs,
       copyContact,
       getLocalizedText,
@@ -511,8 +555,7 @@ export default {
 <style scoped>
 /* 现代化销售页面样式 */
 .sales-page {
-  background: rgba(var(--v-theme-background));
-  min-height: 100vh;
+  background: transparent;
 }
 
 /* 左右分栏布局 */
@@ -521,15 +564,13 @@ export default {
 }
 
 .content-col {
-  background: rgba(var(--v-theme-surface));
   padding: 0;
 }
 
 /* 侧边栏样式 */
 .sidebar-card {
   border-radius: 0;
-  background: rgba(var(--v-theme-surface));
-  min-height: calc(100vh - 64px);
+  background: transparent;
   box-shadow: none !important;
 }
 
@@ -576,14 +617,205 @@ export default {
 
 /* 内容区域样式 */
 .content-area {
-  background: rgba(var(--v-theme-surface));
   padding: 24px;
 }
 
 /* 欢迎页面样式 */
 .welcome-section {
-  padding: 4rem 2rem;
+  padding: 2rem;
 }
+
+/* 产品标题卡片 */
+.product-header-card {
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.1) 0%, rgba(var(--v-theme-secondary), 0.1) 100%);
+  border: 2px solid rgba(var(--v-theme-primary), 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-header-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, rgb(var(--v-theme-primary)) 0%, rgb(var(--v-theme-secondary)) 100%);
+}
+
+.product-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 规格展示卡片 */
+.specs-section-card {
+  border-radius: 16px;
+  background: rgba(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-primary), 0.1);
+}
+
+.spec-item-card {
+  border-radius: 12px;
+  background: rgba(var(--v-theme-background));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  transition: all 0.3s ease;
+}
+
+.spec-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(var(--v-theme-primary), 0.15);
+  border-color: rgba(var(--v-theme-primary), 0.3);
+}
+
+.spec-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.spec-title {
+  color: rgba(var(--v-theme-on-surface), 0.87);
+}
+
+.spec-value {
+  color: rgb(var(--v-theme-primary));
+}
+
+.spec-desc {
+  color: rgba(var(--v-theme-on-surface), 0.6);
+}
+
+/* 技术特性卡片 */
+.features-section-card {
+  border-radius: 16px;
+  background: rgba(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-success), 0.1);
+}
+
+.feature-item-card {
+  border-radius: 12px;
+  background: rgba(var(--v-theme-background));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  transition: all 0.3s ease;
+}
+
+.feature-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(var(--v-theme-success), 0.15);
+  border-color: rgba(var(--v-theme-success), 0.3);
+}
+
+.feature-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.feature-title {
+  color: rgba(var(--v-theme-on-surface), 0.87);
+}
+
+.feature-desc {
+  color: rgba(var(--v-theme-on-surface), 0.6);
+}
+
+/* 操作系统卡片 */
+.os-section-card {
+  border-radius: 16px;
+  background: rgba(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-info), 0.1);
+}
+
+.os-item-card {
+  border-radius: 12px;
+  background: rgba(var(--v-theme-background));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  transition: all 0.3s ease;
+}
+
+.os-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--v-theme-info), 0.15);
+  border-color: rgba(var(--v-theme-info), 0.3);
+}
+
+.os-logo {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.os-name {
+  color: rgba(var(--v-theme-on-surface), 0.87);
+}
+
+/* 使用场景卡片 */
+.scenarios-section-card {
+  border-radius: 16px;
+  background: rgba(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-purple), 0.1);
+}
+
+.scenario-item-card {
+  border-radius: 12px;
+  background: rgba(var(--v-theme-background));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  transition: all 0.3s ease;
+}
+
+.scenario-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(var(--v-theme-purple), 0.15);
+  border-color: rgba(var(--v-theme-purple), 0.3);
+}
+
+.scenario-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.scenario-title {
+  color: rgba(var(--v-theme-on-surface), 0.87);
+}
+
+.scenario-desc {
+  color: rgba(var(--v-theme-on-surface), 0.6);
+}
+
+/* 服务保障卡片 */
+.guarantee-section-card {
+  border-radius: 16px;
+  background: rgba(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-success), 0.1);
+}
+
+.guarantee-item-card {
+  border-radius: 12px;
+  background: rgba(var(--v-theme-background));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  transition: all 0.3s ease;
+}
+
+.guarantee-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(var(--v-theme-success), 0.15);
+  border-color: rgba(var(--v-theme-success), 0.3);
+}
+
+.guarantee-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.guarantee-title {
+  color: rgba(var(--v-theme-on-surface), 0.87);
+}
+
+.guarantee-desc {
+  color: rgba(var(--v-theme-on-surface), 0.6);
+}
+
 
 .stats-mini-card {
   border-radius: 12px;
@@ -596,42 +828,7 @@ export default {
   box-shadow: 0 8px 25px rgba(var(--v-theme-primary), 0.15);
 }
 
-/* 分组头部卡片 */
-.group-header-card {
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.02) 0%, rgba(var(--v-theme-surface)) 100%);
-  border: 1px solid rgba(var(--v-theme-primary), 0.1);
-}
 
-/* 价格组卡片样式 */
-.price-group-card {
-  border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  background: rgba(var(--v-theme-surface));
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
-}
-
-.price-group-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(var(--v-theme-primary), 0.15);
-  border-color: rgba(var(--v-theme-primary), 0.3);
-}
-
-/* 无产品卡片 */
-.no-products-card {
-  border-radius: 16px;
-  background: rgba(var(--v-theme-surface));
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
-}
-
-
-/* 价格信息样式 */
-.price-info {
-  background: rgba(var(--v-theme-primary), 0.05);
-  border-radius: 8px;
-  padding: 12px;
-}
 
 /* 联系信息样式 */
 .contact-info {
