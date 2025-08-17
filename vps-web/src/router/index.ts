@@ -8,13 +8,14 @@ import ServerGroupView from '../views/ServerGroupView.vue'
 import ServerCategoryManagementView from '../views/ServerCategoryManagementView.vue'
 import ServerView from '../views/ServerView.vue'
 import PriceGroupView from '../views/PriceGroupView.vue'
+import SalesView from '../views/SalesView.vue'
 
 
 
 const routes = [
   {
     path: '/',
-    redirect: '/auth'
+    redirect: '/sales'
   },
   {
     path: '/auth',
@@ -52,6 +53,12 @@ const routes = [
     name: 'PriceGroups',
     component: PriceGroupView,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/sales',
+    name: 'Sales',
+    component: SalesView
+    // 销售页面允许所有用户访问（已登录和未登录）
   },
 
   {

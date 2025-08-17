@@ -50,6 +50,7 @@ export default {
     serverCategory: '服务器类别',
     serverGroup: '服务器分组',
     priceGroups: '价格管理',
+    sales: '产品中心',
     monitoring: '监控中心',
     settings: '系统设置',
     profile: '个人资料',
@@ -382,6 +383,39 @@ export default {
     resetError: '密码重置失败'
   },
   
+  // 销售页面
+  sales: {
+    title: 'VPS销售中心',
+    subtitle: '专业的VPS服务提供商，为您提供高性能、稳定可靠的服务器解决方案',
+    welcome: '欢迎来到产品中心',
+    selectGroupHint: '请从左侧菜单选择产品分组查看详细信息',
+    productCategories: '产品分类',
+    groups: '个分组',
+    totalCategories: '产品类别',
+    totalGroups: '产品分组',
+    availableProducts: '可用产品',
+    hasProducts: '有产品',
+    productsAvailable: '产品可用',
+    noProducts: '暂无产品',
+    noProductsHint: '该产品分组暂无可用产品，请选择其他分组或联系我们获取更多信息',
+    productInfo: '产品信息',
+    highPerformance: '高性能硬件配置',
+    reliableService: '稳定可靠的服务',
+    support247: '7x24小时技术支持',
+    flexibleConfig: '灵活的配置选项',
+    contactUs: '联系我们',
+    contactHint: '我们的专业销售团队将为您提供个性化的服务方案',
+    phone: '电话',
+    email: '邮箱',
+    wechat: '微信',
+    copyContact: '复制联系方式',
+    contactCopied: '联系方式已复制到剪贴板',
+    copyFailed: '复制失败，请手动复制',
+    loadCategoriesError: '加载产品类别失败',
+    loadGroupsError: '加载产品分组失败',
+    loadPriceGroupsError: '加载产品信息失败',
+  },
+
   // 底部信息
   footer: {
     company: 'VPS管理系统有限公司',

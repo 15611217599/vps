@@ -50,6 +50,7 @@ export default {
         serverCategory: 'Server Categories',
         serverGroup: 'Server Groups',
         priceGroups: 'Price Management',
+        sales: 'Product Center',
         monitoring: 'Monitoring Center',
         settings: 'System Settings',
         profile: 'Profile',
@@ -383,6 +384,39 @@ export default {
         resetError: 'Failed to reset password'
     },
     
+    // Sales Page
+    sales: {
+        title: 'VPS Sales Center',
+        subtitle: 'Professional VPS service provider, offering high-performance, stable and reliable server solutions',
+        welcome: 'Welcome to Product Center',
+        selectGroupHint: 'Please select a product group from the left menu to view details',
+        productCategories: 'Product Categories',
+        groups: 'groups',
+        totalCategories: 'Product Categories',
+        totalGroups: 'Product Groups',
+        availableProducts: 'Available Products',
+        hasProducts: 'Has Products',
+        productsAvailable: 'Products Available',
+        noProducts: 'No Products',
+        noProductsHint: 'This product group currently has no available products. Please select another group or contact us for more information',
+        productInfo: 'Product Information',
+        highPerformance: 'High-performance hardware configuration',
+        reliableService: 'Stable and reliable service',
+        support247: '7x24 hours technical support',
+        flexibleConfig: 'Flexible configuration options',
+        contactUs: 'Contact Us',
+        contactHint: 'Our professional sales team will provide you with personalized service solutions',
+        phone: 'Phone',
+        email: 'Email',
+        wechat: 'WeChat',
+        copyContact: 'Copy Contact Info',
+        contactCopied: 'Contact information copied to clipboard',
+        copyFailed: 'Copy failed, please copy manually',
+        loadCategoriesError: 'Failed to load product categories',
+        loadGroupsError: 'Failed to load product groups',
+        loadPriceGroupsError: 'Failed to load product information'
+    },
+
     // Footer
     footer: {
         company: 'VPS Management System Ltd.',
