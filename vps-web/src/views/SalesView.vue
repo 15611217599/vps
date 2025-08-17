@@ -257,7 +257,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getLocalizedActiveCategories } from '@/api/category'
 import { serverGroupApi } from '@/api/serverGroup'
@@ -450,7 +450,7 @@ export default {
 
 
     // 技术特性数据
-    const techFeatures = ref([
+    const techFeatures = computed(() => [
       { icon: '🛡️', title: t('sales.ddosProtection'), desc: t('sales.ddosProtectionDesc') },
       { icon: '🔄', title: t('sales.autoBackup'), desc: t('sales.autoBackupDesc') },
       { icon: '📊', title: t('sales.realTimeMonitoring'), desc: t('sales.realTimeMonitoringDesc') },
@@ -460,7 +460,7 @@ export default {
     ])
 
     // 使用场景数据
-    const usageScenarios = ref([
+    const usageScenarios = computed(() => [
       { icon: '🌐', title: t('sales.webHosting'), desc: t('sales.webHostingDesc') },
       { icon: '⚙️', title: t('sales.devTestEnv'), desc: t('sales.devTestEnvDesc') },
       { icon: '📊', title: t('sales.databaseService'), desc: t('sales.databaseServiceDesc') },
@@ -468,7 +468,7 @@ export default {
     ])
 
     // 服务保障数据
-    const serviceGuarantees = ref([
+    const serviceGuarantees = computed(() => [
       { icon: '⏱️', title: t('sales.slaGuarantee'), desc: t('sales.slaGuaranteeDesc') },
       { icon: '🎧', title: t('sales.techSupport247'), desc: t('sales.techSupport247Desc') },
       { icon: '💰', title: t('sales.refundPolicy'), desc: t('sales.refundPolicyDesc') },
