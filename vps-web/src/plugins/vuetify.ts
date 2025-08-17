@@ -3,7 +3,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import 'vuetify/lib/styles/main.css'
 
 // 默认主题配色
 const defaultColors = {
@@ -38,16 +38,16 @@ export default createVuetify({
         dark: false,
         colors: {
           ...defaultColors,
-          background: 'transparent',
-          surface: 'transparent',
-          'surface-bright': 'transparent',
-          'surface-light': 'transparent',
-          'surface-variant': 'transparent',
-          'on-surface-variant': 'transparent',
+          background: '#ffffff',
+          surface: '#f5f5f5',
+          'surface-bright': '#ffffff',
+          'surface-light': '#fafafa',
+          'surface-variant': '#e0e0e0',
+          'on-surface-variant': '#424242',
           'primary-darken-1': '#1976D2',
           'secondary-darken-1': '#018786',
-          'on-background': '#000000',
-          'on-surface': '#000000',
+          'on-background': '#212121',
+          'on-surface': '#212121',
           'on-primary': '#FFFFFF',
           'on-primary-darken-1': '#FFFFFF',
           'on-secondary': '#FFFFFF',
@@ -58,16 +58,16 @@ export default createVuetify({
         dark: true,
         colors: {
           ...defaultColors,
-          background: 'transparent',
-          surface: 'transparent',
-          'surface-bright': 'transparent',
-          'surface-light': 'transparent',
-          'surface-variant': 'transparent',
-          'on-surface-variant': 'transparent',
+          background: '#121212',
+          surface: '#1e1e1e',
+          'surface-bright': '#2c2c2c',
+          'surface-light': '#242424',
+          'surface-variant': '#424242',
+          'on-surface-variant': '#e0e0e0',
           'primary-darken-1': '#3700B3',
           'secondary-darken-1': '#03DAC5',
-          'on-background': '#FFFFFF',
-          'on-surface': '#FFFFFF',
+          'on-background': '#ffffff',
+          'on-surface': '#ffffff',
           'on-primary': '#FFFFFF',
           'on-primary-darken-1': '#FFFFFF',
           'on-secondary': '#000000',

@@ -149,11 +149,22 @@ const getThemeName = (key: string) => {
 .theme-header-content {
   position: relative;
   z-index: 1;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .theme-header-icon {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .theme-title {
@@ -167,8 +178,8 @@ const getThemeName = (key: string) => {
 .theme-subtitle {
   color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
-  margin: 4px 0 0 0;
-  line-height: 1.2;
+  margin: 8px 0 0 0;
+  line-height: 1.4;
 }
 
 /* 内容区域 */
