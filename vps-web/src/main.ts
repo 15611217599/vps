@@ -7,6 +7,7 @@ import i18n from './locales'
 import './styles/theme.css'
 import './styles/layout.css'
 import './styles/unified-components.css'
+import './styles/popup-fixes.css'
 
 const app = createApp(App)
 const pinia = createPinia()

@@ -39,7 +39,8 @@ export default {
     of: '共',
     itemsPerPage: '每页显示',
     noData: '暂无数据',
-    noSearchResults: '未找到匹配的结果'
+    noSearchResults: '未找到匹配的结果',
+    item: '项目'
   },
   
   // 导航菜单
@@ -61,7 +62,11 @@ export default {
     list: '类别列表',
     category: '类别',
     name: '类别名称',
-    confirmDelete: '确认删除类别 "{name}" 吗？'
+    confirmDelete: '确认删除类别 "{name}" 吗？',
+    deleteWarning: '删除警告',
+    loadFailed: '加载类别失败',
+    saveFailed: '保存类别失败',
+    deleteFailed: '删除类别失败'
   },
   
   // 服务器管理
@@ -96,6 +101,7 @@ export default {
     networkSpeed: '网络速度',
     systemInfo: '系统信息',
     confirmDelete: '确认删除服务器 {ip} 吗？',
+    deleteWarning: '删除警告',
     loadFailed: '加载服务器失败',
     saveFailed: '保存服务器失败',
     deleteFailed: '删除服务器失败'
@@ -182,6 +188,7 @@ export default {
     deleteWarning: '删除后将无法恢复，请谨慎操作！',
     groupToDelete: '即将删除的分组：',
     confirmDeleteAction: '确认删除',
+    confirmDelete: '确认删除分组 "{name}" 吗？',
     groupCreatedSuccess: '分组创建成功',
     groupUpdatedSuccess: '分组更新成功',
     groupDeletedSuccess: '分组删除成功',

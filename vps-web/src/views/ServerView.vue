@@ -282,6 +282,17 @@
       </v-row>
     </v-form>
   </UnifiedDialog>
+
+  <!-- 删除确认对话框 -->
+  <ConfirmDeleteDialog
+    v-model="showDeleteDialog"
+    :title="t('servers.deleteWarning')"
+    :message="t('servers.confirmDelete', { ip: deletingServer?.ip || '' })"
+    :item-name="deletingServer?.ip || ''"
+    :loading="deleting"
+    @confirm="confirmDelete"
+    @cancel="showDeleteDialog = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -290,6 +301,7 @@ import { useI18n } from 'vue-i18n'
 import PageLayout from '@/components/PageLayout.vue'
 import UnifiedFormField from '@/components/UnifiedFormField.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
+import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
 import StatusChip from '@/components/StatusChip.vue'
 import { getLocalizedText } from '@/utils/i18n'
 import {
@@ -308,7 +320,10 @@ const { t } = useI18n()
 const servers = ref<Server[]>([])
 const loading = ref(false)
 const saving = ref(false)
+const deleting = ref(false)
 const showAddDialog = ref(false)
+const showDeleteDialog = ref(false)
+const deletingServer = ref<Server | null>(null)
 const formValid = ref(false)
 const searchQuery = ref('')
 const currentPage = ref(1)
@@ -489,20 +504,30 @@ const editServer = (server: Server) => {
 }
 
 // 删除服务器
-const deleteServer = async (server: Server) => {
-  if (confirm(t('servers.confirmDelete', { ip: server.ip }))) {
-    try {
-      await deleteServerApi(server.id)
-      await loadServers()
-    } catch (error) {
-      console.error(t('servers.deleteFailed'), error)
-      // 显示详细的后端错误信息
-      if (error && typeof error === 'object' && 'message' in error) {
-        alert(error.message)
-      } else {
-        alert(t('servers.deleteFailed'))
-      }
+const deleteServer = (server: Server) => {
+  deletingServer.value = server
+  showDeleteDialog.value = true
+}
+
+// 确认删除
+const confirmDelete = async () => {
+  if (!deletingServer.value) return
+  
+  try {
+    deleting.value = true
+    await deleteServerApi(deletingServer.value.id)
+    showDeleteDialog.value = false
+    await loadServers()
+  } catch (error) {
+    console.error(t('servers.deleteFailed'), error)
+    // 显示详细的后端错误信息
+    if (error && typeof error === 'object' && 'message' in error) {
+      alert(error.message)
+    } else {
+      alert(t('servers.deleteFailed'))
     }
+  } finally {
+    deleting.value = false
   }
 }
 

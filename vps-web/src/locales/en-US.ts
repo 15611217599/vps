@@ -39,7 +39,8 @@ export default {
         of: 'of',
         itemsPerPage: 'Items per page',
         noData: 'No data available',
-        noSearchResults: 'No matching results found'
+        noSearchResults: 'No matching results found',
+        item: 'Item'
     },
 
     // Navigation
@@ -61,7 +62,11 @@ export default {
         list: 'Category List',
         category: 'Category',
         name: 'Category Name',
-        confirmDelete: 'Are you sure you want to delete category "{name}"?'
+        confirmDelete: 'Are you sure you want to delete category "{name}"?',
+    deleteWarning: 'Delete Warning',
+    loadFailed: 'Failed to load categories',
+    saveFailed: 'Failed to save category',
+    deleteFailed: 'Failed to delete category'
     },
     
     // Server Management
@@ -96,6 +101,7 @@ export default {
         networkSpeed: 'Network Speed',
         systemInfo: 'System Info',
         confirmDelete: 'Are you sure you want to delete server {ip}?',
+        deleteWarning: 'Delete Warning',
         loadFailed: 'Failed to load servers',
         saveFailed: 'Failed to save server',
         deleteFailed: 'Failed to delete server'
@@ -181,6 +187,7 @@ export default {
         deleteWarning: 'This action cannot be undone, please proceed with caution!',
         groupToDelete: 'Group to be deleted:',
         confirmDeleteAction: 'Confirm Delete',
+        confirmDelete: 'Are you sure you want to delete group "{name}"?',
         groupCreatedSuccess: 'Group created successfully',
         groupUpdatedSuccess: 'Group updated successfully',
         groupDeletedSuccess: 'Group deleted successfully',

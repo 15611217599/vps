@@ -427,6 +427,28 @@
   }
 }
 
+/* 删除确认对话框特殊样式 - 去掉白边 */
+.confirm-delete-content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.confirm-delete-content .v-card {
+  margin: 0 !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.confirm-delete-dialog .v-overlay__content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.confirm-delete-dialog .v-dialog {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 /* 高对比度模式 */
 @media (prefers-contrast: high) {
   .unified-card,

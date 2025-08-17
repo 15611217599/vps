@@ -217,6 +217,17 @@
         </div>
       </v-form>
     </UnifiedDialog>
+
+    <!-- 删除确认对话框 -->
+    <ConfirmDeleteDialog
+      v-model="showDeleteDialog"
+      :title="t('groups.deleteWarning')"
+      :message="t('groups.confirmDelete', { name: getLocalizedText(deletingGroup?.name || '') })"
+      :item-name="getLocalizedText(deletingGroup?.name || '')"
+      :loading="deleting"
+      @confirm="confirmDelete"
+      @cancel="showDeleteDialog = false"
+    />
   </template>
   
   <script setup lang="ts">
@@ -224,6 +235,7 @@
   import { useI18n } from 'vue-i18n'
   import PageLayout from '@/components/PageLayout.vue'
   import UnifiedDialog from '@/components/UnifiedDialog.vue'
+  import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
   import { getLocalizedText } from '@/utils/i18n'
   import { groupAPI, type ServerGroup } from '@/api/group'
   
@@ -233,7 +245,10 @@
   const groups = ref<ServerGroup[]>([])
   const loading = ref(false)
   const saving = ref(false)
+  const deleting = ref(false)
   const showAddDialog = ref(false)
+  const showDeleteDialog = ref(false)
+  const deletingGroup = ref<ServerGroup | null>(null)
   const formValid = ref(false)
   const searchQuery = ref('')
   const currentPage = ref(1)
@@ -367,24 +382,33 @@
   }
   
   // 删除分组
-  const deleteGroup = async (group: ServerGroup) => {
-    if (confirm(t('groups.confirmDeleteTitle') + ': ' + getLocalizedText(group.name))) {
-      try {
-        await groupAPI.deleteGroup(group.id)
-        await loadGroups()
-        alert(t('groups.groupDeletedSuccess'))
-      } catch (error: any) {
-        console.error('删除分组失败:', error)
-        let errorMessage = '删除失败'
-        
-        if (error.response && error.response.data && error.response.data.message) {
-          errorMessage = error.response.data.message
-        } else if (error.message) {
-          errorMessage = error.message
-        }
-        
-        alert(errorMessage)
+  const deleteGroup = (group: ServerGroup) => {
+    deletingGroup.value = group
+    showDeleteDialog.value = true
+  }
+
+  // 确认删除
+  const confirmDelete = async () => {
+    if (!deletingGroup.value) return
+    
+    try {
+      deleting.value = true
+      await groupAPI.deleteGroup(deletingGroup.value.id)
+      showDeleteDialog.value = false
+      await loadGroups()
+    } catch (error: any) {
+      console.error('删除分组失败:', error)
+      let errorMessage = '删除失败'
+      
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message
+      } else if (error.message) {
+        errorMessage = error.message
       }
+      
+      alert(errorMessage)
+    } finally {
+      deleting.value = false
     }
   }
   

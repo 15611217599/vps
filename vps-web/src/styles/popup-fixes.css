@@ -1,0 +1,85 @@
+/* 全局修复所有弹出框白边问题 */
+
+/* Vuetify Menu 弹出框修复 */
+.v-overlay__content {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+.v-menu > .v-overlay__content {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.v-menu > .v-overlay__content > .v-card,
+.v-menu > .v-overlay__content > .v-list {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+/* Vuetify Dialog 弹出框修复 */
+.v-dialog > .v-overlay__content {
+  background: transparent !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+}
+
+.v-dialog .v-card {
+  border-radius: 24px !important;
+  overflow: hidden !important;
+}
+
+/* Vuetify Tooltip 修复 */
+.v-tooltip > .v-overlay__content {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+/* Vuetify Snackbar 修复 */
+.v-snackbar > .v-overlay__content {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.v-snackbar .v-card {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* 确保所有卡片组件都有正确的圆角 */
+.v-card {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+/* 特殊情况：全屏对话框不应该有圆角 */
+.v-dialog--fullscreen .v-card {
+  border-radius: 0 !important;
+}
+
+/* 修复可能的背景色问题 */
+.v-overlay__scrim {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 确保所有弹出层都有正确的层级 */
+.v-overlay {
+  z-index: 2000;
+}
+
+.v-menu .v-overlay {
+  z-index: 2100;
+}
+
+.v-dialog .v-overlay {
+  z-index: 2200;
+}
+
+.v-tooltip .v-overlay {
+  z-index: 2300;
+}
+
+.v-snackbar .v-overlay {
+  z-index: 2400;
+}
