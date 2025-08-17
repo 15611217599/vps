@@ -5,7 +5,7 @@
     :color="themeStore.currentColors.primary"
     :elevation="2"
     :height="isGuest ? 56 : 64"
-    class="unified-top-bar"
+
   >
     <template v-slot:default>
       <!-- 左侧品牌标识和页面标题 -->

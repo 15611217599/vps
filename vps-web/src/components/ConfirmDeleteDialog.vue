@@ -75,28 +75,10 @@ defineEmits<Emits>()
 </script>
 
 <style>
-.confirm-delete-dialog :deep(.v-overlay__content) {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
+/* 简化样式 - 使用 Vuetify 默认对话框样式 */
 .confirm-delete-wrapper {
-  margin: 0;
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.confirm-delete-card {
-  background: white !important;
-  border: none !important;
-  outline: none !important;
-  margin: 0 !important;
-  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15) !important;
-}
-
-.v-theme--dark .confirm-delete-card {
-  background: rgb(var(--v-theme-surface)) !important;
 }
 </style>

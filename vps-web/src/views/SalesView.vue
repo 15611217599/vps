@@ -455,47 +455,24 @@ export default {
 </script>
 
 <style scoped>
-.sales-page {
-background-color: transparent;
-}
-
-/* 顶部标题区域 */
-.hero-section {
-background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.1) 0%, rgba(var(--v-theme-secondary), 0.05) 100%);
-border-radius: 16px;
-margin-bottom: 32px;
-}
-
-/* 左侧导航卡片 */
+/* 简化样式 - 使用 Vuetify 默认样式和 utility classes */
 .sales-nav-card {
-position: sticky;
-top: 24px;
-max-height: calc(100vh - 200px);
-overflow-y: auto;
-border-radius: 16px;
-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 24px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 .sales-content {
-min-height: calc(100vh - 200px);
-}
-
-/* 欢迎页面样式 */
-.welcome-card {
-border-radius: 20px;
-background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.05) 0%, rgba(var(--v-theme-surface)) 100%);
-border: 1px solid rgba(var(--v-theme-primary), 0.1);
+  min-height: calc(100vh - 200px);
 }
 
 .stats-card {
-border-radius: 16px;
-transition: all 0.3s ease;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .stats-card:hover {
-transform: translateY(-4px);
-box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
 /* 产品展示区域 */

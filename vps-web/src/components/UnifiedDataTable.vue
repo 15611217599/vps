@@ -1,5 +1,5 @@
 <template>
-  <v-card class="unified-data-table" elevation="2" rounded="lg">
+  <v-card elevation="2" rounded="lg">
     <!-- 表格标题栏 -->
     <v-card-title class="table-header d-flex align-center pa-6">
       <v-icon v-if="icon" class="me-3" :color="iconColor" size="28">

@@ -283,13 +283,28 @@ export default {
     // Theme Settings
     theme: {
         title: 'Theme Settings',
-        light: 'Light Theme',
-        dark: 'Dark Theme',
-        auto: 'Follow System',
+        subtitle: 'Personalize your interface appearance',
+        light: 'Light',
+        dark: 'Dark',
+        auto: 'Auto',
+        displayMode: 'Display Mode',
+        themeColors: 'Theme Colors',
         primaryColor: 'Primary Color',
         secondaryColor: 'Secondary Color',
         accentColor: 'Accent Color',
-        customTheme: 'Custom Theme'
+        customTheme: 'Custom Theme',
+        presets: {
+            default: 'Default',
+            blue: 'Blue',
+            green: 'Green',
+            purple: 'Purple',
+            red: 'Red',
+            orange: 'Orange',
+            teal: 'Teal',
+            indigo: 'Indigo',
+            pink: 'Pink',
+            amber: 'Amber'
+        }
     },
     
     // Authentication

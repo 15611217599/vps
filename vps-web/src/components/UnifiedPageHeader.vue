@@ -1,5 +1,5 @@
 <template>
-  <div class="unified-page-header mb-6">
+  <v-card class="mb-6" elevation="2" rounded="lg">
     <div class="header-content d-flex justify-space-between align-center">
       <!-- 左侧标题区域 -->
       <div class="title-section">
@@ -87,7 +87,7 @@
     <div v-if="$slots.extended" class="extended-content mt-4">
       <slot name="extended" />
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script setup lang="ts">

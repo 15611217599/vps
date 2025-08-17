@@ -765,8 +765,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.v-data-table {
-  background: transparent;
-}
-</style>
+<!-- 使用 Vuetify 默认背景处理 -->

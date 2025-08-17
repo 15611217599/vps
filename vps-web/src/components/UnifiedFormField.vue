@@ -1,5 +1,5 @@
 <template>
-  <div class="unified-form-field">
+  <div class="form-field-wrapper">
     <!-- 文本输入框 -->
     <v-text-field
       v-if="type === 'text' || type === 'email' || type === 'password' || type === 'number'"
@@ -280,7 +280,7 @@ defineEmits<Emits>()
 
 <style scoped>
 /* 简化样式 - 使用 Vuetify 默认样式 */
-.unified-form-field {
+.form-field-wrapper {
   margin-bottom: 8px;
 }
 

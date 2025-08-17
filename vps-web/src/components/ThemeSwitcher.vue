@@ -33,8 +33,8 @@
             <v-icon size="24" color="primary">mdi-palette</v-icon>
           </div>
           <div>
-            <h3 class="theme-title">主题设置</h3>
-            <p class="theme-subtitle">个性化您的界面外观</p>
+            <h3 class="theme-title">{{ $t('theme.title') }}</h3>
+            <p class="theme-subtitle">{{ $t('theme.subtitle') }}</p>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
         <div class="theme-section">
           <div class="section-header">
             <v-icon size="20" class="section-icon">mdi-brightness-6</v-icon>
-            <span class="section-title">显示模式</span>
+            <span class="section-title">{{ $t('theme.displayMode') }}</span>
           </div>
           
           <div class="mode-selector">
@@ -69,7 +69,7 @@
         <div class="theme-section">
           <div class="section-header">
             <v-icon size="20" class="section-icon">mdi-format-color-fill</v-icon>
-            <span class="section-title">主题配色</span>
+            <span class="section-title">{{ $t('theme.themeColors') }}</span>
           </div>
           
           <div class="preset-grid">
@@ -103,8 +103,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useThemeStore, themePresets } from '@/stores/theme'
 
+const { t } = useI18n()
 const themeStore = useThemeStore()
 
 const themeIcon = computed(() => {
@@ -120,84 +122,38 @@ const themeIcon = computed(() => {
   }
 })
 
-const modes = [
-  { value: 'light', label: '浅色', icon: 'mdi-weather-sunny' },
-  { value: 'dark', label: '深色', icon: 'mdi-weather-night' },
-  { value: 'auto', label: '自动', icon: 'mdi-theme-light-dark' }
-]
-
-const themeNames: Record<string, string> = {
-  default: '默认',
-  blue: '蓝色',
-  green: '绿色',
-  purple: '紫色',
-  red: '红色',
-  orange: '橙色',
-  teal: '青色',
-  indigo: '靛蓝',
-  pink: '粉色',
-  amber: '琥珀'
-}
+const modes = computed(() => [
+  { value: 'light', label: t('theme.light'), icon: 'mdi-weather-sunny' },
+  { value: 'dark', label: t('theme.dark'), icon: 'mdi-weather-night' },
+  { value: 'auto', label: t('theme.auto'), icon: 'mdi-theme-light-dark' }
+])
 
 const getThemeName = (key: string) => {
-  return themeNames[key] || key
+  return t(`theme.presets.${key}`) || key
 }
 </script>
 
 <style scoped>
-/* 弹出窗口主体 */
+/* 简化弹出窗口样式 */
 .theme-popup {
-  border-radius: 16px !important;
-  overflow: hidden !important;
   backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.98) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.08) !important;
 }
 
-.theme-popup .v-card {
-  border-radius: 16px !important;
-  overflow: hidden !important;
-}
-
-/* 头部样式 */
+/* 简化头部样式 */
 .theme-header {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgba(var(--v-theme-primary), 0.8) 100%);
-  padding: 20px 24px;
+  background: rgb(var(--v-theme-primary));
   position: relative;
-  border-radius: 16px 16px 0 0 !important;
-  margin: 0;
   overflow: hidden;
 }
 
-.theme-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-  opacity: 0.3;
-  border-radius: 16px 16px 0 0;
-}
-
 .theme-header-content {
-  display: flex;
-  align-items: center;
-  gap: 16px;
   position: relative;
   z-index: 1;
 }
 
 .theme-header-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .theme-title {

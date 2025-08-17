@@ -150,7 +150,7 @@
                 </div>
                 
                 <!-- 操作按钮 -->
-                <div class="d-flex flex-wrap gap-3 justify-center justify-sm-start">
+                <div class="d-flex flex-wrap ga-3 justify-center justify-sm-start">
                   <v-btn
                     type="submit"
                     :color="themeStore.currentColors.primary"
@@ -334,8 +334,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-.gap-3 {
-  gap: 12px;
-}
-</style>
+<!-- 使用 Vuetify ga-3 utility class 替代自定义样式 -->

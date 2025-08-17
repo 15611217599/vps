@@ -282,13 +282,28 @@ export default {
   // 主题设置
   theme: {
     title: '主题设置',
-    light: '浅色主题',
-    dark: '深色主题',
-    auto: '跟随系统',
+    subtitle: '个性化您的界面外观',
+    light: '浅色',
+    dark: '深色',
+    auto: '自动',
+    displayMode: '显示模式',
+    themeColors: '主题配色',
     primaryColor: '主色调',
     secondaryColor: '辅助色',
     accentColor: '强调色',
-    customTheme: '自定义主题'
+    customTheme: '自定义主题',
+    presets: {
+      default: '默认',
+      blue: '蓝色',
+      green: '绿色',
+      purple: '紫色',
+      red: '红色',
+      orange: '橙色',
+      teal: '青色',
+      indigo: '靛蓝',
+      pink: '粉色',
+      amber: '琥珀'
+    }
   },
   
   // 认证相关

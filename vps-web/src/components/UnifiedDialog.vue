@@ -8,7 +8,7 @@
     :scrim="scrim"
     :persistent="persistent"
     :transition="transition"
-    class="unified-dialog"
+    class="dialog-container"
     :class="{ 'auto-width': autoWidth }"
   >
     <v-card 
@@ -255,7 +255,7 @@ const headerIcon = computed(() => {
 }
 
 /* 自动宽度模式 */
-.unified-dialog.auto-width .dialog-card {
+.dialog-container.auto-width .dialog-card {
   width: fit-content;
   max-width: 90vw;
 }
