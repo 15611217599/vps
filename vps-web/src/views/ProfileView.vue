@@ -19,6 +19,9 @@
             </v-card-text>
           </v-card>
 
+          <!-- 钱包卡片 -->
+          <WalletCard class="mb-6" />
+
           <!-- 个人资料编辑卡片 -->
           <v-card elevation="3" rounded="lg">
             <v-card-text class="pa-6">
@@ -210,6 +213,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '@/stores/theme'
 import PageLayout from '@/components/PageLayout.vue'
+import WalletCard from '@/components/WalletCard.vue'
 
 const { t } = useI18n()
 const authStore = useAuthStore()
