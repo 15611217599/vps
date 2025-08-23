@@ -277,8 +277,6 @@ export default {
     username: '用户名',
     email: '邮箱',
     quickNavigation: '快速导航',
-
-
     profileDescription: '个人资料和账户设置',
     tokenStatus: 'Token状态',
     tokenValid: '有效（永不过期）',
@@ -287,7 +285,33 @@ export default {
     tokenNeverExpires: 'Token永不过期',
     h2Database: 'H2数据库存储',
     passwordEncryption: '安全的密码加密',
-    enabled: '启用'
+    enabled: '启用',
+    
+    // 服务器展示页面
+    myServers: '我的服务器',
+    totalServers: '总服务器数',
+    activeServers: '运行中',
+    suspendedServers: '已暂停',
+    expiringServers: '即将到期',
+    serverList: '服务器列表',
+    searchServers: '搜索服务器...',
+    filterStatus: '筛选状态',
+    allStatus: '全部状态',
+    serverInfo: '服务器信息',
+    status: '状态',
+    operatingSystem: '操作系统',
+    expiryDate: '到期时间',
+    actions: '操作',
+    noServers: '暂无服务器',
+    noServersDescription: '您还没有购买任何服务器，立即下单获取您的第一台服务器！',
+    orderServer: '立即下单',
+    orderNumber: '订单号',
+    billingPeriod: '计费周期',
+    serverSpecs: '服务器配置',
+    connect: '连接',
+    expired: '已过期',
+    expiringSoon: '{days}天后到期',
+    daysRemaining: '剩余{days}天'
   },
   
   // 表单验证

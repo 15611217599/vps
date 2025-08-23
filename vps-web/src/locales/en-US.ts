@@ -325,8 +325,6 @@ export default {
         username: 'Username',
         email: 'Email',
         quickNavigation: 'Quick Navigation',
-
-
         profileDescription: 'Personal profile and account settings',
         tokenStatus: 'Token Status',
         tokenValid: 'Valid (Never Expires)',
@@ -335,7 +333,33 @@ export default {
         tokenNeverExpires: 'Token Never Expires',
         h2Database: 'H2 Database Storage',
         passwordEncryption: 'Secure Password Encryption',
-        enabled: 'Enabled'
+        enabled: 'Enabled',
+        
+        // Server Display Page
+        myServers: 'My Servers',
+        totalServers: 'Total Servers',
+        activeServers: 'Active',
+        suspendedServers: 'Suspended',
+        expiringServers: 'Expiring Soon',
+        serverList: 'Server List',
+        searchServers: 'Search servers...',
+        filterStatus: 'Filter Status',
+        allStatus: 'All Status',
+        serverInfo: 'Server Info',
+        status: 'Status',
+        operatingSystem: 'Operating System',
+        expiryDate: 'Expiry Date',
+        actions: 'Actions',
+        noServers: 'No Servers',
+        noServersDescription: 'You haven\'t purchased any servers yet. Order now to get your first server!',
+        orderServer: 'Order Now',
+        orderNumber: 'Order Number',
+        billingPeriod: 'Billing Period',
+        serverSpecs: 'Server Specs',
+        connect: 'Connect',
+        expired: 'Expired',
+        expiringSoon: 'Expires in {days} days',
+        daysRemaining: '{days} days remaining'
     },
 
 
