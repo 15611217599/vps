@@ -1,38 +1,5 @@
 <template>
   <div class="price-groups-section">
-    <!-- 分组信息头部 -->
-    <v-card class="group-header-card mb-6" elevation="2">
-      <v-card-text class="pa-6">
-        <div class="d-flex align-center mb-4">
-          <v-avatar size="48" color="primary" class="me-4">
-            <v-icon size="24" color="white">mdi-server-network</v-icon>
-          </v-avatar>
-          <div>
-            <h2 class="text-h4 font-weight-bold mb-1">{{ getLocalizedText(selectedGroup.name) }}</h2>
-            <p class="text-body-1 text-medium-emphasis mb-0">
-              {{ getLocalizedText(selectedGroup.description) || $t('sales.noDescription') }}
-            </p>
-          </div>
-        </div>
-        
-        <!-- 分组统计信息 -->
-        <v-row>
-          <v-col cols="auto">
-            <v-chip color="info" variant="flat" size="small">
-              <v-icon start size="16">mdi-package-variant</v-icon>
-              {{ getPriceGroupCount(selectedGroup.id) }} {{ $t('sales.products') }}
-            </v-chip>
-          </v-col>
-          <v-col cols="auto">
-            <v-chip color="success" variant="flat" size="small">
-              <v-icon start size="16">mdi-check-circle</v-icon>
-              {{ $t('sales.available') }}
-            </v-chip>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-    
     <!-- 价格组列表 -->
     <div v-if="getGroupPriceGroups(selectedGroup.id).length > 0">
       <div class="price-groups-container">

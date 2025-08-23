@@ -231,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 返回第一个可用的服务器
-        return availableServers.get(0);
+        return availableServers.getFirst();
     }
 
     private OrderDTO convertToDTO(Order order) {

@@ -3,6 +3,10 @@
 INSERT INTO users (username, email, password, created_at, updated_at) VALUES
 ('admin', 'admin@vps.com', '$2a$10$BiRbd1FXyd9fMufi6bM9Su8XYGxGY3lnRGCiPt9bM4P3HmkQDL7TS', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+-- 初始化管理员用户的空钱包
+INSERT INTO wallets (user_id, balance, currency, created_at, updated_at) VALUES
+(1, 1000.00, 'USD', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 -- 插入服务器类别数据
 INSERT INTO server_categories (name, description, sort_order, is_active, create_time, update_time) VALUES
 ('{"cn": "VPS服务器", "en": "VPS Servers"}', '{"cn": "专用服务器，适用于大型应用", "en": "Virtual Private Servers for medium to big applications"}', 1, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

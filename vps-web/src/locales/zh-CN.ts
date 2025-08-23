@@ -465,6 +465,7 @@ export default {
     readyToStart: '准备开始了吗？',
     contactUs: '联系我们',
     contactHint: '我们的专业销售团队将为您提供个性化的服务方案',
+    contactDescription: '我们的专业销售团队将为您提供个性化的服务方案',
     qqGroup: 'QQ群',
     email: '邮箱',
     wechat: '微信',
