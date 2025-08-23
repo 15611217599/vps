@@ -75,12 +75,39 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
     List<Server> findByGroupAndStatus(ServerGroup group, Server.ServerStatus status);
     
     /**
+     * 根据服务器分组、状态和销售状态查找可用服务器
+     */
+    List<Server> findByGroupAndStatusAndIsSold(ServerGroup group, Server.ServerStatus status, Boolean isSold);
+    
+    /**
+     * 根据销售状态查找服务器
+     */
+    List<Server> findByIsSold(Boolean isSold);
+    
+    /**
+     * 根据销售状态获取服务器（分页）
+     */
+    Page<Server> findByIsSoldOrderByCreateTimeDesc(Boolean isSold, Pageable pageable);
+    
+    /**
+     * 统计已售和未售服务器数量
+     */
+    long countByIsSold(Boolean isSold);
+    
+    /**
+     * 根据状态和分组获取服务器（分页）
+     */
+    Page<Server> findByStatusAndGroupIdOrderByCreateTimeDesc(Server.ServerStatus status, Long groupId, Pageable pageable);
+    
+    /**
      * 获取服务器统计信息
      */
     @Query("SELECT " +
            "COUNT(s) as total, " +
            "SUM(CASE WHEN s.status = 'ONLINE' THEN 1 ELSE 0 END) as online, " +
-           "SUM(CASE WHEN s.status = 'OFFLINE' THEN 1 ELSE 0 END) as offline " +
+           "SUM(CASE WHEN s.status = 'OFFLINE' THEN 1 ELSE 0 END) as offline, " +
+           "SUM(CASE WHEN s.isSold = true THEN 1 ELSE 0 END) as sold, " +
+           "SUM(CASE WHEN s.isSold = false THEN 1 ELSE 0 END) as available " +
            "FROM Server s")
     Object[] getServerStats();
 }

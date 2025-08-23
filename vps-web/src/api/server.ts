@@ -5,11 +5,13 @@ export interface Server {
   ip: string
   port?: number
   status: 'online' | 'offline'
+  isSold?: boolean
   cpuCores?: string
   memory?: string
   diskSpace?: string
   diskType?: string
   networkSpeed?: string
+  operatingSystem?: string
   username?: string
   password?: string
   groupId?: number
@@ -22,11 +24,13 @@ export interface ServerRequest {
   ip: string
   port?: number | undefined
   status: string
+  isSold?: boolean
   cpuCores?: string
   memory?: string
   diskSpace?: string
   diskType?: string
   networkSpeed?: string
+  operatingSystem?: string
   username?: string
   password?: string
   groupId?: number | undefined

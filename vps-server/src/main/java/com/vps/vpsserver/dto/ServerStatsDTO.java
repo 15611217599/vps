@@ -5,16 +5,18 @@ public class ServerStatsDTO {
     private long total;
     private long online;
     private long offline;
-    private long warning;
+    private long sold;
+    private long available;
 
     // 构造函数
     public ServerStatsDTO() {}
 
-    public ServerStatsDTO(long total, long online, long offline, long warning) {
+    public ServerStatsDTO(long total, long online, long offline, long sold, long available) {
         this.total = total;
         this.online = online;
         this.offline = offline;
-        this.warning = warning;
+        this.sold = sold;
+        this.available = available;
     }
 
     // Getters and Setters
@@ -42,12 +44,20 @@ public class ServerStatsDTO {
         this.offline = offline;
     }
 
-    public long getWarning() {
-        return warning;
+    public long getSold() {
+        return sold;
     }
 
-    public void setWarning(long warning) {
-        this.warning = warning;
+    public void setSold(long sold) {
+        this.sold = sold;
+    }
+
+    public long getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(long available) {
+        this.available = available;
     }
 
     @Override
@@ -56,7 +66,8 @@ public class ServerStatsDTO {
                 "total=" + total +
                 ", online=" + online +
                 ", offline=" + offline +
-                ", warning=" + warning +
+                ", sold=" + sold +
+                ", available=" + available +
                 '}';
     }
 }

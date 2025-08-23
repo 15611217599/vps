@@ -395,6 +395,7 @@ export default {
   // 用户资料
   profile: {
     title: '个人资料',
+    basicInfo: '基本信息',
     username: '用户名',
     email: '邮箱',
     memberSince: '注册时间',

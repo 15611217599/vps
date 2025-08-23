@@ -24,6 +24,7 @@ public class ServerRequestDTO {
     private String operatingSystem;
     private String username;
     private String password;
+    private Boolean isSold;
 
     // 分组ID
     private Long groupId;
@@ -134,6 +135,14 @@ public class ServerRequestDTO {
         this.groupId = groupId;
     }
 
+    public Boolean getIsSold() {
+        return isSold;
+    }
+
+    public void setIsSold(Boolean isSold) {
+        this.isSold = isSold;
+    }
+
     @Override
     public String toString() {
         return "ServerRequestDTO{" +
@@ -147,6 +156,7 @@ public class ServerRequestDTO {
                 ", networkSpeed='" + networkSpeed + '\'' +
                 ", operatingSystem='" + operatingSystem + '\'' +
                 ", username='" + username + '\'' +
+                ", isSold=" + isSold +
                 ", groupId=" + groupId +
                 '}';
     }

@@ -74,6 +74,7 @@ public class ServerServiceImpl implements ServerService {
         server.setOperatingSystem(serverRequestDTO.getOperatingSystem());
         server.setUsername(serverRequestDTO.getUsername());
         server.setPassword(serverRequestDTO.getPassword());
+        server.setIsSold(serverRequestDTO.getIsSold() != null ? serverRequestDTO.getIsSold() : false);
         
         // 设置分组关联
         if (serverRequestDTO.getGroupId() != null) {
@@ -110,6 +111,9 @@ public class ServerServiceImpl implements ServerService {
         existingServer.setOperatingSystem(serverRequestDTO.getOperatingSystem());
         existingServer.setUsername(serverRequestDTO.getUsername());
         existingServer.setPassword(serverRequestDTO.getPassword());
+        if (serverRequestDTO.getIsSold() != null) {
+            existingServer.setIsSold(serverRequestDTO.getIsSold());
+        }
         
         // 更新分组关联
         if (serverRequestDTO.getGroupId() != null) {
@@ -161,15 +165,16 @@ public class ServerServiceImpl implements ServerService {
     @Transactional(readOnly = true)
     public ServerStatsDTO getServerStats() {
         Object[] stats = serverRepository.getServerStats();
-        if (stats != null && stats.length >= 3) {
+        if (stats != null && stats.length >= 5) {
             long total = ((Number) stats[0]).longValue();
             long online = ((Number) stats[1]).longValue();
             long offline = ((Number) stats[2]).longValue();
-            long warning = Math.round(total * 0.1); // 模拟警告数量
+            long sold = ((Number) stats[3]).longValue();
+            long available = ((Number) stats[4]).longValue();
             
-            return new ServerStatsDTO(total, online, offline, warning);
+            return new ServerStatsDTO(total, online, offline, sold, available);
         }
-        return new ServerStatsDTO(0, 0, 0, 0);
+        return new ServerStatsDTO(0, 0, 0, 0, 0);
     }
     
     @Override
@@ -196,8 +201,20 @@ public class ServerServiceImpl implements ServerService {
     @Override
     @Transactional(readOnly = true)
     public Page<ServerResponseDTO> getServersByFilters(String status, Long groupId, Pageable pageable) {
-        // 简化实现，使用现有的getServersPage方法
-        // 后续可以根据需要添加更复杂的过滤逻辑
-        return getServersPage(pageable);
+        // 根据状态和分组进行过滤
+        if (status != null && groupId != null) {
+            Server.ServerStatus serverStatus = Server.ServerStatus.fromValue(status);
+            return serverRepository.findByStatusAndGroupIdOrderByCreateTimeDesc(serverStatus, groupId, pageable)
+                    .map(ServerResponseDTO::fromEntity);
+        } else if (status != null) {
+            Server.ServerStatus serverStatus = Server.ServerStatus.fromValue(status);
+            return serverRepository.findByStatusOrderByCreateTimeDesc(serverStatus, pageable)
+                    .map(ServerResponseDTO::fromEntity);
+        } else if (groupId != null) {
+            return serverRepository.findByGroupIdOrderByCreateTimeDesc(groupId, pageable)
+                    .map(ServerResponseDTO::fromEntity);
+        } else {
+            return getServersPage(pageable);
+        }
     }
 }

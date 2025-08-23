@@ -17,6 +17,7 @@ public class ServerResponseDTO {
     private String operatingSystem;
     private String username;
     private String password;
+    private Boolean isSold;
     
     // 分组信息
     private Long groupId;
@@ -41,6 +42,7 @@ public class ServerResponseDTO {
         this.operatingSystem = server.getOperatingSystem();
         this.username = server.getUsername();
         this.password = server.getPassword();
+        this.isSold = server.getIsSold();
         
         // 设置分组信息
         if (server.getGroup() != null) {
@@ -154,6 +156,14 @@ public class ServerResponseDTO {
         this.password = password;
     }
 
+    public Boolean getIsSold() {
+        return isSold;
+    }
+
+    public void setIsSold(Boolean isSold) {
+        this.isSold = isSold;
+    }
+
     public Long getGroupId() {
         return groupId;
     }
@@ -200,6 +210,7 @@ public class ServerResponseDTO {
                 ", networkSpeed='" + networkSpeed + '\'' +
                 ", operatingSystem='" + operatingSystem + '\'' +
                 ", username='" + username + '\'' +
+                ", isSold=" + isSold +
                 ", groupId=" + groupId +
                 ", groupName='" + groupName + '\'' +
                 ", createTime=" + createTime +

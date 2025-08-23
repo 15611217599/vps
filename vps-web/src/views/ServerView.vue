@@ -64,6 +64,17 @@
           />
         </template>
 
+        <!-- 销售状态列 -->
+        <template #item.isSold="{ item }">
+          <v-chip
+            :color="item.isSold ? 'error' : 'success'"
+            size="small"
+            variant="tonal"
+          >
+            {{ item.isSold ? t('servers.sold') : t('servers.available') }}
+          </v-chip>
+        </template>
+
           <!-- 分组列 -->
           <template #item.groupName="{ item }">
             <v-chip
@@ -216,6 +227,19 @@
       </v-row>
 
       <v-row>
+        <!-- 销售状态 -->
+        <v-col cols="12" md="6">
+          <UnifiedFormField
+              v-model="serverForm.isSold"
+              type="select"
+              :label="t('servers.soldStatus')"
+              icon="mdi-tag"
+              :items="soldStatusOptions"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row>
         <!-- 操作系统 -->
         <v-col cols="12" md="6">
           <UnifiedFormField
@@ -339,6 +363,7 @@ const serverForm = reactive({
   username: '',
   password: '',
   status: 'ONLINE',
+  isSold: false,
   groupId: undefined as number | undefined,
   operatingSystem: '',
   cpuCores: '',
@@ -354,6 +379,12 @@ const statusOptions = computed(() => [
   { title: t('servers.offline'), value: 'OFFLINE' }
 ])
 
+// 销售状态选项
+const soldStatusOptions = computed(() => [
+  { title: t('servers.available'), value: false },
+  { title: t('servers.sold'), value: true }
+])
+
 
 // 表格头部
 const headers = computed(() => [
@@ -361,6 +392,7 @@ const headers = computed(() => [
   { title: t('servers.ip'), key: 'ip', sortable: false, width: 140 },
   { title: t('servers.port'), key: 'port', sortable: false, width: 80 },
   { title: t('servers.status'), key: 'status', sortable: false, width: 80 },
+  { title: t('servers.soldStatus'), key: 'isSold', sortable: false, width: 100 },
   { title: t('servers.operatingSystem'), key: 'operatingSystem', sortable: false, width: 160 },
   { title: t('servers.cpuCores'), key: 'cpuCores', sortable: false, width: 100 },
   { title: t('servers.memory'), key: 'memory', sortable: false, width: 80 },
@@ -492,6 +524,7 @@ const editServer = (server: Server) => {
     username: server.username || '',
     password: server.password || '',
     status: server.status || 'ONLINE',
+    isSold: server.isSold || false,
     groupId: server.groupId,
     operatingSystem: server.operatingSystem || '',
     cpuCores: server.cpuCores || '',
@@ -542,6 +575,7 @@ const saveServer = async () => {
       username: serverForm.username,
       password: serverForm.password,
       status: serverForm.status,
+      isSold: serverForm.isSold,
       groupId: serverForm.groupId,
       operatingSystem: serverForm.operatingSystem,
       cpuCores: serverForm.cpuCores,
@@ -582,6 +616,7 @@ const closeDialog = () => {
     username: '',
     password: '',
     status: 'ONLINE',
+    isSold: false,
     groupId: undefined,
     operatingSystem: '',
     cpuCores: '',

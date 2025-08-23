@@ -445,6 +445,7 @@ export default {
     // Profile
     profile: {
         title: 'Profile',
+        basicInfo: 'Basic Information',
         username: 'Username',
         email: 'Email',
         memberSince: 'Member since',

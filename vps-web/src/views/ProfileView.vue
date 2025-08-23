@@ -31,7 +31,7 @@
                 <div class="mb-6">
                   <h3 class="text-h6 mb-4 d-flex align-center">
                     <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-account-details</v-icon>
-                    基本信息
+                    {{ $t('profile.basicInfo') }}
                   </h3>
                   
                   <v-row>

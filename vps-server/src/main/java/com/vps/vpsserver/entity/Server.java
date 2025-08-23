@@ -65,6 +65,9 @@ public class Server {
     @Column(length = 255)
     private String password;
 
+    @Column(name = "is_sold", nullable = false)
+    private Boolean isSold = false;
+
     @CreationTimestamp
     @Column(name = "create_time", nullable = false, updatable = false)
     private LocalDateTime createTime;
@@ -208,6 +211,14 @@ public class Server {
         this.group = group;
     }
 
+    public Boolean getIsSold() {
+        return isSold;
+    }
+
+    public void setIsSold(Boolean isSold) {
+        this.isSold = isSold;
+    }
+
     @Override
     public String toString() {
         return "Server{" +
@@ -235,9 +246,7 @@ public class Server {
     // 服务器状态枚举
     public enum ServerStatus {
         ONLINE("online"),
-        OFFLINE("offline"),
-        ALLOCATED("allocated"),
-        AVAILABLE("available");
+        OFFLINE("offline");
 
         private final String value;
 
