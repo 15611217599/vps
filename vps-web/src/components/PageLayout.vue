@@ -86,6 +86,11 @@ const navigationItems = computed(() => [
     to: '/price-groups'
   },
   {
+    title: t('nav.orders'),
+    icon: 'mdi-receipt',
+    to: '/orders'
+  },
+  {
     title: t('nav.sales'),
     icon: 'mdi-storefront',
     to: '/sales'

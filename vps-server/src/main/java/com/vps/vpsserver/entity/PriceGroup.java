@@ -8,9 +8,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -68,6 +71,11 @@ public class PriceGroup {
 
     @Column(name = "server_group_id")
     private Long serverGroupId;
+
+    // 多对一关系：多个价格组属于一个服务器分组
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "server_group_id", insertable = false, updatable = false)
+    private ServerGroup serverGroup;
 
     @Column(name = "sales_page_html", columnDefinition = "TEXT")
     private String salesPageHtml;
@@ -214,6 +222,14 @@ public class PriceGroup {
 
     public void setSalesPageHtml(String salesPageHtml) {
         this.salesPageHtml = salesPageHtml;
+    }
+
+    public ServerGroup getServerGroup() {
+        return serverGroup;
+    }
+
+    public void setServerGroup(ServerGroup serverGroup) {
+        this.serverGroup = serverGroup;
     }
 
     @Override

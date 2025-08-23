@@ -8,6 +8,7 @@ import ServerGroupView from '../views/ServerGroupView.vue'
 import ServerCategoryManagementView from '../views/ServerCategoryManagementView.vue'
 import ServerView from '../views/ServerView.vue'
 import PriceGroupView from '../views/PriceGroupView.vue'
+import OrderView from '../views/OrderView.vue'
 import SalesView from '../views/SalesView.vue'
 
 
@@ -52,6 +53,12 @@ const routes = [
     path: '/price-groups',
     name: 'PriceGroups',
     component: PriceGroupView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    component: OrderView,
     meta: { requiresAuth: true }
   },
   {

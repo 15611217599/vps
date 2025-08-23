@@ -442,17 +442,18 @@
               </div>
 
               
-              <!-- 联系购买按钮 -->
+              <!-- 立即购买按钮 -->
               <v-btn
                 block
                 color="primary"
                 variant="flat"
-                @click="contactForPurchase(priceGroup)"
+                @click="purchaseNow(priceGroup)"
                 class="mt-4"
-                :disabled="!getSelectedPricePeriod(priceGroup)"
+                :disabled="!getSelectedPricePeriod(priceGroup) || purchasing"
+                :loading="purchasing"
               >
-                <v-icon start>mdi-phone</v-icon>
-                {{ getSelectedPricePeriod(priceGroup) ? $t('sales.contactForPurchase') : $t('sales.selectPricePlan') }}
+                <v-icon start>mdi-cart</v-icon>
+                {{ purchasing ? $t('sales.processing') : (getSelectedPricePeriod(priceGroup) ? $t('sales.purchaseNow') : $t('sales.selectPricePlan')) }}
               </v-btn>
             </v-card-text>
           </v-card>
@@ -487,6 +488,8 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getLocalizedText } from '@/utils/i18n'
+import { orderApi, type CreateOrderRequest } from '@/api/order'
+import { useNotification } from '@/composables/useNotification'
 
 interface Props {
   selectedGroup: any
@@ -500,6 +503,12 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
+const { t } = useI18n()
+const { showNotification } = useNotification()
+
+// 购买状态
+const purchasing = ref(false)
 
 // 价格组选择状态
 const priceGroupSelections = ref<Record<number, {
@@ -819,7 +828,57 @@ const onPriceGroupOSVersionChange = (priceGroup: any, value: string) => {
   priceGroupSelections.value[priceGroup.id].osVersion = value
 }
 
+// 立即购买
+const purchaseNow = async (priceGroup: any) => {
+  const selection = priceGroupSelections.value[priceGroup.id]
+  if (!selection || !selection.selectedPricePeriod) {
+    showNotification(t('sales.selectPriceFirst'), 'warning')
+    return
+  }
 
+  purchasing.value = true
+
+  try {
+    const orderRequest: CreateOrderRequest = {
+      priceGroupId: priceGroup.id,
+      billingPeriod: selection.selectedPricePeriod,
+      cpuCores: selection.cpu,
+      memoryGb: selection.memory,
+      storageGb: selection.storage,
+      bandwidthMbps: selection.bandwidth,
+      ipCount: selection.ipCount,
+      osName: selection.osName || '',
+      osVersion: selection.osVersion || '',
+      initialPassword: selection.password,
+      sshPort: selection.port
+    }
+
+    const response = await orderApi.createOrder(orderRequest)
+    
+    if (response.success) {
+      showNotification(t('sales.orderCreatedSuccess'), 'success')
+      console.log('订单创建成功:', response.data)
+      
+      // 显示订单详情信息
+      const orderInfo = `
+订单号: ${response.data.orderNumber}
+服务器: ${response.data.serverName || 'N/A'}
+金额: ¥${response.data.amount}
+计费周期: ${response.data.billingPeriod}
+状态: ${response.data.status}
+过期时间: ${new Date(response.data.expiresAt).toLocaleDateString()}
+      `
+      console.log('订单详情:', orderInfo)
+    } else {
+      showNotification(response.message || t('sales.orderCreateFailed'), 'error')
+    }
+  } catch (error: any) {
+    console.error('创建订单失败:', error)
+    showNotification(error.message || t('sales.orderCreateFailed'), 'error')
+  } finally {
+    purchasing.value = false
+  }
+}
 
 // 联系购买
 const contactForPurchase = (priceGroup: any) => {

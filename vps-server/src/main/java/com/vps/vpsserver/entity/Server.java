@@ -227,10 +227,17 @@ public class Server {
                 '}';
     }
 
+    // 获取服务器名称（使用IP作为名称）
+    public String getName() {
+        return this.ip;
+    }
+
     // 服务器状态枚举
     public enum ServerStatus {
         ONLINE("online"),
-        OFFLINE("offline");
+        OFFLINE("offline"),
+        ALLOCATED("allocated"),
+        AVAILABLE("available");
 
         private final String value;
 

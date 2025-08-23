@@ -1,6 +1,7 @@
 package com.vps.vpsserver.repository;
 
 import com.vps.vpsserver.entity.Server;
+import com.vps.vpsserver.entity.ServerGroup;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -67,6 +68,11 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
      * 根据分组获取服务器（分页）
      */
     Page<Server> findByGroupIdOrderByCreateTimeDesc(Long groupId, Pageable pageable);
+    
+    /**
+     * 根据服务器分组和状态查找服务器
+     */
+    List<Server> findByGroupAndStatus(ServerGroup group, Server.ServerStatus status);
     
     /**
      * 获取服务器统计信息
