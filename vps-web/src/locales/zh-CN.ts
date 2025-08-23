@@ -410,6 +410,49 @@ export default {
     usernameFormat: '用户名只能包含字母、数字和下划线'
   },
   
+  // 订单管理
+  order: {
+    title: '订单管理',
+    list: '订单列表',
+    searchPlaceholder: '搜索订单号、服务器名称...',
+    status: '状态',
+    billingPeriod: '计费周期',
+    orderNumber: '订单号',
+    serverName: '服务器名称',
+    amount: '金额',
+    createdAt: '创建时间',
+    expiresAt: '过期时间',
+    orderDetails: '订单详情',
+    serverSpecs: '服务器规格',
+    cores: '核',
+    memory: '内存',
+    storage: '存储',
+    bandwidth: '带宽',
+    // 订单状态
+    statusPending: '待支付',
+    statusPaid: '已支付',
+    statusProcessing: '处理中',
+    statusActive: '已激活',
+    statusSuspended: '已暂停',
+    statusCancelled: '已取消',
+    statusExpired: '已过期',
+    // 计费周期
+    hourly: '小时',
+    daily: '日',
+    monthly: '月',
+    quarterly: '季度',
+    semiAnnual: '半年',
+    annual: '年',
+    // 操作相关
+    noOrders: '暂无订单',
+    noOrdersDesc: '您还没有任何订单记录',
+    loadFailed: '加载订单失败',
+    paySuccess: '支付成功',
+    payFailed: '支付失败',
+    cancelSuccess: '取消成功',
+    cancelFailed: '取消失败'
+  },
+  
   // 找回密码
   forgotPassword: {
     title: '找回密码',
