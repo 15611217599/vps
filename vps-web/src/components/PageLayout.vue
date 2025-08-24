@@ -7,8 +7,8 @@
     <v-navigation-drawer
       v-model="drawer"
       app
-      :permanent="$vuetify.display.lgAndUp"
-      :temporary="!$vuetify.display.lgAndUp"
+      :permanent="lgAndUp"
+      :temporary="!lgAndUp"
       width="280"
       class="navigation-drawer"
     >
@@ -19,7 +19,7 @@
           :to="item.to"
           :prepend-icon="item.icon"
           :title="item.title"
-          :active="$route.path === item.to"
+          :active="route.path === item.to"
           class="nav-item"
           rounded="lg"
         />
@@ -37,10 +37,10 @@
 
 <script setup lang="ts">
 import { onMounted, watch, ref, computed } from 'vue'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
+import { useRoute } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
 import { useAuthStore } from '@/stores/auth'
-import { useI18n } from 'vue-i18n'
 import UnifiedTopBar from './UnifiedTopBar.vue'
 import FixedFooter from './FixedFooter.vue'
 
@@ -53,7 +53,8 @@ defineProps<Props>()
 const themeStore = useThemeStore()
 const authStore = useAuthStore()
 const vuetifyTheme = useTheme()
-const { t } = useI18n()
+const { lgAndUp } = useDisplay()
+const route = useRoute()
 
 // 侧边栏状态
 const drawer = ref(true)
@@ -61,42 +62,47 @@ const drawer = ref(true)
 // 导航菜单项
 const navigationItems = computed(() => [
   {
-    title: t('nav.dashboard'),
+    title: '仪表盘',
     icon: 'mdi-view-dashboard',
     to: '/dashboard'
   },
   {
-    title: t('nav.serverCategory'),
+    title: '服务器分类',
     icon: 'mdi-folder-multiple',
     to: '/categories'
   },
   {
-    title: t('nav.serverGroup'),
+    title: '服务器组',
     icon: 'mdi-folder-network',
     to: '/groups'
   },
   {
-    title: t('nav.servers'),
+    title: '服务器',
     icon: 'mdi-server',
     to: '/servers'
   },
   {
-    title: t('nav.priceGroups'),
+    title: '价格组',
     icon: 'mdi-currency-usd',
     to: '/price-groups'
   },
   {
-    title: t('nav.orders'),
+    title: '订单管理',
     icon: 'mdi-receipt',
     to: '/orders'
   },
   {
-    title: t('nav.sales'),
+    title: '交易流水',
+    icon: 'mdi-bank-transfer',
+    to: '/transactions'
+  },
+  {
+    title: '销售页面',
     icon: 'mdi-storefront',
     to: '/sales'
   },
   {
-    title: t('nav.profile'),
+    title: '个人资料',
     icon: 'mdi-account',
     to: '/profile'
   }
@@ -104,7 +110,12 @@ const navigationItems = computed(() => [
 
 // 应用主题到Vuetify
 const applyThemeToVuetify = () => {
-  vuetifyTheme.global.name.value = themeStore.currentTheme
+  if (typeof (vuetifyTheme as any).change === 'function') {
+    ;(vuetifyTheme as any).change(themeStore.currentTheme)
+  } else {
+    // @ts-ignore legacy fallback for older Vuetify
+    vuetifyTheme.global.name.value = themeStore.currentTheme
+  }
   
   // 更新主题颜色
   const theme = vuetifyTheme.themes.value[themeStore.currentTheme]

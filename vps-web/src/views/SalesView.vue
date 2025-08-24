@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="$t('nav.sales')">
+  <PageLayout title="销售页面">
     <div class="sales-page">
       <v-container fluid class="pa-0">
         <v-row no-gutters>
@@ -23,7 +23,7 @@
                       </template>
                       
                       <v-list-item-title class="font-weight-medium">
-                        {{ getLocalizedText(category.name) }}
+                        {{ category.name }}
                       </v-list-item-title>
                       
                       <template #append>
@@ -54,7 +54,7 @@
                           </template>
                           
                           <v-list-item-title class="text-body-2">
-                            {{ getLocalizedText(group.name) }}
+                            {{ group.name }}
                           </v-list-item-title>
                           
                         </v-list-item>
@@ -72,43 +72,43 @@
               <!-- 默认欢迎页面 -->
               <div v-if="!selectedGroup" class="welcome-section">
                 <div class="text-center mb-8">
-                  <h1 class="text-h3 font-weight-light mb-4">{{ $t('sales.welcomeTitle') }}</h1>
-                  <p class="text-h6 text-medium-emphasis mb-6">{{ $t('sales.welcomeSubtitle') }}</p>
+                  <h1 class="text-h3 font-weight-light mb-4">欢迎来到VPS服务</h1>
+                  <p class="text-h6 text-medium-emphasis mb-6">高性能云服务器，助力您的业务发展</p>
                 </div>
 
                 <!-- 核心配置 -->
                 <div class="mb-8">
                   <h2 class="text-h5 font-weight-medium mb-4 d-flex align-center">
                     <v-icon size="20" color="primary" class="me-2">mdi-rocket-launch</v-icon>
-                    {{ $t('sales.coreConfig') }}
+                    核心配置
                   </h2>
                   <div class="simple-grid">
                     <div class="simple-item">
                       <span class="item-icon">💻</span>
                       <div>
-                        <div class="item-title">{{ $t('sales.cpuProcessor') }}</div>
-                        <div class="item-desc">{{ $t('sales.cpuProcessorDesc') }}</div>
+                        <div class="item-title">CPU处理器</div>
+                        <div class="item-desc">高性能多核处理器，提供强劲计算能力</div>
                       </div>
                     </div>
                     <div class="simple-item">
                       <span class="item-icon">🧠</span>
                       <div>
-                        <div class="item-title">{{ $t('sales.memoryConfig') }}</div>
-                        <div class="item-desc">{{ $t('sales.memoryConfigDesc') }}</div>
+                        <div class="item-title">内存配置</div>
+                        <div class="item-desc">大容量内存，确保应用流畅运行</div>
                       </div>
                     </div>
                     <div class="simple-item">
                       <span class="item-icon">💾</span>
                       <div>
-                        <div class="item-title">{{ $t('sales.storageSpace') }}</div>
-                        <div class="item-desc">{{ $t('sales.storageSpaceDesc') }}</div>
+                        <div class="item-title">存储空间</div>
+                        <div class="item-desc">高速SSD存储，快速读写性能</div>
                       </div>
                     </div>
                     <div class="simple-item">
                       <span class="item-icon">🌐</span>
                       <div>
-                        <div class="item-title">{{ $t('sales.networkBandwidth') }}</div>
-                        <div class="item-desc">{{ $t('sales.networkBandwidthDesc') }}</div>
+                        <div class="item-title">网络带宽</div>
+                        <div class="item-desc">高速网络连接，保障数据传输</div>
                       </div>
                     </div>
                   </div>
@@ -118,7 +118,7 @@
                 <div class="mb-8">
                   <h2 class="text-h5 font-weight-medium mb-4 d-flex align-center">
                     <v-icon size="20" color="success" class="me-2">mdi-lightning-bolt</v-icon>
-                    {{ $t('sales.techFeatures') }}
+                    技术特性
                   </h2>
                   <div class="simple-grid">
                     <div class="simple-item" v-for="feature in techFeatures" :key="feature.title">
@@ -135,7 +135,7 @@
                 <div class="mb-8">
                   <h2 class="text-h5 font-weight-medium mb-4 d-flex align-center">
                     <v-icon size="20" color="purple" class="me-2">mdi-target</v-icon>
-                    {{ $t('sales.usageScenarios') }}
+                    适用场景
                   </h2>
                   <div class="simple-list">
                     <div class="simple-item" v-for="scenario in usageScenarios" :key="scenario.title">
@@ -152,7 +152,7 @@
                 <div class="mb-8">
                   <h2 class="text-h5 font-weight-medium mb-4 d-flex align-center">
                     <v-icon size="20" color="success" class="me-2">mdi-shield-check</v-icon>
-                    {{ $t('sales.serviceGuarantees') }}
+                    服务保障
                   </h2>
                   <div class="simple-grid">
                     <div class="simple-item" v-for="guarantee in serviceGuarantees" :key="guarantee.title">
@@ -175,7 +175,7 @@
                     @click="contactUs"
                     class="px-8"
                   >
-                    {{ $t('sales.contactUs') }}
+                    联系我们
                   </v-btn>
                 </div>
               </div>
@@ -200,29 +200,29 @@
       <v-card>
         <v-card-title class="d-flex align-center pa-6">
           <v-icon class="me-3" color="primary" size="28">mdi-phone</v-icon>
-          <span class="text-h5">{{ $t('sales.contactUs') }}</span>
+          <span class="text-h5">联系我们</span>
         </v-card-title>
         
         <v-card-text class="pa-6">
           <div class="text-center">
-            <h3 class="text-h6 mb-4">{{ $t('sales.contactUs') }}</h3>
+            <h3 class="text-h6 mb-4">联系我们</h3>
             <p class="text-body-1 text-medium-emphasis mb-6">
-              {{ $t('sales.contactHint') }}
+              我们提供7x24小时技术支持，随时为您服务
             </p>
             
             <!-- 联系方式 -->
             <div class="contact-info">
               <div class="contact-item mb-3">
                 <v-icon class="me-2" color="primary">mdi-qqchat</v-icon>
-                <span>{{ $t('sales.qqGroup') }}: 736757426</span>
+                <span>QQ群: 736757426</span>
               </div>
               <div class="contact-item mb-3">
                 <v-icon class="me-2" color="primary">mdi-email</v-icon>
-                <span>{{ $t('sales.email') }}: rabbitvps@163.com</span>
+                <span>邮箱: rabbitvps@163.com</span>
               </div>
               <div class="contact-item">
                 <v-icon class="me-2" color="primary">mdi-wechat</v-icon>
-                <span>{{ $t('sales.wechat') }}: rabbitvps</span>
+                <span>微信: rabbitvps</span>
               </div>
             </div>
           </div>
@@ -234,14 +234,14 @@
             variant="outlined"
             @click="showContactDialog = false"
           >
-            {{ $t('common.close') }}
+            {{ '关闭' }}
           </v-btn>
           <v-btn
             color="primary"
             variant="flat"
             @click="copyContact"
           >
-            {{ $t('sales.copyContact') }}
+            复制联系方式
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -258,7 +258,7 @@
 
 <script>
 import { ref, onMounted, watch, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+
 import { getLocalizedActiveCategories } from '@/api/category'
 import { serverGroupApi } from '@/api/serverGroup'
 import { priceGroupApi } from '@/api/priceGroup'
@@ -266,7 +266,7 @@ import { getServersByGroupId } from '@/api/server'
 import PageLayout from '@/components/PageLayout.vue'
 import ServerDetailsCard from '@/components/sales/ServerDetailsCard.vue'
 import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
-import { getLocalizedText } from '@/utils/i18n'
+
 import { useNotification } from '@/composables/useNotification'
 
 export default {
@@ -277,7 +277,7 @@ export default {
     NotificationSnackbar
   },
   setup() {
-    const { t } = useI18n()
+    // 移除国际化
     const { notificationState, showNotification } = useNotification()
 
     // 响应式数据
@@ -300,7 +300,7 @@ export default {
         categories.value = data
       } catch (error) {
         console.error('获取服务器类别失败:', error)
-        showNotification(t('sales.loadCategoriesError'), 'error')
+        showNotification('获取服务器类别失败', 'error')
       }
     }
 
@@ -313,7 +313,7 @@ export default {
         }
       } catch (error) {
         console.error('获取服务器分组失败:', error)
-        showNotification(t('sales.loadGroupsError'), 'error')
+        showNotification('获取服务器分组失败', 'error')
       }
     }
 
@@ -324,7 +324,7 @@ export default {
         priceGroups.value = data
       } catch (error) {
         console.error('获取价格组失败:', error)
-        showNotification(t('sales.loadPriceGroupsError'), 'error')
+        showNotification('获取价格组失败', 'error')
       }
     }
 
@@ -337,7 +337,7 @@ export default {
 
     // 获取类别图标
     const getCategoryIcon = (category) => {
-      const name = getLocalizedText(category.name).toLowerCase()
+      const name = category.name.toLowerCase()
       if (name.includes('云服务器') || name.includes('cloud')) return 'mdi-cloud'
       if (name.includes('独立服务器') || name.includes('dedicated')) return 'mdi-server'
       if (name.includes('虚拟主机') || name.includes('hosting')) return 'mdi-web'
@@ -423,10 +423,10 @@ export default {
     const copyContact = () => {
       const contactInfo = `QQ群: 736757426\n邮箱: rabbitvps@163.com\n微信: rabbitvps`
       navigator.clipboard.writeText(contactInfo).then(() => {
-        showNotification(t('sales.contactCopied'), 'success')
+        showNotification('联系方式已复制', 'success')
         showContactDialog.value = false
       }).catch(() => {
-        showNotification(t('sales.copyFailed'), 'error')
+        showNotification('复制失败', 'error')
       })
     }
 
@@ -450,29 +450,29 @@ export default {
 
 
     // 技术特性数据
-    const techFeatures = computed(() => [
-      { icon: '🛡️', title: t('sales.ddosProtection'), desc: t('sales.ddosProtectionDesc') },
-      { icon: '🔄', title: t('sales.autoBackup'), desc: t('sales.autoBackupDesc') },
-      { icon: '📊', title: t('sales.realTimeMonitoring'), desc: t('sales.realTimeMonitoringDesc') },
-      { icon: '🔧', title: t('sales.oneClickDeploy'), desc: t('sales.oneClickDeployDesc') },
-      { icon: '🌍', title: t('sales.globalCdn'), desc: t('sales.globalCdnDesc') },
-      { icon: '🔐', title: t('sales.sslCertificate'), desc: t('sales.sslCertificateDesc') }
+    const techFeatures = ref([
+      { icon: '🛡️', title: 'DDoS防护', desc: '专业级DDoS防护，保障服务稳定运行' },
+      { icon: '🔄', title: '自动备份', desc: '定期自动备份，数据安全有保障' },
+      { icon: '📊', title: '实时监控', desc: '24小时实时监控，及时发现问题' },
+      { icon: '🔧', title: '一键部署', desc: '快速部署应用，简化运维工作' },
+      { icon: '🌍', title: '全球CDN', desc: '全球CDN加速，提升访问速度' },
+      { icon: '🔐', title: 'SSL证书', desc: '免费SSL证书，保障数据传输安全' }
     ])
 
     // 使用场景数据
-    const usageScenarios = computed(() => [
-      { icon: '🌐', title: t('sales.webHosting'), desc: t('sales.webHostingDesc') },
-      { icon: '⚙️', title: t('sales.devTestEnv'), desc: t('sales.devTestEnvDesc') },
-      { icon: '📊', title: t('sales.databaseService'), desc: t('sales.databaseServiceDesc') },
-      { icon: '🤖', title: t('sales.aiMlWorkload'), desc: t('sales.aiMlWorkloadDesc') }
+    const usageScenarios = ref([
+      { icon: '🌐', title: '网站托管', desc: '适合各类网站和Web应用托管' },
+      { icon: '⚙️', title: '开发测试', desc: '为开发团队提供灵活的测试环境' },
+      { icon: '📊', title: '数据库服务', desc: '高性能数据库服务，支持多种数据库' },
+      { icon: '🤖', title: 'AI/ML工作负载', desc: '支持人工智能和机器学习应用' }
     ])
 
     // 服务保障数据
-    const serviceGuarantees = computed(() => [
-      { icon: '⏱️', title: t('sales.slaGuarantee'), desc: t('sales.slaGuaranteeDesc') },
-      { icon: '🎧', title: t('sales.techSupport247'), desc: t('sales.techSupport247Desc') },
-      { icon: '💰', title: t('sales.refundPolicy'), desc: t('sales.refundPolicyDesc') },
-      { icon: '🚀', title: t('sales.fastDelivery'), desc: t('sales.fastDeliveryDesc') }
+    const serviceGuarantees = ref([
+      { icon: '⏱️', title: 'SLA保障', desc: '99.9%服务可用性保障' },
+      { icon: '🎧', title: '7x24技术支持', desc: '全天候专业技术支持服务' },
+      { icon: '💰', title: '退款政策', desc: '不满意可申请退款保障' },
+      { icon: '🚀', title: '快速交付', desc: '订单确认后快速开通服务' }
     ])
 
     return {
@@ -496,7 +496,7 @@ export default {
       contactForPurchase,
       contactUs,
       copyContact,
-      getLocalizedText,
+
       notificationState,
       showNotification
     }

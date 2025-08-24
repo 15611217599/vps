@@ -3,13 +3,13 @@
     <v-container class="py-6">
       <!-- 页面标题和添加按钮 -->
       <div class="d-flex justify-space-between align-center mb-6">
-        <h1 class="text-h4 font-weight-bold">{{ t('serverCategory.title') }}</h1>
+        <h1 class="text-h4 font-weight-bold">{{ TEXTS.serverCategory.title }}</h1>
         <v-btn
           color="primary"
           prepend-icon="mdi-plus"
           @click="showAddDialog = true"
         >
-          {{ t('common.add') }}
+          {{ TEXTS.common.add }}
         </v-btn>
       </div>
 
@@ -17,11 +17,11 @@
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="me-2">mdi-folder-multiple</v-icon>
-          {{ t('serverCategory.title') }}
+          {{ TEXTS.serverCategory.title }}
           <v-spacer />
           <v-text-field
             v-model="searchQuery"
-            :placeholder="t('common.search')"
+            :placeholder="TEXTS.common.search"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             density="compact"
@@ -39,15 +39,15 @@
           :items-length="totalItems"
           :items-per-page="pageSize"
           :items-per-page-options="[5, 10, 20, 50]"
-          :items-per-page-text="t('common.itemsPerPage')"
+          :items-per-page-text="TEXTS.common.itemsPerPage"
           @update:options="handleOptionsUpdate"
         >
           <!-- 名称列 -->
           <template #item.name="{ item }">
             <div>
-              <div class="font-weight-medium">{{ getLocalizedText(item.name) }}</div>
+              <div class="font-weight-medium">{{ item.name }}</div>
               <div class="text-caption text-medium-emphasis" v-if="item.description">
-                {{ getLocalizedText(item.description) }}
+                {{ item.description }}
               </div>
             </div>
           </template>
@@ -59,7 +59,7 @@
               size="small"
               variant="flat"
             >
-              {{ item.isActive ? t('common.enabled') : t('common.disabled') }}
+              {{ item.isActive ? TEXTS.common.enabled : TEXTS.common.disabled }}
             </v-chip>
           </template>
 
@@ -87,7 +87,7 @@
   <!-- 添加/编辑对话框 -->
   <UnifiedDialog
     v-model="showAddDialog"
-    :title="(editingCategory ? $t('common.edit') : $t('common.add')) + $t('servers.category')"
+    :title="(editingCategory ? TEXTS.common.edit : TEXTS.common.add) + TEXTS.serverCategory.title"
     :is-edit="!!editingCategory"
     :loading="saving"
     :disabled="!formValid"
@@ -99,7 +99,7 @@
     <v-form ref="form" v-model="formValid">
       <v-text-field
         v-model="categoryForm.name"
-        :label="t('serverCategory.name')"
+        :label="TEXTS.serverCategory.name"
         :rules="[rules.required]"
         variant="outlined"
         prepend-inner-icon="mdi-folder"
@@ -111,7 +111,7 @@
 
       <v-textarea
         v-model="categoryForm.description"
-        :label="t('common.description')"
+        :label="TEXTS.common.description"
         variant="outlined"
         prepend-inner-icon="mdi-text"
         color="primary"
@@ -126,7 +126,7 @@
         <v-col cols="6">
           <v-text-field
             v-model.number="categoryForm.sortOrder"
-            :label="t('common.sortOrder')"
+            :label="TEXTS.common.sortOrder"
             type="number"
             variant="outlined"
             prepend-inner-icon="mdi-sort-numeric-ascending"
@@ -139,7 +139,7 @@
         <v-col cols="6" class="d-flex align-center">
           <v-switch
             v-model="categoryForm.isActive"
-            :label="t('common.status')"
+            :label="TEXTS.common.status"
             color="primary"
             class="mt-4"
           />
@@ -151,9 +151,9 @@
   <!-- 删除确认对话框 -->
   <ConfirmDeleteDialog
     v-model="showDeleteDialog"
-    :title="t('serverCategory.deleteWarning')"
-    :message="t('serverCategory.confirmDelete', { name: getLocalizedText(deletingCategory?.name || '') })"
-    :item-name="getLocalizedText(deletingCategory?.name || '')"
+    :title="TEXTS.serverCategory.deleteWarning"
+    :message="`确定要删除分类 '${deletingCategory?.name || ''}' 吗？`"
+    :item-name="deletingCategory?.name || ''"
     :loading="deleting"
     @confirm="confirmDelete"
     @cancel="showDeleteDialog = false"
@@ -162,11 +162,12 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { TEXTS } from '@/constants/texts'
+
 import PageLayout from '@/components/PageLayout.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
-import { getLocalizedText } from '@/utils/i18n'
+
 import {
   getCategories,
   createCategory,
@@ -175,7 +176,7 @@ import {
   type ServerCategory
 } from '@/api/category'
 
-const { t } = useI18n()
+// 移除国际化
 
 // 响应式数据
 const categories = ref<ServerCategory[]>([])  
@@ -202,14 +203,14 @@ const categoryForm = reactive({
 
 // 表格头部
 const headers = computed(() => [
-  { title: t('serverCategory.name'), key: 'name', sortable: false },
-  { title: t('common.status'), key: 'isActive', sortable: false, width: 100 },
-  { title: t('common.actions'), key: 'actions', sortable: false, width: 120 }
+  { title: TEXTS.serverCategory.name, key: 'name', sortable: false },
+  { title: TEXTS.common.status, key: 'isActive', sortable: false, width: 100 },
+  { title: TEXTS.common.actions, key: 'actions', sortable: false, width: 120 }
 ])
 
 // 表单验证规则
 const rules = {
-  required: (value: string) => !!value || t('validation.required')
+  required: (value: string) => !!value || '此字段为必填项'
 }
 
 // 加载类别数据
@@ -230,12 +231,12 @@ const loadCategories = async () => {
     categories.value = response.data || []
     totalItems.value = response.totalElements || 0
   } catch (error) {
-    console.error(t('serverCategory.loadFailed'), error)
+    console.error(TEXTS.serverCategory.loadFailed, error)
     // 显示详细的后端错误信息
     if (error && typeof error === 'object' && 'message' in error) {
       alert(error.message)
     } else {
-      alert(t('serverCategory.loadFailed'))
+      alert(TEXTS.serverCategory.loadFailed)
     }
     categories.value = []
     totalItems.value = 0
@@ -310,12 +311,12 @@ const confirmDelete = async () => {
     showDeleteDialog.value = false
     await loadCategories()
   } catch (error) {
-    console.error(t('serverCategory.deleteFailed'), error)
+    console.error(TEXTS.serverCategory.deleteFailed, error)
     // 显示详细的后端错误信息
     if (error && typeof error === 'object' && 'message' in error) {
       alert(error.message)
     } else {
-      alert(t('serverCategory.deleteFailed'))
+      alert(TEXTS.serverCategory.deleteFailed)
     }
   } finally {
     deleting.value = false
@@ -336,12 +337,12 @@ const saveCategory = async () => {
     closeDialog()
     await loadCategories()
   } catch (error) {
-    console.error(t('serverCategory.saveFailed'), error)
+    console.error(TEXTS.serverCategory.saveFailed, error)
     // 显示详细的后端错误信息
     if (error && typeof error === 'object' && 'message' in error) {
       alert(error.message)
     } else {
-      alert(t('serverCategory.saveFailed'))
+      alert(TEXTS.serverCategory.saveFailed)
     }
   } finally {
     saving.value = false

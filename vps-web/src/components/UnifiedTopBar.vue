@@ -36,8 +36,7 @@
       
       <!-- 右侧控制区域 -->
       <div class="d-flex align-center">
-        <!-- 语言切换器 -->
-        <LanguageSwitcher class="me-2" />
+
         
         <!-- 主题切换器 -->
         <ThemeSwitcher class="me-2" />
@@ -59,9 +58,9 @@
           </template>
           
           <v-list>
-            <v-list-item prepend-icon="mdi-account" :title="$t('nav.profile')" @click="handleProfile"></v-list-item>
+            <v-list-item prepend-icon="mdi-account" :title="TEXTS.nav.profile" @click="handleProfile"></v-list-item>
             <v-divider />
-            <v-list-item prepend-icon="mdi-logout" :title="$t('nav.logout')" @click="handleLogout"></v-list-item>
+            <v-list-item prepend-icon="mdi-logout" title="退出登录" @click="handleLogout"></v-list-item>
           </v-list>
         </v-menu>
       </div>
@@ -73,7 +72,8 @@
 import { useThemeStore } from '@/stores/theme'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from './LanguageSwitcher.vue'
+import { TEXTS } from '@/constants/texts'
+
 import ThemeSwitcher from './ThemeSwitcher.vue'
 
 interface Props {

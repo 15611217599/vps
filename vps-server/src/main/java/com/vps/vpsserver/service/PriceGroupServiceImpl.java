@@ -23,15 +23,12 @@ public class PriceGroupServiceImpl implements PriceGroupService {
     @Autowired
     private PriceGroupRepository priceGroupRepository;
     
-    @Autowired
-    private I18nService i18nService;
-    
     @Override
     public PriceGroupDTO createPriceGroup(PriceGroupDTO priceGroupDTO) {
         // 检查名称是否已存在
         String nameToCheck = priceGroupDTO.getName();
         if (nameToCheck != null && priceGroupRepository.existsByName(nameToCheck)) {
-            throw new RuntimeException(i18nService.getMessage("priceGroup.nameExists") + ": " + nameToCheck);
+            throw new RuntimeException("价格组名称已存在: " + nameToCheck);
         }
         
         PriceGroup priceGroup = priceGroupDTO.toEntity();
@@ -54,12 +51,12 @@ public class PriceGroupServiceImpl implements PriceGroupService {
     @Override
     public PriceGroupDTO updatePriceGroup(Long id, PriceGroupDTO priceGroupDTO) {
         PriceGroup existingPriceGroup = priceGroupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("priceGroup.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到价格组: " + id));
         
         // 检查名称是否已被其他价格组使用
         String nameToCheck = priceGroupDTO.getName();
         if (nameToCheck != null && priceGroupRepository.existsByNameAndIdNot(nameToCheck, id)) {
-            throw new RuntimeException(i18nService.getMessage("priceGroup.nameExists") + ": " + nameToCheck);
+            throw new RuntimeException("价格组名称已存在: " + nameToCheck);
         }
         
         // 更新字段
@@ -107,7 +104,7 @@ public class PriceGroupServiceImpl implements PriceGroupService {
     @Override
     public void deletePriceGroup(Long id) {
         PriceGroup priceGroup = priceGroupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("priceGroup.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到价格组: " + id));
         
         priceGroupRepository.delete(priceGroup);
     }
@@ -116,7 +113,7 @@ public class PriceGroupServiceImpl implements PriceGroupService {
     @Transactional(readOnly = true)
     public PriceGroupDTO getPriceGroupById(Long id) {
         PriceGroup priceGroup = priceGroupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("priceGroup.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到价格组: " + id));
         
         return PriceGroupDTO.fromEntity(priceGroup);
     }

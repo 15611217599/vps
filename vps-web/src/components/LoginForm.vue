@@ -7,15 +7,15 @@
             <v-avatar size="64" class="login-avatar mb-3" :color="themeStore.currentColors.primary">
               <v-icon icon="mdi-account-circle" size="48" color="white"></v-icon>
             </v-avatar>
-            <h2 class="text-h4 font-weight-bold">{{ $t('auth.login.title') }}</h2>
-            <p class="text-body-1 text-medium-emphasis mt-1">{{ $t('auth.login.subtitle') }}</p>
+            <h2 class="text-h4 font-weight-bold">欢迎回来</h2>
+            <p class="text-body-1 text-medium-emphasis mt-1">请登录您的账户</p>
           </v-card-title>
           
           <v-card-text>
             <v-form @submit.prevent="handleLogin" ref="loginForm">
               <v-text-field
                 v-model="form.username"
-                :label="$t('auth.login.username')"
+                label="用户名"
                 prepend-inner-icon="mdi-account"
                 variant="outlined"
                 required
@@ -25,7 +25,7 @@
               
               <v-text-field
                 v-model="form.password"
-                :label="$t('auth.login.password')"
+                label="密码"
                 :type="showPassword ? 'text' : 'password'"
                 prepend-inner-icon="mdi-lock"
                 variant="outlined"
@@ -57,7 +57,7 @@
                 class="mb-4"
                 :color="themeStore.currentColors.primary"
               >
-                {{ authStore.loading ? $t('auth.login.loginButtonLoading') : $t('auth.login.loginButton') }}
+                {{ authStore.loading ? '登录中...' : '立即登录' }}
               </v-btn>
               
               <!-- 忘记密码链接 -->
@@ -68,7 +68,7 @@
                   :color="themeStore.currentColors.primary"
                   @click="$router.push('/forgot-password')"
                 >
-                  {{ $t('auth.login.forgotPassword') }}
+                  忘记密码？
                 </v-btn>
               </div>
               
@@ -87,7 +87,7 @@
           
           <v-card-actions class="justify-center pt-4">
             <div class="d-flex align-center justify-center">
-              <span class="text-body-1 text-medium-emphasis">{{ $t('auth.login.noAccount') }}</span>
+              <span class="text-body-1 text-medium-emphasis">还没有账号？</span>
               <v-btn
                 variant="text"
                 :color="themeStore.currentColors.primary"
@@ -95,7 +95,7 @@
                 size="small"
                 @click="$emit('switch-mode')"
               >
-                {{ $t('auth.login.registerLink') }}
+                立即注册
               </v-btn>
             </div>
           </v-card-actions>
@@ -107,13 +107,11 @@
 
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['switch-mode'])
-const { t } = useI18n()
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -127,7 +125,7 @@ const showPassword = ref(false)
 const loginForm = ref()
 
 const rules = {
-  required: (value: string) => !!value || t('validation.required')
+  required: (value: string) => !!value || '此字段为必填项'
 }
 
 const handleLogin = async () => {
@@ -135,7 +133,7 @@ const handleLogin = async () => {
   const { valid } = await loginForm.value.validate()
   
   if (!valid) {
-    authStore.error = t('auth.errors.pleaseFixErrors')
+    authStore.error = '请修正表单中的错误后再提交'
     return
   }
   

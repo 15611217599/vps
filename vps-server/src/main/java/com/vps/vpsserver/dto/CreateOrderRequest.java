@@ -21,4 +21,5 @@ public class CreateOrderRequest {
     private String osVersion;
     private String initialPassword;
     private Integer sshPort;
+    private Boolean autoRenewal;
 }

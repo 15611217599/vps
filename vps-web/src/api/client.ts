@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { getAcceptLanguageHeader } from '@/utils/language'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -19,9 +18,8 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
-    // 添加语言头 - 使用标准化函数
-    const language = getAcceptLanguageHeader()
-    config.headers['Accept-Language'] = language
+    // 设置默认语言为中文
+    config.headers['Accept-Language'] = 'zh-CN'
 
     return config
   },

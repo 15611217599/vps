@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { TEXTS } from '@/constants/texts'
 
 interface Props {
   status: string | boolean | number
@@ -37,29 +38,29 @@ const props = withDefaults(defineProps<Props>(), {
 // 预定义的状态配置
 const statusConfigs = {
   status: {
-    online: { color: 'success', icon: 'mdi-check-circle', text: 'common.online' },
-    offline: { color: 'error', icon: 'mdi-close-circle', text: 'common.offline' },
-    pending: { color: 'warning', icon: 'mdi-clock', text: 'common.pending' },
-    active: { color: 'success', icon: 'mdi-check-circle', text: 'common.active' },
-    inactive: { color: 'error', icon: 'mdi-close-circle', text: 'common.inactive' },
-    running: { color: 'success', icon: 'mdi-play-circle', text: 'common.running' },
-    stopped: { color: 'error', icon: 'mdi-stop-circle', text: 'common.stopped' },
-    paused: { color: 'warning', icon: 'mdi-pause-circle', text: 'common.paused' }
+    online: { color: 'success', icon: 'mdi-check-circle', text: '在线' },
+    offline: { color: 'error', icon: 'mdi-close-circle', text: '离线' },
+    pending: { color: 'warning', icon: 'mdi-clock', text: '待处理' },
+    active: { color: 'success', icon: 'mdi-check-circle', text: '启用' },
+    inactive: { color: 'error', icon: 'mdi-close-circle', text: '禁用' },
+    running: { color: 'success', icon: 'mdi-play-circle', text: '运行中' },
+    stopped: { color: 'error', icon: 'mdi-stop-circle', text: '已停止' },
+    paused: { color: 'warning', icon: 'mdi-pause-circle', text: '暂停' }
   },
   boolean: {
-    true: { color: 'success', icon: 'mdi-check', text: 'common.yes' },
-    false: { color: 'error', icon: 'mdi-close', text: 'common.no' }
+    true: { color: 'success', icon: 'mdi-check', text: TEXTS.common.yes },
+    false: { color: 'error', icon: 'mdi-close', text: TEXTS.common.no }
   },
   priority: {
-    high: { color: 'error', icon: 'mdi-arrow-up-bold', text: 'common.high' },
-    medium: { color: 'warning', icon: 'mdi-minus', text: 'common.medium' },
-    low: { color: 'success', icon: 'mdi-arrow-down-bold', text: 'common.low' }
+    high: { color: 'error', icon: 'mdi-arrow-up-bold', text: '高' },
+    medium: { color: 'warning', icon: 'mdi-minus', text: '中' },
+    low: { color: 'success', icon: 'mdi-arrow-down-bold', text: '低' }
   },
   category: {
-    server: { color: 'primary', icon: 'mdi-server', text: 'common.server' },
-    network: { color: 'info', icon: 'mdi-network', text: 'common.network' },
-    storage: { color: 'purple', icon: 'mdi-harddisk', text: 'common.storage' },
-    security: { color: 'orange', icon: 'mdi-shield', text: 'common.security' }
+    server: { color: 'primary', icon: 'mdi-server', text: '服务器' },
+    network: { color: 'info', icon: 'mdi-network', text: '网络' },
+    storage: { color: 'purple', icon: 'mdi-harddisk', text: '存储' },
+    security: { color: 'orange', icon: 'mdi-shield', text: '安全' }
   }
 }
 
@@ -111,12 +112,10 @@ const displayText = computed(() => {
     return props.customTexts[statusKey]
   }
   
-  // 使用预定义配置的国际化键
+  // 使用预定义配置的文本
   const config = statusConfigs[props.type]?.[statusKey]
   if (config) {
-    // 这里应该使用 $t() 函数，但在 computed 中需要特殊处理
-    // 暂时返回原始状态值，在实际使用时可以通过 i18n 处理
-    return String(props.status)
+    return config.text
   }
   
   // 默认显示原始状态值

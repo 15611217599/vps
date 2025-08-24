@@ -24,7 +24,12 @@ const vuetifyTheme = useTheme()
 
 // 应用主题到Vuetify
 const applyThemeToVuetify = () => {
-  vuetifyTheme.global.name.value = themeStore.currentTheme
+  if (typeof (vuetifyTheme as any).change === 'function') {
+    ;(vuetifyTheme as any).change(themeStore.currentTheme)
+  } else {
+    // @ts-ignore legacy fallback for older Vuetify
+    vuetifyTheme.global.name.value = themeStore.currentTheme
+  }
   
   // 更新主题颜色
   const theme = vuetifyTheme.themes.value[themeStore.currentTheme]

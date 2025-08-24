@@ -8,8 +8,15 @@ const themeStore = useThemeStore()
 
 // 应用主题到Vuetify
 const applyThemeToVuetify = () => {
-  vuetifyTheme.global.name.value = themeStore.currentTheme
-  
+  // Prefer new API; fallback to legacy to avoid runtime break
+  if (typeof (vuetifyTheme as any).change === 'function') {
+    ;(vuetifyTheme as any).change(themeStore.currentTheme)
+  } else {
+    // legacy fallback
+    // @ts-ignore
+    vuetifyTheme.global.name.value = themeStore.currentTheme
+  }
+
   // 更新主题颜色
   const theme = vuetifyTheme.themes.value[themeStore.currentTheme]
   if (theme) {

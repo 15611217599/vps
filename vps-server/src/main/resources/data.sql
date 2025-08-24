@@ -9,17 +9,17 @@ INSERT INTO wallets (user_id, balance, currency, created_at, updated_at) VALUES
 
 -- 插入服务器类别数据
 INSERT INTO server_categories (name, description, sort_order, is_active, create_time, update_time) VALUES
-('{"cn": "VPS服务器", "en": "VPS Servers"}', '{"cn": "专用服务器，适用于大型应用", "en": "Virtual Private Servers for medium to big applications"}', 1, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('VPS服务器', '专用服务器，适用于大型应用', 1, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- 插入服务器分组数据（使用多语言JSON格式）
+-- 插入服务器分组数据
 INSERT INTO server_groups (name, description, region, country, city, sort_order, is_active, category_id, create_time, update_time) VALUES
 -- VPS服务器分组
-('{"cn": "美国硅谷", "en": "Silicon Valley, USA"}', '{"cn": "美国硅谷数据中心", "en": "Silicon Valley Data Center"}', '{"cn": "美洲", "en": "Americas"}', '{"cn": "美国", "en": "United States"}', '{"cn": "硅谷", "en": "Silicon Valley"}', 1, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('{"cn": "美国洛杉矶", "en": "Los Angeles, USA"}', '{"cn": "美国洛杉矶数据中心", "en": "Los Angeles Data Center"}', '{"cn": "美洲", "en": "Americas"}', '{"cn": "美国", "en": "United States"}', '{"cn": "洛杉矶", "en": "Los Angeles"}', 2, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('{"cn": "中国香港", "en": "Hong Kong, China"}', '{"cn": "香港数据中心", "en": "Hong Kong Data Center"}', '{"cn": "亚洲", "en": "Asia"}', '{"cn": "中国", "en": "China"}', '{"cn": "香港", "en": "Hong Kong"}', 3, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('{"cn": "日本东京", "en": "Tokyo, Japan"}', '{"cn": "日本东京数据中心", "en": "Tokyo Data Center"}', '{"cn": "亚洲", "en": "Asia"}', '{"cn": "日本", "en": "Japan"}', '{"cn": "东京", "en": "Tokyo"}', 4, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('{"cn": "新加坡", "en": "Singapore"}', '{"cn": "新加坡数据中心", "en": "Singapore Data Center"}', '{"cn": "亚洲", "en": "Asia"}', '{"cn": "新加坡", "en": "Singapore"}', '{"cn": "新加坡", "en": "Singapore"}', 5, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('{"cn": "欧洲德国", "en": "Frankfurt, Germany"}', '{"cn": "德国法兰克福数据中心", "en": "Frankfurt Data Center"}', '{"cn": "欧洲", "en": "Europe"}', '{"cn": "德国", "en": "Germany"}', '{"cn": "法兰克福", "en": "Frankfurt"}', 6, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('美国硅谷', '美国硅谷数据中心', '美洲', '美国', '硅谷', 1, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('美国洛杉矶', '美国洛杉矶数据中心', '美洲', '美国', '洛杉矶', 2, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('中国香港', '香港数据中心', '亚洲', '中国', '香港', 3, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('日本东京', '日本东京数据中心', '亚洲', '日本', '东京', 4, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('新加坡', '新加坡数据中心', '亚洲', '新加坡', '新加坡', 5, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('欧洲德国', '德国法兰克福数据中心', '欧洲', '德国', '法兰克福', 6, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 插入服务器数据（按照新的字段结构：ip, port, status, cpu_cores, memory, disk_space, disk_type, network_speed, operating_system, username, password, is_sold, group_id, create_time, last_update）
 INSERT INTO servers (ip, port, status, cpu_cores, memory, disk_space, disk_type, network_speed, operating_system, username, password, is_sold, group_id, create_time, last_update) VALUES
@@ -94,10 +94,10 @@ INSERT INTO servers (ip, port, status, cpu_cores, memory, disk_space, disk_type,
 ('107.149.202.28', 35473, 'ONLINE', '32 Core', '32G', '200G SSD', 'FR - SSD', '25M', 'CentOS - 7.9.2111 - x64', 'root', 'Ld4MBRw578Shbn', false, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.149.202.29', 11174, 'ONLINE', '32 Core', '32G', '200G SSD', 'FR - SSD', '25M', 'CentOS - 7.9.2111 - x64', 'root', 'Ld4MBRw578Shbn', false, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- 插入价格组数据（包含多语言和示例HTML）
+-- 插入价格组数据
 INSERT INTO price_groups (name, description, hourly_price, daily_price, monthly_price, quarterly_price, semi_annual_price, annual_price, sort_order, is_active, server_group_id, sales_page_html, create_time, last_update) VALUES
-    ('{"cn": "标准套餐", "en": "Standard Package"}',
-     '{"cn": "适合个人用户和小型项目的标准价格套餐", "en": "Standard pricing package suitable for individual users and small projects"}',
+    ('标准套餐',
+     '适合个人用户和小型项目的标准价格套餐',
      1.00, 10.00, 200.00, 500.00, 900.00, 1500.00,
      1, true, 2,
      '{"cpu_cores":32,"memory":32,"disk_space":200,"network_speed":25,"ip_count":1,"operating_system":[{"name":"ubuntu","versions":["16.04","18.04","20.04","22.04","24.04","25.04"]},{"name":"centos","versions":["9","10"]},{"name":"debian","versions":["9","10","11","12","13"]}]}',

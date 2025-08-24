@@ -42,13 +42,10 @@ export const getActiveCategories = async (): Promise<ServerCategory[]> => {
 }
 
 /**
- * 获取本地化的激活服务器类别
- * 后端会根据Accept-Language头自动返回对应语言的数据
+ * 获取激活的服务器类别（别名，保持兼容性）
  */
 export const getLocalizedActiveCategories = async (): Promise<ServerCategory[]> => {
-  // 现在直接使用 /active 端点，AOP会自动处理国际化
-  const response = await apiClient.get<ApiResponse<ServerCategory[]>>('/categories/active')
-  return response.data.data
+  return getActiveCategories()
 }
 
 /**

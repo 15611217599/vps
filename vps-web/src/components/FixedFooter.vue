@@ -13,7 +13,7 @@
               mdi-copyright
             </v-icon>
             <span class="text-caption text-white">
-              {{ new Date().getFullYear() }} {{ $t('footer.company') }}
+              {{ new Date().getFullYear() }} {{ TEXTS.footer.company }}
             </span>
           </div>
         </v-col>
@@ -30,7 +30,7 @@
               v1.0.0
             </v-chip>
             <span class="text-caption text-white">
-              {{ $t('footer.poweredBy') }}
+              {{ TEXTS.footer.poweredBy }}
             </span>
           </div>
         </v-col>
@@ -45,7 +45,7 @@
               class="text-caption px-2"
               @click="openLink('privacy')"
             >
-              {{ $t('footer.privacy') }}
+              {{ TEXTS.footer.privacy }}
             </v-btn>
             
             <v-divider vertical class="mx-1" color="rgba(255,255,255,0.3)" />
@@ -57,7 +57,7 @@
               class="text-caption px-2"
               @click="openLink('terms')"
             >
-              {{ $t('footer.terms') }}
+              {{ TEXTS.footer.terms }}
             </v-btn>
             
             <v-divider vertical class="mx-1" color="rgba(255,255,255,0.3)" />
@@ -69,7 +69,7 @@
               class="text-caption px-2"
               @click="openLink('support')"
             >
-              {{ $t('footer.support') }}
+              {{ TEXTS.footer.support }}
             </v-btn>
           </div>
         </v-col>
@@ -80,6 +80,7 @@
 
 <script setup lang="ts">
 import { useThemeStore } from '@/stores/theme'
+import { TEXTS } from '@/constants/texts'
 
 const themeStore = useThemeStore()
 

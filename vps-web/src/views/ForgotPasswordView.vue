@@ -8,8 +8,8 @@
                 <v-avatar size="64" class="forgot-password-avatar mb-3" :color="themeStore.currentColors.primary">
                   <v-icon icon="mdi-lock-reset" size="48" color="white"></v-icon>
                 </v-avatar>
-                <h2 class="text-h4 font-weight-bold">{{ $t('forgotPassword.title') }}</h2>
-                <p class="text-body-1 text-medium-emphasis mt-1">{{ $t('forgotPassword.subtitle') }}</p>
+                <h2 class="text-h4 font-weight-bold">{{ TEXTS.forgotPassword.title }}</h2>
+                <p class="text-body-1 text-medium-emphasis mt-1">{{ TEXTS.forgotPassword.subtitle }}</p>
               </v-card-title>
               
               <v-card-text>
@@ -17,7 +17,7 @@
                 <v-form v-if="step === 1" @submit.prevent="handleSendCode" ref="emailForm">
                   <v-text-field
                     v-model="form.email"
-                    :label="$t('forgotPassword.email')"
+                    :label="TEXTS.forgotPassword.email"
                     type="email"
                     prepend-inner-icon="mdi-email"
                     variant="outlined"
@@ -34,7 +34,7 @@
                     class="mb-4"
                     :color="themeStore.currentColors.primary"
                   >
-                    {{ loading ? $t('forgotPassword.sendingCode') : $t('forgotPassword.sendCode') }}
+                    {{ loading ? TEXTS.forgotPassword.sendingCode : TEXTS.forgotPassword.sendCode }}
                   </v-btn>
                 </v-form>
                 
@@ -45,12 +45,12 @@
                     variant="tonal"
                     class="mb-4"
                   >
-                    {{ $t('forgotPassword.codeInfo', { email: form.email }) }}
+                    {{ `验证码已发送到 ${form.email}` }}
                   </v-alert>
                   
                   <v-text-field
                     v-model="form.verificationCode"
-                    :label="$t('forgotPassword.verificationCode')"
+                    :label="TEXTS.forgotPassword.verificationCode"
                     prepend-inner-icon="mdi-shield-key"
                     variant="outlined"
                     required
@@ -61,7 +61,7 @@
                   
                   <v-text-field
                     v-model="form.newPassword"
-                    :label="$t('forgotPassword.newPassword')"
+                    :label="TEXTS.forgotPassword.newPassword"
                     :type="showNewPassword ? 'text' : 'password'"
                     prepend-inner-icon="mdi-lock-plus"
                     variant="outlined"
@@ -85,7 +85,7 @@
                   
                   <v-text-field
                     v-model="form.confirmPassword"
-                    :label="$t('forgotPassword.confirmPassword')"
+                    :label="TEXTS.forgotPassword.confirmPassword"
                     :type="showConfirmPassword ? 'text' : 'password'"
                     prepend-inner-icon="mdi-lock-check"
                     variant="outlined"
@@ -109,7 +109,7 @@
                   
                   <!-- 密码强度指示器 -->
                   <div v-if="form.newPassword" class="mb-4">
-                    <div class="text-caption text-medium-emphasis mb-2">{{ $t('auth.register.passwordStrength') }}</div>
+                    <div class="text-caption text-medium-emphasis mb-2">{{ TEXTS.auth.register.passwordStrength }}</div>
                     <v-progress-linear
                       :model-value="passwordStrength.score * 25"
                       :color="passwordStrength.color"
@@ -117,7 +117,7 @@
                       rounded
                     ></v-progress-linear>
                     <div class="text-caption mt-1" :class="`text-${passwordStrength.color}`">
-                      {{ $t(`auth.register.password${passwordStrength.text}`) }}
+                      {{ TEXTS.auth.register[`password${passwordStrength.text}`] }}
                     </div>
                   </div>
                   
@@ -127,7 +127,7 @@
                       @click="goBackToEmail"
                       prepend-icon="mdi-arrow-left"
                     >
-                      {{ $t('forgotPassword.backToEmail') }}
+                      {{ TEXTS.forgotPassword.backToEmail }}
                     </v-btn>
                     
                     <v-btn
@@ -137,7 +137,7 @@
                       prepend-icon="mdi-check"
                       class="flex-grow-1"
                     >
-                      {{ loading ? $t('forgotPassword.resetting') : $t('forgotPassword.resetPassword') }}
+                      {{ loading ? TEXTS.forgotPassword.resetting : TEXTS.forgotPassword.resetPassword }}
                     </v-btn>
                   </div>
                   
@@ -150,8 +150,8 @@
                       @click="handleResendCode"
                     >
                       {{ resendCountdown > 0 
-                        ? $t('forgotPassword.resendCountdown', { seconds: resendCountdown })
-                        : $t('forgotPassword.resendCode') 
+                        ? `${resendCountdown}秒后可重新发送`
+                        : TEXTS.forgotPassword.resendCode 
                       }}
                     </v-btn>
                   </div>
@@ -183,7 +183,7 @@
               
               <v-card-actions class="justify-center pt-4">
                 <div class="d-flex align-center justify-center">
-                  <span class="text-body-1 text-medium-emphasis">{{ $t('forgotPassword.rememberPassword') }}</span>
+                  <span class="text-body-1 text-medium-emphasis">{{ TEXTS.forgotPassword.rememberPassword }}</span>
                   <v-btn
                     variant="text"
                     :color="themeStore.currentColors.primary"
@@ -191,7 +191,7 @@
                     size="small"
                     @click="$router.push('/auth')"
                   >
-                    {{ $t('forgotPassword.backToLogin') }}
+                    {{ TEXTS.forgotPassword.backToLogin }}
                   </v-btn>
                 </div>
               </v-card-actions>
@@ -204,13 +204,12 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted, onUnmounted } from 'vue'
-import { useI18n } from 'vue-i18n'
+
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
 import GuestLayout from '@/components/GuestLayout.vue'
-
-const { t } = useI18n()
+import { TEXTS } from '@/constants/texts'
 const themeStore = useThemeStore()
 const router = useRouter()
 
@@ -235,23 +234,23 @@ const form = reactive({
 
 // 验证规则
 const rules = {
-  required: (value: string) => !!value || t('validation.required'),
+  required: (value: string) => !!value || '此字段为必填项',
   email: (value: string) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return pattern.test(value) || t('validation.email')
+    return pattern.test(value) || '请输入有效的邮箱地址'
   },
   verificationCode: (value: string) => {
-    if (!value) return t('validation.required')
-    if (!/^\d{6}$/.test(value)) return t('forgotPassword.codeFormat')
+    if (!value) return '此字段为必填项'
+    if (!/^\d{6}$/.test(value)) return TEXTS.forgotPassword.codeFormat
     return true
   },
   password: (value: string) => {
-    if (!value) return t('validation.required')
-    if (value.length < 6) return t('validation.minLength', { min: 6 })
+    if (!value) return '此字段为必填项'
+    if (value.length < 6) return '密码长度至少需要6个字符'
     return true
   },
   passwordMatch: (value: string) => {
-    return value === form.newPassword || t('auth.errors.passwordMismatch')
+    return value === form.newPassword || TEXTS.auth.errors.passwordMismatch
   }
 }
 
@@ -290,7 +289,7 @@ const handleSendCode = async () => {
   const { valid } = await emailForm.value.validate()
   
   if (!valid) {
-    error.value = t('auth.errors.pleaseFixErrors')
+    error.value = TEXTS.auth.errors.pleaseFixErrors
     return
   }
   
@@ -300,11 +299,11 @@ const handleSendCode = async () => {
   
   try {
     await authApi.sendResetCode(form.email.trim())
-    success.value = t('forgotPassword.codeSent')
+    success.value = TEXTS.forgotPassword.codeSent
     step.value = 2
     startResendCountdown()
   } catch (err: any) {
-    error.value = err.response?.data?.error || err.message || t('forgotPassword.sendCodeError')
+    error.value = err.response?.data?.error || err.message || TEXTS.forgotPassword.sendCodeError
   } finally {
     loading.value = false
   }
@@ -315,7 +314,7 @@ const handleResetPassword = async () => {
   const { valid } = await resetForm.value.validate()
   
   if (!valid) {
-    error.value = t('auth.errors.pleaseFixErrors')
+    error.value = TEXTS.auth.errors.pleaseFixErrors
     return
   }
   
@@ -330,14 +329,14 @@ const handleResetPassword = async () => {
       newPassword: form.newPassword
     })
     
-    success.value = t('forgotPassword.resetSuccess')
+    success.value = TEXTS.forgotPassword.resetSuccess
     
     // 3秒后跳转到登录页面
     setTimeout(() => {
       router.push('/auth')
     }, 3000)
   } catch (err: any) {
-    error.value = err.response?.data?.error || err.message || t('forgotPassword.resetError')
+    error.value = err.response?.data?.error || err.message || TEXTS.forgotPassword.resetError
   } finally {
     loading.value = false
   }
@@ -352,10 +351,10 @@ const handleResendCode = async () => {
   
   try {
     await authApi.sendResetCode(form.email.trim())
-    success.value = t('forgotPassword.codeResent')
+    success.value = TEXTS.forgotPassword.codeResent
     startResendCountdown()
   } catch (err: any) {
-    error.value = err.response?.data?.error || err.message || t('forgotPassword.sendCodeError')
+    error.value = err.response?.data?.error || err.message || TEXTS.forgotPassword.sendCodeError
   } finally {
     loading.value = false
   }

@@ -10,7 +10,7 @@
         v-bind="props"
         variant="text"
         icon
-        :title="$t('theme.title')"
+        title="主题设置"
         height="40"
         width="40"
         color="white"
@@ -33,8 +33,8 @@
             <v-icon size="24" color="primary">mdi-palette</v-icon>
           </div>
           <div>
-            <h3 class="theme-title">{{ $t('theme.title') }}</h3>
-            <p class="theme-subtitle">{{ $t('theme.subtitle') }}</p>
+            <h3 class="theme-title">主题设置</h3>
+            <p class="theme-subtitle">个性化您的界面外观</p>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
         <div class="theme-section">
           <div class="section-header">
             <v-icon size="20" class="section-icon">mdi-brightness-6</v-icon>
-            <span class="section-title">{{ $t('theme.displayMode') }}</span>
+            <span class="section-title">显示模式</span>
           </div>
           
           <div class="mode-selector">
@@ -69,7 +69,7 @@
         <div class="theme-section">
           <div class="section-header">
             <v-icon size="20" class="section-icon">mdi-format-color-fill</v-icon>
-            <span class="section-title">{{ $t('theme.themeColors') }}</span>
+            <span class="section-title">主题配色</span>
           </div>
           
           <div class="preset-grid">
@@ -103,10 +103,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useThemeStore, themePresets } from '@/stores/theme'
 
-const { t } = useI18n()
 const themeStore = useThemeStore()
 
 const themeIcon = computed(() => {
@@ -123,13 +121,25 @@ const themeIcon = computed(() => {
 })
 
 const modes = computed(() => [
-  { value: 'light', label: t('theme.light'), icon: 'mdi-weather-sunny' },
-  { value: 'dark', label: t('theme.dark'), icon: 'mdi-weather-night' },
-  { value: 'auto', label: t('theme.auto'), icon: 'mdi-theme-light-dark' }
+  { value: 'light', label: '浅色', icon: 'mdi-weather-sunny' },
+  { value: 'dark', label: '深色', icon: 'mdi-weather-night' },
+  { value: 'auto', label: '自动', icon: 'mdi-theme-light-dark' }
 ])
 
 const getThemeName = (key: string) => {
-  return t(`theme.presets.${key}`) || key
+  const themeNames: Record<string, string> = {
+    default: '默认',
+    blue: '蓝色',
+    green: '绿色',
+    purple: '紫色',
+    red: '红色',
+    orange: '橙色',
+    teal: '青色',
+    indigo: '靛蓝',
+    pink: '粉色',
+    amber: '琥珀'
+  }
+  return themeNames[key] || key
 }
 </script>
 

@@ -3,13 +3,13 @@
     <v-container class="py-6">
       <!-- 页面标题和添加按钮 -->
       <div class="d-flex justify-space-between align-center mb-6">
-        <h1 class="text-h4 font-weight-bold">{{ t('servers.list') }}</h1>
+        <h1 class="text-h4 font-weight-bold">服务器列表</h1>
         <v-btn
           color="primary"
           prepend-icon="mdi-plus"
           @click="showAddDialog = true"
         >
-          {{ t('common.add') }}
+          添加
         </v-btn>
       </div>
 
@@ -17,11 +17,11 @@
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="me-2">mdi-server-network</v-icon>
-          {{ t('servers.list') }}
+          服务器列表
           <v-spacer />
           <v-text-field
             v-model="searchQuery"
-            :placeholder="t('common.search')"
+            placeholder="搜索"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             density="compact"
@@ -39,7 +39,7 @@
           :items-length="totalItems"
           :items-per-page="pageSize"
           :items-per-page-options="[5, 10, 20, 50]"
-          :items-per-page-text="t('common.itemsPerPage')"
+          items-per-page-text="每页条数"
           @update:options="handleOptionsUpdate"
         >
         <!-- IP地址列 -->
@@ -58,8 +58,8 @@
               :status="item.status"
               type="status"
               :custom-texts="{
-                online: t('servers.online'),
-                offline: t('servers.offline')
+                online: '在线',
+                offline: '离线'
               }"
           />
         </template>
@@ -71,7 +71,7 @@
             size="small"
             variant="tonal"
           >
-            {{ item.isSold ? t('servers.sold') : t('servers.available') }}
+            {{ item.isSold ? '已售出' : '可用' }}
           </v-chip>
         </template>
 
@@ -83,9 +83,9 @@
               size="small"
               variant="tonal"
             >
-              {{ getLocalizedText(item.groupName) }}
+              {{ item.groupName }}
             </v-chip>
-            <span v-else class="text-medium-emphasis">{{ t('servers.ungrouped') }}</span>
+            <span v-else class="text-medium-emphasis">未分组</span>
           </template>
 
         <!-- 操作系统列 -->
@@ -138,7 +138,7 @@
   <!-- 添加/编辑服务器对话框 -->
   <UnifiedDialog
       v-model="showAddDialog"
-      :title="editingServer ? t('servers.editServer') : t('servers.add')"
+      :title="editingServer ? '编辑服务器' : '添加服务器'"
       :loading="saving"
       max-width="800px"
       @save="saveServer"
@@ -151,7 +151,7 @@
           <UnifiedFormField
               v-model="serverForm.ip"
               type="text"
-              :label="t('servers.ip')"
+              label="IP地址"
               icon="mdi-ip"
               :rules="[rules.required, rules.ip]"
               required
@@ -163,7 +163,7 @@
           <UnifiedFormField
               v-model="serverForm.port"
               type="number"
-              :label="t('servers.port')"
+              label="端口"
               icon="mdi-ethernet"
           />
         </v-col>
@@ -175,7 +175,7 @@
           <UnifiedFormField
               v-model="serverForm.username"
               type="text"
-              :label="t('servers.username')"
+              label="用户名"
               icon="mdi-account"
           />
         </v-col>
@@ -185,7 +185,7 @@
           <UnifiedFormField
               v-model="serverForm.password"
               type="password"
-              :label="t('servers.password')"
+              label="密码"
               icon="mdi-lock"
           />
         </v-col>
@@ -197,7 +197,7 @@
           <UnifiedFormField
               v-model="serverForm.groupId"
               type="select"
-              :label="t('servers.selectGroup')"
+              label="选择分组"
               icon="mdi-folder-network"
               :items="groupOptions"
               item-title="title"
@@ -205,11 +205,11 @@
               clearable
           >
             <template #item="{ props, item }">
-              <v-list-item v-bind="props" :title="getLocalizedText((item.raw as any).originalName || item.raw.title)">
+              <v-list-item v-bind="props" :title="(item.raw as any).originalName || item.raw.title">
               </v-list-item>
             </template>
             <template #selection="{ item }">
-              {{ getLocalizedText((item.raw as any).originalName || item.raw.title) }}
+              {{ (item.raw as any).originalName || item.raw.title }}
             </template>
           </UnifiedFormField>
         </v-col>
@@ -219,7 +219,7 @@
           <UnifiedFormField
               v-model="serverForm.status"
               type="select"
-              :label="t('servers.status')"
+              label="状态"
               icon="mdi-server"
               :items="statusOptions"
           />
@@ -232,7 +232,7 @@
           <UnifiedFormField
               v-model="serverForm.isSold"
               type="select"
-              :label="t('servers.soldStatus')"
+              label="销售状态"
               icon="mdi-tag"
               :items="soldStatusOptions"
           />
@@ -245,7 +245,7 @@
           <UnifiedFormField
               v-model="serverForm.operatingSystem"
               type="text"
-              :label="t('servers.operatingSystem')"
+              label="操作系统"
               icon="mdi-desktop-classic"
           />
         </v-col>
@@ -255,7 +255,7 @@
           <UnifiedFormField
               v-model="serverForm.cpuCores"
               type="text"
-              :label="t('servers.cpuCores')"
+              label="CPU核心数"
               icon="mdi-cpu-64-bit"
           />
         </v-col>
@@ -267,7 +267,7 @@
           <UnifiedFormField
               v-model="serverForm.memory"
               type="text"
-              :label="t('servers.memory')"
+              label="内存"
               icon="mdi-memory"
           />
         </v-col>
@@ -277,7 +277,7 @@
           <UnifiedFormField
               v-model="serverForm.diskSpace"
               type="text"
-              :label="t('servers.diskSpace')"
+              label="硬盘空间"
               icon="mdi-harddisk"
           />
         </v-col>
@@ -289,7 +289,7 @@
           <UnifiedFormField
               v-model="serverForm.diskType"
               type="text"
-              :label="t('servers.diskType')"
+              label="硬盘类型"
               icon="mdi-harddisk"
           />
         </v-col>
@@ -299,7 +299,7 @@
           <UnifiedFormField
               v-model="serverForm.networkSpeed"
               type="text"
-              :label="t('servers.networkSpeed')"
+              label="网络速度"
               icon="mdi-speedometer"
           />
         </v-col>
@@ -310,8 +310,8 @@
   <!-- 删除确认对话框 -->
   <ConfirmDeleteDialog
     v-model="showDeleteDialog"
-    :title="t('servers.deleteWarning')"
-    :message="t('servers.confirmDelete', { ip: deletingServer?.ip || '' })"
+    title="删除警告"
+    :message="`确定要删除服务器 ${deletingServer?.ip || ''} 吗？`"
     :item-name="deletingServer?.ip || ''"
     :loading="deleting"
     @confirm="confirmDelete"
@@ -321,13 +321,11 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import PageLayout from '@/components/PageLayout.vue'
 import UnifiedFormField from '@/components/UnifiedFormField.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
 import StatusChip from '@/components/StatusChip.vue'
-import { getLocalizedText } from '@/utils/i18n'
 import {
   getServers,
   createServer,
@@ -338,7 +336,7 @@ import {
 } from '../api/server'
 import { groupAPI } from '../api/group'
 
-const { t } = useI18n()
+// 移除国际化
 
 // 响应式数据
 const servers = ref<Server[]>([])
@@ -375,39 +373,39 @@ const serverForm = reactive({
 
 // 状态选项
 const statusOptions = computed(() => [
-  { title: t('servers.online'), value: 'ONLINE' },
-  { title: t('servers.offline'), value: 'OFFLINE' }
+  { title: '在线', value: 'ONLINE' },
+  { title: '离线', value: 'OFFLINE' }
 ])
 
 // 销售状态选项
 const soldStatusOptions = computed(() => [
-  { title: t('servers.available'), value: false },
-  { title: t('servers.sold'), value: true }
+  { title: '可用', value: false },
+  { title: '已售出', value: true }
 ])
 
 
 // 表格头部
 const headers = computed(() => [
-  { title: t('servers.group'), key: 'groupName', sortable: false, width: 120 },
-  { title: t('servers.ip'), key: 'ip', sortable: false, width: 140 },
-  { title: t('servers.port'), key: 'port', sortable: false, width: 80 },
-  { title: t('servers.status'), key: 'status', sortable: false, width: 80 },
-  { title: t('servers.soldStatus'), key: 'isSold', sortable: false, width: 100 },
-  { title: t('servers.operatingSystem'), key: 'operatingSystem', sortable: false, width: 160 },
-  { title: t('servers.cpuCores'), key: 'cpuCores', sortable: false, width: 100 },
-  { title: t('servers.memory'), key: 'memory', sortable: false, width: 80 },
-  { title: t('servers.diskSpace'), key: 'diskSpace', sortable: false, width: 100 },
-  { title: t('servers.networkSpeed'), key: 'networkSpeed', sortable: false, width: 120 },
-  { title: t('common.actions'), key: 'actions', sortable: false, width: 120 }
+  { title: '分组', key: 'groupName', sortable: false, width: 120 },
+  { title: 'IP地址', key: 'ip', sortable: false, width: 140 },
+  { title: '端口', key: 'port', sortable: false, width: 80 },
+  { title: '状态', key: 'status', sortable: false, width: 80 },
+  { title: '销售状态', key: 'isSold', sortable: false, width: 100 },
+  { title: '操作系统', key: 'operatingSystem', sortable: false, width: 160 },
+  { title: 'CPU核心数', key: 'cpuCores', sortable: false, width: 100 },
+  { title: '内存', key: 'memory', sortable: false, width: 80 },
+  { title: '硬盘空间', key: 'diskSpace', sortable: false, width: 100 },
+  { title: '网络速度', key: 'networkSpeed', sortable: false, width: 120 },
+  { title: '操作', key: 'actions', sortable: false, width: 120 }
 ])
 
 // 表单验证规则
 const rules = {
-  required: (value: string) => !!value || t('validation.required'),
+  required: (value: string) => !!value || '此字段为必填项',
   ip: (value: string) => {
     if (!value) return true
     const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
-    return ipRegex.test(value) || t('validation.invalidIp')
+    return ipRegex.test(value) || 'IP地址格式不正确'
   }
 }
 
@@ -430,7 +428,7 @@ const loadServers = async () => {
       const processedServers = response.data.content.map((server: any) => {
         return {
           ...server,
-          groupName: server.groupName, // 保持原始格式，让getLocalizedText处理
+          groupName: server.groupName,
           status: server.status || 'offline'
         }
       })
@@ -442,12 +440,12 @@ const loadServers = async () => {
       totalItems.value = 0
     }
   } catch (error) {
-    console.error(t('servers.loadFailed'), error)
+    console.error('加载服务器列表失败', error)
     // 显示详细的后端错误信息
     if (error && typeof error === 'object' && 'message' in error) {
       alert(error.message)
     } else {
-      alert(t('servers.loadFailed'))
+      alert('加载服务器列表失败')
     }
     servers.value = []
     totalItems.value = 0
@@ -463,9 +461,9 @@ const loadGroupOptions = async () => {
     const response = await groupAPI.getGroupOptions()
     if (response) {
       groupOptions.value = response.map((group: any) => ({
-        title: getLocalizedText(group.name || group.title),
+        title: group.name || group.title,
         value: group.id || group.value,
-        originalName: group.name || group.title // 保存原始名称用于国际化
+        originalName: group.name || group.title
       }))
     }
   } catch (error) {
@@ -552,12 +550,12 @@ const confirmDelete = async () => {
     showDeleteDialog.value = false
     await loadServers()
   } catch (error) {
-    console.error(t('servers.deleteFailed'), error)
+    console.error('删除服务器失败', error)
     // 显示详细的后端错误信息
     if (error && typeof error === 'object' && 'message' in error) {
       alert(error.message)
     } else {
-      alert(t('servers.deleteFailed'))
+      alert('删除服务器失败')
     }
   } finally {
     deleting.value = false
@@ -594,12 +592,12 @@ const saveServer = async () => {
     closeDialog()
     await loadServers()
   } catch (error) {
-    console.error(t('servers.saveFailed'), error)
+    console.error('保存服务器失败', error)
     // 显示详细的后端错误信息
     if (error && typeof error === 'object' && 'message' in error) {
       alert(error.message)
     } else {
-      alert(t('servers.saveFailed'))
+      alert('保存服务器失败')
     }
   } finally {
     saving.value = false

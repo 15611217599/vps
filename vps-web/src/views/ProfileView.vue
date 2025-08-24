@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="$t('nav.profile')">
+  <PageLayout :title="TEXTS.nav.profile">
     <v-container class="py-6">
       <v-row justify="center">
         <v-col cols="12" md="10" lg="8" xl="6">
@@ -13,7 +13,7 @@
                 <h2 class="text-h5 mb-2">{{ form.username }}</h2>
                 <div class="text-body-2 text-medium-emphasis">
                   <v-icon size="small" class="me-1">mdi-calendar</v-icon>
-                  {{ $t('profile.memberSince') }}: {{ formatDate(authStore.user?.createdAt) }}
+                  {{ TEXTS.profile.memberSince }}: {{ formatDate((authStore.user as any)?.createdAt) }}
                 </div>
               </div>
             </v-card-text>
@@ -31,14 +31,14 @@
                 <div class="mb-6">
                   <h3 class="text-h6 mb-4 d-flex align-center">
                     <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-account-details</v-icon>
-                    {{ $t('profile.basicInfo') }}
+                    {{ TEXTS.profile.basicInfo }}
                   </h3>
                   
                   <v-row>
                     <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="form.username"
-                        :label="$t('profile.username')"
+                        :label="TEXTS.profile.username"
                         prepend-inner-icon="mdi-account"
                         variant="outlined"
                         required
@@ -49,7 +49,7 @@
                     <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="form.email"
-                        :label="$t('profile.email')"
+                        :label="TEXTS.profile.email"
                         type="email"
                         prepend-inner-icon="mdi-email"
                         variant="outlined"
@@ -67,14 +67,14 @@
                     <v-expansion-panel>
                       <v-expansion-panel-title class="text-subtitle-1">
                         <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-lock</v-icon>
-                        {{ $t('profile.changePassword') }}
+                        {{ TEXTS.profile.changePassword }}
                       </v-expansion-panel-title>
                       <v-expansion-panel-text class="pt-4">
                         <v-row>
                           <v-col cols="12">
                             <v-text-field
                               v-model="form.currentPassword"
-                              :label="$t('profile.currentPassword')"
+                              :label="TEXTS.profile.currentPassword"
                               :type="showCurrentPassword ? 'text' : 'password'"
                               prepend-inner-icon="mdi-lock"
                               variant="outlined"
@@ -101,7 +101,7 @@
                           <v-col cols="12" sm="6">
                             <v-text-field
                               v-model="form.newPassword"
-                              :label="$t('profile.newPassword')"
+                              :label="TEXTS.profile.newPassword"
                               :type="showNewPassword ? 'text' : 'password'"
                               prepend-inner-icon="mdi-lock-plus"
                               variant="outlined"
@@ -125,7 +125,7 @@
                           <v-col cols="12" sm="6">
                             <v-text-field
                               v-model="form.confirmNewPassword"
-                              :label="$t('profile.confirmNewPassword')"
+                              :label="TEXTS.profile.confirmNewPassword"
                               :type="showConfirmPassword ? 'text' : 'password'"
                               prepend-inner-icon="mdi-lock-check"
                               variant="outlined"
@@ -162,7 +162,7 @@
                     size="large"
                     class="px-6"
                   >
-                    {{ $t('profile.saveChanges') }}
+                    {{ TEXTS.profile.saveChanges }}
                   </v-btn>
                   
                   <v-btn
@@ -172,7 +172,7 @@
                     size="large"
                     class="px-6"
                   >
-                    {{ $t('profile.reset') }}
+                    {{ TEXTS.common.reset }}
                   </v-btn>
                 </div>
                 
@@ -208,22 +208,27 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useAuthStore } from '../stores/auth'
+import { ref, reactive, onMounted, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import { useThemeStore } from '@/stores/theme'
+import { TEXTS } from '@/constants/texts'
 import PageLayout from '@/components/PageLayout.vue'
 import WalletCard from '@/components/WalletCard.vue'
 
-const { t } = useI18n()
+// 移除国际化
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+
+// 简单的消息提示函数
+const showSnackbar = (message: string, type: 'success' | 'error') => {
+  console.log(`${type.toUpperCase()}: ${message}`)
+  // 这里可以集成实际的消息提示组件
+}
 
 const profileForm = ref()
 const loading = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
-
 const showCurrentPassword = ref(false)
 const showNewPassword = ref(false)
 const showConfirmPassword = ref(false)
@@ -238,17 +243,17 @@ const form = reactive({
 
 // 基础验证规则
 const rules = {
-  required: (value: string) => !!value || t('validation.required'),
+  required: (value: string) => !!value || '此字段为必填项',
   username: (value: string) => {
-    if (!value) return t('validation.required')
-    if (value.length < 3) return t('validation.minLength', { min: 3 })
-    if (value.length > 20) return t('validation.maxLength', { max: 20 })
-    if (!/^[a-zA-Z0-9_]+$/.test(value)) return t('profile.usernameFormat')
+    if (!value) return '此字段为必填项'
+    if (value.length < 3) return `最少需要 3 个字符`
+    if (value.length > 20) return `最多允许 20 个字符`
+    if (!/^[a-zA-Z0-9_]+$/.test(value)) return '用户名只能包含字母、数字和下划线'
     return true
   },
   email: (value: string) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return pattern.test(value) || t('validation.email')
+    return pattern.test(value) || '请输入有效的邮箱地址'
   }
 }
 
@@ -258,13 +263,13 @@ const passwordChangeRules = computed(() => ({
   new: form.currentPassword ? [
     rules.required,
     (value: string) => {
-      if (value.length < 8) return t('validation.minLength', { min: 8 })
+      if (value.length < 8) return `最少需要 8 个字符`
       return true
     }
   ] : [],
   confirm: form.newPassword ? [
     rules.required,
-    (value: string) => value === form.newPassword || t('auth.errors.passwordMismatch')
+    (value: string) => value === form.newPassword || '两次输入的密码不一致'
   ] : []
 }))
 
@@ -288,7 +293,7 @@ const handleUpdateProfile = async () => {
   const { valid } = await profileForm.value.validate()
   
   if (!valid) {
-    error.value = t('auth.errors.pleaseFixErrors')
+    error.value = '请修复表单中的错误'
     return
   }
   
@@ -312,14 +317,15 @@ const handleUpdateProfile = async () => {
     const result = await authStore.updateProfile(updateData)
     
     if (result) {
-      success.value = t('profile.updateSuccess')
+      showSnackbar('个人资料更新成功', 'success')
       // 清空密码字段
       form.currentPassword = ''
       form.newPassword = ''
       form.confirmNewPassword = ''
     }
   } catch (err: any) {
-    error.value = err.message || t('profile.updateError')
+    error.value = err.message
+    showSnackbar('个人资料更新失败', 'error')
   } finally {
     loading.value = false
   }

@@ -2,7 +2,7 @@
   <v-card class="wallet-card" elevation="2">
     <v-card-title class="d-flex align-center">
       <v-icon class="me-2" color="primary">mdi-wallet</v-icon>
-      {{ $t('wallet.title') }}
+      钱包
     </v-card-title>
     
     <v-card-text>
@@ -16,7 +16,7 @@
             {{ formatCurrency(wallet.balance, wallet.currency) }}
           </div>
           <div class="text-caption text-medium-emphasis">
-            {{ $t('wallet.currentBalance') }}
+            当前余额
           </div>
         </div>
         
@@ -24,7 +24,7 @@
           <v-col cols="12" sm="6">
             <v-text-field
               v-model="newBalance"
-              :label="$t('wallet.newBalance')"
+              label="新余额"
               type="number"
               step="0.01"
               variant="outlined"
@@ -36,7 +36,7 @@
             <v-select
               v-model="selectedCurrency"
               :items="currencies"
-              :label="$t('wallet.currency')"
+              label="货币"
               variant="outlined"
               density="compact"
               :disabled="updating"
@@ -51,7 +51,7 @@
             @click="updateBalance"
             :disabled="!newBalance || newBalance === wallet.balance"
           >
-            {{ $t('wallet.updateBalance') }}
+            更新余额
           </v-btn>
           
           <v-btn
@@ -61,20 +61,20 @@
             @click="updateCurrency"
             :disabled="selectedCurrency === wallet.currency"
           >
-            {{ $t('wallet.updateCurrency') }}
+            更新货币
           </v-btn>
         </div>
         
         <div class="mt-4 text-caption text-medium-emphasis">
-          {{ $t('wallet.lastUpdated') }}: {{ formatDate(wallet.updatedAt) }}
+          最后更新: {{ formatDate(wallet.updatedAt) }}
         </div>
       </div>
       
       <div v-else class="text-center py-4">
         <v-icon size="48" color="grey" class="mb-2">mdi-wallet-outline</v-icon>
-        <div class="text-body-1 mb-3">{{ $t('wallet.noWallet') }}</div>
+        <div class="text-body-1 mb-3">暂无钱包</div>
         <v-btn color="primary" @click="createWallet" :loading="creating">
-          {{ $t('wallet.createWallet') }}
+          创建钱包
         </v-btn>
       </div>
     </v-card-text>
@@ -84,9 +84,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { walletApi, type Wallet } from '@/api/wallet'
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 
 const wallet = ref<Wallet | null>(null)
 const loading = ref(false)
@@ -134,10 +131,10 @@ const createWallet = async () => {
     wallet.value = await walletApi.createWallet(selectedCurrency.value)
     newBalance.value = wallet.value.balance
     selectedCurrency.value = wallet.value.currency
-    showSnackbar(t('wallet.created'))
+    showSnackbar('钱包创建成功')
   } catch (error) {
     console.error('Failed to create wallet:', error)
-    showSnackbar(t('wallet.createFailed'))
+    showSnackbar('钱包创建失败')
   } finally {
     creating.value = false
   }
@@ -149,10 +146,10 @@ const updateBalance = async () => {
   try {
     updating.value = true
     wallet.value = await walletApi.updateBalance(newBalance.value)
-    showSnackbar(t('wallet.balanceUpdated'))
+    showSnackbar('余额更新成功')
   } catch (error) {
     console.error('Failed to update balance:', error)
-    showSnackbar(t('wallet.updateFailed'))
+    showSnackbar('更新失败')
   } finally {
     updating.value = false
   }
@@ -164,10 +161,10 @@ const updateCurrency = async () => {
   try {
     updating.value = true
     wallet.value = await walletApi.updateCurrency(selectedCurrency.value)
-    showSnackbar(t('wallet.currencyUpdated'))
+    showSnackbar('货币更新成功')
   } catch (error) {
     console.error('Failed to update currency:', error)
-    showSnackbar(t('wallet.updateFailed'))
+    showSnackbar('更新失败')
   } finally {
     updating.value = false
   }

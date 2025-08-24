@@ -84,6 +84,9 @@ public class Order {
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
+    @Column(name = "auto_renewal")
+    private Boolean autoRenewal = false;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

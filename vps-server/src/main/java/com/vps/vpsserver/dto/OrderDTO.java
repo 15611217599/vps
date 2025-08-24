@@ -39,4 +39,5 @@ public class OrderDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime expiresAt;
+    private Boolean autoRenewal;
 }

@@ -1,7 +1,6 @@
 package com.vps.vpsserver.service;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,36 +26,33 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
-    private final MessageService messageService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.user.not.found", Locale.getDefault()) + ": " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("用户未找到: " + username));
     }
 
-    public User registerUser(String username, String email, String password, String acceptLanguage) {
-        Locale locale = messageService.parseLocale(acceptLanguage);
-        
+    public User registerUser(String username, String email, String password) {
         // 验证输入参数
         if (username == null || username.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.username.empty", locale));
+            throw new RuntimeException("用户名不能为空");
         }
         if (email == null || email.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.email.empty", locale));
+            throw new RuntimeException("邮箱不能为空");
         }
         if (password == null || password.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.password.empty", locale));
+            throw new RuntimeException("密码不能为空");
         }
         
         String trimmedUsername = username.trim();
         String trimmedEmail = email.trim();
         
         if (userRepository.existsByUsername(trimmedUsername)) {
-            throw new RuntimeException(messageService.getMessage("error.username.exists", locale));
+            throw new RuntimeException("用户名已存在");
         }
         if (userRepository.existsByEmail(trimmedEmail)) {
-            throw new RuntimeException(messageService.getMessage("error.email.exists", locale));
+            throw new RuntimeException("邮箱已存在");
         }
 
         User user = new User();
@@ -68,35 +64,31 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public boolean authenticateUser(String username, String password, String acceptLanguage) {
-        Locale locale = messageService.parseLocale(acceptLanguage);
-        
+    public boolean authenticateUser(String username, String password) {
         // 验证输入参数
         if (username == null || username.trim().isEmpty() || 
             password == null || password.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.username.password.empty", locale));
+            throw new RuntimeException("用户名和密码不能为空");
         }
         
         User user = userRepository.findByUsername(username.trim())
-                .orElseThrow(() -> new RuntimeException(messageService.getMessage("error.user.not.found", locale)));
+                .orElseThrow(() -> new RuntimeException("用户未找到"));
         
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException(messageService.getMessage("error.invalid.credentials", locale));
+            throw new RuntimeException("用户名或密码不正确");
         }
         
         return true;
     }
 
     public User updateUserProfile(String currentUsername, String newUsername, String newEmail, 
-                                String currentPassword, String newPassword, String acceptLanguage) {
-        Locale locale = messageService.parseLocale(acceptLanguage);
-        
+                                String currentPassword, String newPassword) {
         // 验证输入参数
         if (newUsername == null || newUsername.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.username.empty", locale));
+            throw new RuntimeException("用户名不能为空");
         }
         if (newEmail == null || newEmail.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.email.empty", locale));
+            throw new RuntimeException("邮箱不能为空");
         }
         
         String trimmedNewUsername = newUsername.trim();
@@ -104,18 +96,18 @@ public class UserService implements UserDetailsService {
         
         // 获取当前用户
         User currentUser = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new RuntimeException(messageService.getMessage("error.user.not.found", locale)));
+                .orElseThrow(() -> new RuntimeException("用户未找到"));
         
         // 检查用户名是否被其他用户占用
         if (!trimmedNewUsername.equals(currentUser.getUsername()) && 
             userRepository.existsByUsername(trimmedNewUsername)) {
-            throw new RuntimeException(messageService.getMessage("error.username.exists", locale));
+            throw new RuntimeException("用户名已存在");
         }
         
         // 检查邮箱是否被其他用户占用
         if (!trimmedNewEmail.equals(currentUser.getEmail()) && 
             userRepository.existsByEmail(trimmedNewEmail)) {
-            throw new RuntimeException(messageService.getMessage("error.email.exists", locale));
+            throw new RuntimeException("邮箱已存在");
         }
         
         // 如果要修改密码
@@ -124,7 +116,7 @@ public class UserService implements UserDetailsService {
             
             // 验证当前密码
             if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
-                throw new RuntimeException(messageService.getMessage("error.current.password.incorrect", locale));
+                throw new RuntimeException("当前密码不正确");
             }
             
             // 设置新密码
@@ -138,12 +130,10 @@ public class UserService implements UserDetailsService {
         return userRepository.save(currentUser);
     }
 
-    public void sendPasswordResetCode(String email, String acceptLanguage) {
-        Locale locale = messageService.parseLocale(acceptLanguage);
-        
+    public void sendPasswordResetCode(String email) {
         // 验证邮箱是否存在并获取用户信息
         User user = userRepository.findByEmail(email.trim())
-                .orElseThrow(() -> new RuntimeException(messageService.getMessage("error.email.not.registered", locale)));
+                .orElseThrow(() -> new RuntimeException("该邮箱未注册"));
         
         // 生成6位数字验证码
         String verificationCode = generateVerificationCode();
@@ -161,21 +151,19 @@ public class UserService implements UserDetailsService {
         passwordResetTokenRepository.save(resetToken);
         
         // 发送邮件，包含用户名
-        emailService.sendPasswordResetCode(email.trim(), user.getUsername(), verificationCode, locale);
+        emailService.sendPasswordResetCode(email.trim(), user.getUsername(), verificationCode);
     }
 
-    public void resetPassword(String email, String verificationCode, String newPassword, String acceptLanguage) {
-        Locale locale = messageService.parseLocale(acceptLanguage);
-        
+    public void resetPassword(String email, String verificationCode, String newPassword) {
         // 验证输入参数
         if (email == null || email.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.email.empty", locale));
+            throw new RuntimeException("邮箱不能为空");
         }
         if (verificationCode == null || verificationCode.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.verification.code.empty", locale));
+            throw new RuntimeException("验证码不能为空");
         }
         if (newPassword == null || newPassword.trim().isEmpty()) {
-            throw new RuntimeException(messageService.getMessage("error.password.empty", locale));
+            throw new RuntimeException("密码不能为空");
         }
         
         String trimmedEmail = email.trim();
@@ -184,16 +172,16 @@ public class UserService implements UserDetailsService {
         // 查找有效的重置令牌
         PasswordResetToken resetToken = passwordResetTokenRepository
             .findByEmailAndTokenAndUsedFalse(trimmedEmail, trimmedCode)
-            .orElseThrow(() -> new RuntimeException(messageService.getMessage("error.verification.code.invalid", locale)));
+            .orElseThrow(() -> new RuntimeException("验证码无效"));
         
         // 检查令牌是否过期
         if (resetToken.isExpired()) {
-            throw new RuntimeException(messageService.getMessage("error.verification.code.expired", locale));
+            throw new RuntimeException("验证码已过期");
         }
         
         // 查找用户
         User user = userRepository.findByEmail(trimmedEmail)
-            .orElseThrow(() -> new RuntimeException(messageService.getMessage("error.user.not.found", locale)));
+            .orElseThrow(() -> new RuntimeException("用户未找到"));
         
         // 更新密码
         user.setPassword(passwordEncoder.encode(newPassword));

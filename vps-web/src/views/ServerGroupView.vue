@@ -3,13 +3,13 @@
       <v-container class="py-6">
         <!-- 页面标题和添加按钮 -->
         <div class="d-flex justify-space-between align-center mb-6">
-          <h1 class="text-h4 font-weight-bold">{{ t('groups.title') }}</h1>
+          <h1 class="text-h4 font-weight-bold">{{ TEXTS.groups.title }}</h1>
           <v-btn
             color="primary"
             prepend-icon="mdi-plus"
             @click="showAddDialog = true"
           >
-            {{ t('common.add') }}
+            {{ '添加' }}
           </v-btn>
         </div>
   
@@ -17,11 +17,11 @@
         <v-card>
           <v-card-title class="d-flex align-center">
             <v-icon class="me-2">mdi-folder-network</v-icon>
-            {{ t('groups.title') }}
+            {{ TEXTS.groups.title }}
             <v-spacer />
             <v-text-field
               v-model="searchQuery"
-              :placeholder="t('common.search')"
+              :placeholder="'搜索'"
               prepend-inner-icon="mdi-magnify"
               variant="outlined"
               density="compact"
@@ -39,15 +39,15 @@
             :items-length="totalItems"
             :items-per-page="pageSize"
             :items-per-page-options="[5, 10, 20, 50]"
-            :items-per-page-text="t('common.itemsPerPage')"
+            :items-per-page-text="TEXTS.common.itemsPerPage"
             @update:options="handleOptionsUpdate"
           >
             <!-- 名称列 -->
             <template #item.name="{ item }">
               <div>
-                <div class="font-weight-medium">{{ getLocalizedText(item.name) }}</div>
+                <div class="font-weight-medium">{{ item.name }}</div>
                 <div class="text-caption text-medium-emphasis" v-if="item.description">
-                  {{ getLocalizedText(item.description) }}
+                  {{ item.description }}
                 </div>
               </div>
             </template>
@@ -59,25 +59,25 @@
                 size="small"
                 variant="tonal"
               >
-                {{ getLocalizedText(item.categoryName) || t('groups.uncategorized') }}
+                {{ item.categoryName || TEXTS.groups.uncategorized }}
               </v-chip>
             </template>
   
             <!-- 地区列 -->
             <template #item.region="{ item }">
-              <span v-if="item.region">{{ getLocalizedText(item.region) }}</span>
+              <span v-if="item.region">{{ item.region }}</span>
               <span v-else class="text-medium-emphasis">-</span>
             </template>
 
             <!-- 国家列 -->
             <template #item.country="{ item }">
-              <span v-if="item.country">{{ getLocalizedText(item.country) }}</span>
+              <span v-if="item.country">{{ item.country }}</span>
               <span v-else class="text-medium-emphasis">-</span>
             </template>
 
             <!-- 城市列 -->
             <template #item.city="{ item }">
-              <span v-if="item.city">{{ getLocalizedText(item.city) }}</span>
+              <span v-if="item.city">{{ item.city }}</span>
               <span v-else class="text-medium-emphasis">-</span>
             </template>
 
@@ -88,7 +88,7 @@
                 size="small"
                 variant="flat"
               >
-                {{ item.isActive ? t('common.active') : t('common.inactive') }}
+                {{ item.isActive ? TEXTS.common.active : TEXTS.common.inactive }}
               </v-chip>
             </template>
   
@@ -116,7 +116,7 @@
     <!-- 添加/编辑对话框 -->
   <UnifiedDialog
     v-model="showAddDialog"
-    :title="(editingGroup ? $t('common.edit') : $t('common.add')) + $t('servers.group')"
+    :title="(editingGroup ? '编辑' : '添加') + '服务器分组'"
     :is-edit="!!editingGroup"
     :loading="saving"
     :disabled="!formValid"
@@ -133,7 +133,7 @@
             :items="categoryOptions"
             item-title="title"
             item-value="value"
-            :label="t('groups.selectCategory')"
+            :label="TEXTS.groups.selectCategory"
             variant="outlined"
             prepend-inner-icon="mdi-folder"
             color="primary"
@@ -148,7 +148,7 @@
         <div class="mb-4">
           <v-text-field
             v-model="groupForm.name"
-            :label="t('groups.groupName')"
+            :label="TEXTS.groups.groupName"
             :rules="[rules.required]"
             variant="outlined"
             prepend-inner-icon="mdi-folder-network"
@@ -163,7 +163,7 @@
         <div class="mb-4">
           <v-textarea
             v-model="groupForm.description"
-            :label="t('common.description')"
+            :label="'描述'"
             variant="outlined"
             prepend-inner-icon="mdi-text"
             color="primary"
@@ -179,7 +179,7 @@
           <v-col cols="4">
             <v-text-field
               v-model="groupForm.region"
-              :label="t('groups.region')"
+              :label="TEXTS.groups.region"
               variant="outlined"
               prepend-inner-icon="mdi-earth"
               color="primary"
@@ -190,7 +190,7 @@
           <v-col cols="4">
             <v-text-field
               v-model="groupForm.country"
-              :label="t('groups.country')"
+              :label="TEXTS.groups.country"
               variant="outlined"
               prepend-inner-icon="mdi-flag"
               color="primary"
@@ -201,7 +201,7 @@
           <v-col cols="4">
             <v-text-field
               v-model="groupForm.city"
-              :label="t('groups.city')"
+              :label="TEXTS.groups.city"
               variant="outlined"
               prepend-inner-icon="mdi-city"
               color="primary"
@@ -215,7 +215,7 @@
         <div class="mb-4">
           <v-text-field
             v-model.number="groupForm.sortOrder"
-            :label="t('common.sortOrder')"
+            :label="TEXTS.common.sortOrder"
             type="number"
             variant="outlined"
             prepend-inner-icon="mdi-sort-numeric-ascending"
@@ -230,7 +230,7 @@
         <div class="mb-4">
           <v-switch
             v-model="groupForm.isActive"
-            :label="t('common.active')"
+            :label="TEXTS.common.active"
             color="primary"
             density="comfortable"
             class="mb-2"
@@ -242,9 +242,9 @@
     <!-- 删除确认对话框 -->
     <ConfirmDeleteDialog
       v-model="showDeleteDialog"
-      :title="t('groups.deleteWarning')"
-      :message="t('groups.confirmDelete', { name: getLocalizedText(deletingGroup?.name || '') })"
-      :item-name="getLocalizedText(deletingGroup?.name || '')"
+      :title="TEXTS.groups.deleteWarning"
+      :message="`确定要删除分组 '${deletingGroup?.name || ''}' 吗？`"
+      :item-name="deletingGroup?.name || ''"
       :loading="deleting"
       @confirm="confirmDelete"
       @cancel="showDeleteDialog = false"
@@ -253,14 +253,13 @@
   
   <script setup lang="ts">
   import { ref, reactive, onMounted, computed } from 'vue'
-  import { useI18n } from 'vue-i18n'
+  
   import PageLayout from '@/components/PageLayout.vue'
   import UnifiedDialog from '@/components/UnifiedDialog.vue'
   import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
-  import { getLocalizedText } from '@/utils/i18n'
-  import { groupAPI, type ServerGroup } from '@/api/group'
   
-  const { t } = useI18n()
+  import { groupAPI, type ServerGroup } from '@/api/group'
+  import { TEXTS } from '@/constants/texts'
   
   // 响应式数据
   const groups = ref<ServerGroup[]>([])
@@ -292,18 +291,18 @@
   
   // 表格头部
   const headers = computed(() => [
-    { title: t('groups.groupName'), key: 'name', sortable: false },
-    { title: t('groups.selectCategory'), key: 'categoryName', sortable: false, width: 150 },
-    { title: t('groups.region'), key: 'region', sortable: false, width: 120 },
-    { title: t('groups.country'), key: 'country', sortable: false, width: 120 },
-    { title: t('groups.city'), key: 'city', sortable: false, width: 120 },
-    { title: t('common.status'), key: 'isActive', sortable: false, width: 100 },
-    { title: t('common.actions'), key: 'actions', sortable: false, width: 120 }
+    { title: TEXTS.groups.groupName, key: 'name', sortable: false },
+    { title: TEXTS.groups.selectCategory, key: 'categoryName', sortable: false, width: 150 },
+    { title: TEXTS.groups.region, key: 'region', sortable: false, width: 120 },
+    { title: TEXTS.groups.country, key: 'country', sortable: false, width: 120 },
+    { title: TEXTS.groups.city, key: 'city', sortable: false, width: 120 },
+    { title: '状态', key: 'isActive', sortable: false, width: 100 },
+    { title: '操作', key: 'actions', sortable: false, width: 120 }
   ])
   
   // 表单验证规则
   const rules = {
-    required: (value: any) => !!value || t('validation.required')
+    required: (value: any) => !!value || '此字段为必填项'
   }
   
   // 加载分组数据
@@ -343,7 +342,7 @@
     try {
       const response = await groupAPI.getCategories()
       categoryOptions.value = (response || []).map((cat: any) => ({
-        title: getLocalizedText(cat.name),
+        title: cat.name,
         value: cat.id
       }))
     } catch (error) {

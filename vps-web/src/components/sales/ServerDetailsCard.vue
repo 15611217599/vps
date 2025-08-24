@@ -15,15 +15,15 @@
                   <v-icon size="20" color="white">mdi-package-variant</v-icon>
                 </v-avatar>
                 <div>
-                  <h3 class="text-h6 font-weight-bold mb-1">{{ getLocalizedText(priceGroup.name) }}</h3>
+                  <h3 class="text-h6 font-weight-bold mb-1">{{ priceGroup.name }}</h3>
                   <p class="text-caption text-medium-emphasis mb-0">
-                    {{ $t('sales.priceGroup') }}
+                    {{ TEXTS.sales.priceGroup }}
                   </p>
                 </div>
               </div>
               
               <p class="text-body-2 text-medium-emphasis mb-4">
-                {{ getLocalizedText(priceGroup.description) || $t('sales.noDescription') }}
+                {{ priceGroup.description || TEXTS.sales.noDescription }}
               </p>
 
               <!-- 配置选择器 -->
@@ -32,10 +32,10 @@
                 <div class="config-title mb-4">
                   <h4 class="text-h6 font-weight-bold d-flex align-center">
                     <v-icon size="20" class="me-2" color="primary">mdi-tune</v-icon>
-                    {{ $t('sales.configureParameters') }}
+                    {{ TEXTS.sales.configureParameters }}
                   </h4>
                   <p class="text-body-2 text-medium-emphasis mb-0">
-                    {{ $t('sales.customizeServerConfig') }}
+                    {{ TEXTS.sales.customizeServerConfig }}
                   </p>
                 </div>
                 
@@ -48,7 +48,7 @@
                     class="text-caption"
                   >
                     <v-icon size="16" class="me-2">mdi-lock</v-icon>
-                    {{ $t('sales.configLocked') }}
+                    {{ TEXTS.sales.configLocked }}
                   </v-alert>
                 </div>
 
@@ -56,8 +56,8 @@
                 <div class="config-item mb-4">
                   <div class="config-label mb-2">
                     <v-icon size="16" class="me-2">mdi-cpu-64-bit</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.cpu') }}</span>
-                    <v-chip size="x-small" color="primary" class="ms-2">{{ getSelectedConfig(priceGroup).cpu }}{{ $t('sales.cores') }}</v-chip>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.cpu }}</span>
+                    <v-chip size="x-small" color="primary" class="ms-2">{{ getSelectedConfig(priceGroup).cpu }}{{ TEXTS.sales.cores }}</v-chip>
                     <v-icon v-if="hasDefaultConfig(priceGroup)" size="14" class="ms-1" color="grey">mdi-lock</v-icon>
                   </div>
                   <v-slider
@@ -75,8 +75,8 @@
                 <div class="config-item mb-4">
                   <div class="config-label mb-2">
                     <v-icon size="16" class="me-2">mdi-memory</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.memory') }}</span>
-                    <v-chip size="x-small" color="success" class="ms-2">{{ getSelectedConfig(priceGroup).memory }}{{ $t('sales.gb') }}</v-chip>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.memory }}</span>
+                    <v-chip size="x-small" color="success" class="ms-2">{{ getSelectedConfig(priceGroup).memory }}{{ TEXTS.sales.gb }}</v-chip>
                     <v-icon v-if="hasDefaultConfig(priceGroup)" size="14" class="ms-1" color="grey">mdi-lock</v-icon>
                   </div>
                   <v-slider
@@ -94,8 +94,8 @@
                 <div class="config-item mb-4">
                   <div class="config-label mb-2">
                     <v-icon size="16" class="me-2">mdi-harddisk</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.storage') }}</span>
-                    <v-chip size="x-small" color="warning" class="ms-2">{{ getSelectedConfig(priceGroup).storage }}{{ $t('sales.gb') }} {{ $t('sales.ssd') }}</v-chip>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.storage }}</span>
+                    <v-chip size="x-small" color="warning" class="ms-2">{{ getSelectedConfig(priceGroup).storage }}{{ TEXTS.sales.gb }} {{ TEXTS.sales.ssd }}</v-chip>
                     <v-icon v-if="hasDefaultConfig(priceGroup)" size="14" class="ms-1" color="grey">mdi-lock</v-icon>
                   </div>
                   <v-slider
@@ -113,8 +113,8 @@
                 <div class="config-item mb-4">
                   <div class="config-label mb-2">
                     <v-icon size="16" class="me-2">mdi-speedometer</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.bandwidth') }}</span>
-                    <v-chip size="x-small" color="info" class="ms-2">{{ getSelectedConfig(priceGroup).bandwidth }}{{ $t('sales.mbps') }}</v-chip>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.bandwidth }}</span>
+                    <v-chip size="x-small" color="info" class="ms-2">{{ getSelectedConfig(priceGroup).bandwidth }}{{ TEXTS.sales.mbps }}</v-chip>
                     <v-icon v-if="hasDefaultConfig(priceGroup)" size="14" class="ms-1" color="grey">mdi-lock</v-icon>
                   </div>
                   <v-slider
@@ -132,7 +132,7 @@
                 <div class="config-item mb-4">
                   <div class="config-label mb-2">
                     <v-icon size="16" class="me-2">mdi-ip-network</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.ipCount') }}</span>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.ipCount }}</span>
                     <v-chip size="x-small" color="purple" class="ms-2">{{ getSelectedConfig(priceGroup).ipCount }}</v-chip>
                     <v-icon v-if="hasDefaultConfig(priceGroup)" size="14" class="ms-1" color="grey">mdi-lock</v-icon>
                   </div>
@@ -151,7 +151,7 @@
                 <div v-if="getPriceGroupOperatingSystem(priceGroup)" class="config-item mb-4">
                   <div class="config-label mb-3">
                     <v-icon size="16" class="me-2">mdi-linux</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.osSelection') }}</span>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.osSelection }}</span>
                   </div>
                   
                   <v-row>
@@ -162,10 +162,10 @@
                         :items="getOSNameOptions(priceGroup)"
                         item-title="title"
                         item-value="value"
-                        :placeholder="$t('sales.selectOS')"
+                        :placeholder="TEXTS.sales.selectOS"
                         variant="outlined"
                         density="compact"
-                        :label="$t('sales.systemName')"
+                        :label="TEXTS.sales.systemName"
                         @update:model-value="(value) => onPriceGroupOSNameChange(priceGroup, value)"
                       >
                       </v-select>
@@ -178,11 +178,11 @@
                         :items="getOSVersionOptions(priceGroup)"
                         item-title="title"
                         item-value="value"
-                        :placeholder="$t('sales.selectVersion')"
+                        :placeholder="TEXTS.sales.selectVersion"
                         :disabled="!getSelectedOSName(priceGroup)"
                         variant="outlined"
                         density="compact"
-                        :label="$t('sales.version')"
+                        :label="TEXTS.sales.version"
                         @update:model-value="(value) => onPriceGroupOSVersionChange(priceGroup, value)"
                       >
                       </v-select>
@@ -193,7 +193,7 @@
                   <div v-if="getSelectedOSName(priceGroup) && getSelectedOSVersion(priceGroup)" class="mt-3">
                     <v-chip color="success" variant="flat" size="small">
                       <v-icon start size="14">mdi-check-circle</v-icon>
-                      {{ $t('sales.selected') }}: {{ getSelectedOSName(priceGroup) }} {{ getSelectedOSVersion(priceGroup) }}
+                      {{ TEXTS.sales.selected }}: {{ getSelectedOSName(priceGroup) }} {{ getSelectedOSVersion(priceGroup) }}
                     </v-chip>
                   </div>
                 </div>
@@ -202,14 +202,14 @@
                 <div class="config-item mb-4">
                   <div class="config-label mb-2">
                     <v-icon size="16" class="me-2">mdi-key</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.initialPassword') }}</span>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.initialPassword }}</span>
                   </div>
                   <v-text-field
                     :model-value="getSelectedConfig(priceGroup).password"
                     variant="outlined"
                     density="compact"
-:label="$t('sales.serverInitialPassword')"
-:placeholder="$t('sales.enterInitialPassword')"
+:label="TEXTS.sales.serverInitialPassword"
+:placeholder="TEXTS.sales.enterInitialPassword"
                     :type="getPasswordVisibility(priceGroup) ? 'text' : 'password'"
                     @update:model-value="(value) => updateConfigString(priceGroup, 'password', value)"
                   >
@@ -234,14 +234,14 @@
                 <div class="config-item mb-4">
                   <div class="config-label mb-2">
                     <v-icon size="16" class="me-2">mdi-network</v-icon>
-                    <span class="text-subtitle-2 font-weight-medium">{{ $t('sales.sshPort') }}</span>
+                    <span class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.sshPort }}</span>
                   </div>
                   <v-text-field
                     :model-value="getSelectedConfig(priceGroup).port"
                     variant="outlined"
                     density="compact"
-:label="$t('sales.sshPortNumber')"
-:placeholder="$t('sales.enterPortNumber')"
+:label="TEXTS.sales.sshPortNumber"
+:placeholder="TEXTS.sales.enterPortNumber"
                     type="number"
                     :min="1024"
                     :max="65535"
@@ -258,18 +258,38 @@
                   </v-text-field>
                 </div>
 
+                <!-- 自动续费开关 -->
+                <div class="config-item mb-4">
+                  <div class="d-flex align-center justify-space-between">
+                    <div class="d-flex align-center">
+                      <v-icon size="16" class="me-2" color="success">mdi-refresh-auto</v-icon>
+                      <div>
+                        <div class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.autoRenewal }}</div>
+                        <div class="text-caption text-medium-emphasis">{{ TEXTS.sales.autoRenewalDesc }}</div>
+                      </div>
+                    </div>
+                    <v-switch
+                      :model-value="getSelectedConfig(priceGroup).autoRenewal || false"
+                      color="success"
+                      density="compact"
+                      hide-details
+                      @update:model-value="(value) => updateConfigBoolean(priceGroup, 'autoRenewal', value || false)"
+                    ></v-switch>
+                  </div>
+                </div>
+
                 <!-- 配置摘要 -->
                 <v-card class="config-summary mb-4" variant="outlined" elevation="3">
                   <v-card-title class="d-flex align-center pa-4 pb-3 bg-gradient">
                     <v-icon size="22" class="me-2" color="white">mdi-cog</v-icon>
-                    <span class="text-h6 font-weight-bold text-white">{{ $t('sales.currentConfig') }}</span>
+                    <span class="text-h6 font-weight-bold text-white">{{ TEXTS.sales.currentConfig }}</span>
                   </v-card-title>
                   <v-card-text class="pa-0">
                     <!-- 硬件配置 -->
                     <div class="config-section">
                       <div class="section-header">
                         <v-icon size="18" class="me-2" color="primary">mdi-server</v-icon>
-                        <span class="text-subtitle-1 font-weight-bold text-primary">{{ $t('sales.hardwareSpecs') }}</span>
+                        <span class="text-subtitle-1 font-weight-bold text-primary">{{ TEXTS.sales.hardwareSpecs }}</span>
                       </div>
                       <div class="config-grid">
                         <div class="config-item-card">
@@ -277,8 +297,8 @@
                             <v-icon size="20" color="primary">mdi-cpu-64-bit</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.cpu') }}</div>
-                            <div class="config-value">{{ getSelectedConfig(priceGroup).cpu }}{{ $t('sales.cores') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.cpu }}</div>
+                            <div class="config-value">{{ getSelectedConfig(priceGroup).cpu }}{{ TEXTS.sales.cores }}</div>
                           </div>
                         </div>
                         <div class="config-item-card">
@@ -286,8 +306,8 @@
                             <v-icon size="20" color="success">mdi-memory</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.memory') }}</div>
-                            <div class="config-value">{{ getSelectedConfig(priceGroup).memory }}{{ $t('sales.gb') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.memory }}</div>
+                            <div class="config-value">{{ getSelectedConfig(priceGroup).memory }}{{ TEXTS.sales.gb }}</div>
                           </div>
                         </div>
                         <div class="config-item-card">
@@ -295,8 +315,8 @@
                             <v-icon size="20" color="warning">mdi-harddisk</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.storage') }}</div>
-                            <div class="config-value">{{ getSelectedConfig(priceGroup).storage }}{{ $t('sales.gb') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.storage }}</div>
+                            <div class="config-value">{{ getSelectedConfig(priceGroup).storage }}{{ TEXTS.sales.gb }}</div>
                           </div>
                         </div>
                         <div class="config-item-card">
@@ -304,8 +324,8 @@
                             <v-icon size="20" color="info">mdi-speedometer</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.bandwidth') }}</div>
-                            <div class="config-value">{{ getSelectedConfig(priceGroup).bandwidth }}{{ $t('sales.mbps') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.bandwidth }}</div>
+                            <div class="config-value">{{ getSelectedConfig(priceGroup).bandwidth }}{{ TEXTS.sales.mbps }}</div>
                           </div>
                         </div>
                       </div>
@@ -315,7 +335,7 @@
                     <div class="config-section">
                       <div class="section-header">
                         <v-icon size="18" class="me-2" color="primary">mdi-network</v-icon>
-                        <span class="text-subtitle-1 font-weight-bold text-primary">{{ $t('sales.networkConfig') }}</span>
+                        <span class="text-subtitle-1 font-weight-bold text-primary">{{ TEXTS.sales.networkConfig }}</span>
                       </div>
                       <div class="config-grid">
                         <div class="config-item-card">
@@ -323,8 +343,8 @@
                             <v-icon size="20" color="purple">mdi-ip-network</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.ipAddress') }}</div>
-                            <div class="config-value">{{ getSelectedConfig(priceGroup).ipCount }} {{ $t('sales.count') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.ipAddress }}</div>
+                            <div class="config-value">{{ getSelectedConfig(priceGroup).ipCount }} {{ TEXTS.sales.count }}</div>
                           </div>
                         </div>
                         <div class="config-item-card">
@@ -332,7 +352,7 @@
                             <v-icon size="20" color="teal">mdi-lan-connect</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.sshPort') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.sshPort }}</div>
                             <div class="config-value">{{ getSelectedConfig(priceGroup).port }}</div>
                           </div>
                         </div>
@@ -343,7 +363,7 @@
                     <div class="config-section">
                       <div class="section-header">
                         <v-icon size="18" class="me-2" color="primary">mdi-desktop-tower</v-icon>
-                        <span class="text-subtitle-1 font-weight-bold text-primary">{{ $t('sales.systemConfig') }}</span>
+                        <span class="text-subtitle-1 font-weight-bold text-primary">{{ TEXTS.sales.systemConfig }}</span>
                       </div>
                       <div class="config-grid">
                         <div v-if="getSelectedOSName(priceGroup) && getSelectedOSVersion(priceGroup)" class="config-item-card">
@@ -351,7 +371,7 @@
                             <v-icon size="20" color="orange">mdi-linux</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.operatingSystem') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.operatingSystem }}</div>
                             <div class="config-value">{{ getSelectedOSName(priceGroup) }} {{ getSelectedOSVersion(priceGroup) }}</div>
                           </div>
                         </div>
@@ -360,7 +380,7 @@
                             <v-icon size="20" color="red">mdi-key-variant</v-icon>
                           </div>
                           <div class="config-content">
-                            <div class="config-label">{{ $t('sales.initialPassword') }}</div>
+                            <div class="config-label">{{ TEXTS.sales.initialPassword }}</div>
                             <div class="config-value">{{ getSelectedConfig(priceGroup).password.substring(0, 4) }}****</div>
                           </div>
                         </div>
@@ -373,7 +393,7 @@
                 <v-card class="price-selector mb-4" variant="outlined" elevation="2">
                   <v-card-title class="d-flex align-center pa-4 pb-2">
                     <v-icon size="20" class="me-2" color="success">mdi-currency-usd</v-icon>
-                    <span class="text-h6 font-weight-bold">{{ $t('sales.pricingPlans') }}</span>
+                    <span class="text-h6 font-weight-bold">{{ TEXTS.sales.pricingPlans }}</span>
                   </v-card-title>
                   <v-card-text class="pa-4 pt-2">
                     <div v-if="getPriceOptions(priceGroup).length > 0">
@@ -395,14 +415,14 @@
                             variant="flat"
                             class="price-discount"
                           >
-                            {{ $t('sales.save') }}{{ priceOption.discount }}%
+                            {{ TEXTS.sales.save }}{{ priceOption.discount }}%
                           </v-chip>
                         </div>
                       </div>
                     </div>
                     <div v-else class="text-center py-4">
                       <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-currency-usd-off</v-icon>
-                      <div class="text-body-1 text-medium-emphasis">{{ $t('sales.noPriceInfo') }}</div>
+                      <div class="text-body-1 text-medium-emphasis">{{ TEXTS.sales.noPriceInfo }}</div>
                     </div>
                   </v-card-text>
                 </v-card>
@@ -420,7 +440,7 @@
                 :loading="purchasing"
               >
                 <v-icon start>mdi-cart</v-icon>
-                {{ purchasing ? $t('sales.processing') : (getSelectedPricePeriod(priceGroup) ? $t('sales.purchaseNow') : $t('sales.selectPricePlan')) }}
+                {{ purchasing ? TEXTS.sales.processing : (getSelectedPricePeriod(priceGroup) ? TEXTS.sales.purchaseNow : TEXTS.sales.selectPricePlan) }}
               </v-btn>
             </v-card-text>
           </v-card>
@@ -433,9 +453,9 @@
       <v-card class="no-products-card" elevation="1">
         <v-card-text class="pa-8">
           <v-icon size="80" color="grey-lighten-1" class="mb-4">mdi-package-variant-closed</v-icon>
-          <h3 class="text-h5 font-weight-medium mb-3">{{ $t('sales.noProducts') }}</h3>
+          <h3 class="text-h5 font-weight-medium mb-3">{{ TEXTS.sales.noProducts }}</h3>
           <p class="text-body-1 text-medium-emphasis mb-6">
-            {{ $t('sales.noProductsHint') }}
+            {{ TEXTS.sales.noProductsHint }}
           </p>
           <v-btn
             color="primary"
@@ -443,7 +463,7 @@
             prepend-icon="mdi-phone"
             @click="contactUs"
           >
-            {{ $t('sales.contactUs') }}
+            {{ TEXTS.sales.contactUs }}
           </v-btn>
         </v-card-text>
       </v-card>
@@ -453,10 +473,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { getLocalizedText } from '@/utils/i18n'
+
+
 import { orderApi, type CreateOrderRequest } from '@/api/order'
 import { useNotification } from '@/composables/useNotification'
+import { TEXTS } from '@/constants/texts'
 
 interface Props {
   selectedGroup: any
@@ -471,7 +492,7 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const { t } = useI18n()
+// 移除国际化
 const { showNotification } = useNotification()
 
 // 购买状态
@@ -489,6 +510,7 @@ const priceGroupSelections = ref<Record<number, {
   password: string
   port: number
   selectedPricePeriod: string | null
+  autoRenewal: boolean
 }>>({})
 
 // 密码可见性状态
@@ -608,7 +630,8 @@ const initPriceGroupSelection = (priceGroupId: number, priceGroup?: any) => {
       ipCount: defaultConfig?.ipCount || 1,
       password: generateRandomPasswordString(),
       port: generateRandomPortNumber(),
-      selectedPricePeriod: null
+      selectedPricePeriod: null,
+      autoRenewal: false
     }
     
     // 设置默认操作系统
@@ -674,15 +697,15 @@ const togglePasswordVisibility = (priceGroup: any) => {
 
 // 获取价格选项
 const getPriceOptions = (priceGroup: any) => {
-  const { t } = useI18n()
+  // 移除国际化
   const options = []
   
   if (priceGroup.hourlyPrice && priceGroup.hourlyPrice > 0) {
     options.push({
       period: 'hourly',
-      label: t('sales.hourly'),
+      label: TEXTS.sales.hourly,
       price: priceGroup.hourlyPrice,
-      unit: t('sales.perHour'),
+      unit: TEXTS.sales.perHour,
       discount: 0
     })
   }
@@ -690,9 +713,9 @@ const getPriceOptions = (priceGroup: any) => {
   if (priceGroup.dailyPrice && priceGroup.dailyPrice > 0) {
     options.push({
       period: 'daily',
-      label: t('sales.daily'),
+      label: TEXTS.sales.daily,
       price: priceGroup.dailyPrice,
-      unit: t('sales.perDay'),
+      unit: TEXTS.sales.perDay,
       discount: 0
     })
   }
@@ -700,9 +723,9 @@ const getPriceOptions = (priceGroup: any) => {
   if (priceGroup.monthlyPrice && priceGroup.monthlyPrice > 0) {
     options.push({
       period: 'monthly',
-      label: t('sales.monthly'),
+      label: TEXTS.sales.monthly,
       price: priceGroup.monthlyPrice,
-      unit: t('sales.perMonth'),
+      unit: TEXTS.sales.perMonth,
       discount: 0
     })
   }
@@ -712,9 +735,9 @@ const getPriceOptions = (priceGroup: any) => {
     const discount = monthlyEquivalent > 0 ? Math.round((1 - priceGroup.quarterlyPrice / monthlyEquivalent) * 100) : 0
     options.push({
       period: 'quarterly',
-      label: t('sales.quarterly'),
+      label: TEXTS.sales.quarterly,
       price: priceGroup.quarterlyPrice,
-      unit: t('sales.perQuarter'),
+      unit: TEXTS.sales.perQuarter,
       discount: discount > 0 ? discount : 0
     })
   }
@@ -724,9 +747,9 @@ const getPriceOptions = (priceGroup: any) => {
     const discount = monthlyEquivalent > 0 ? Math.round((1 - priceGroup.semiAnnualPrice / monthlyEquivalent) * 100) : 0
     options.push({
       period: 'semiAnnual',
-      label: t('sales.semiAnnual'),
+      label: TEXTS.sales.semiAnnual,
       price: priceGroup.semiAnnualPrice,
-      unit: t('sales.perSemiAnnual'),
+      unit: TEXTS.sales.perSemiAnnual,
       discount: discount > 0 ? discount : 0
     })
   }
@@ -736,9 +759,9 @@ const getPriceOptions = (priceGroup: any) => {
     const discount = monthlyEquivalent > 0 ? Math.round((1 - priceGroup.annualPrice / monthlyEquivalent) * 100) : 0
     options.push({
       period: 'annual',
-      label: t('sales.annual'),
+      label: TEXTS.sales.annual,
       price: priceGroup.annualPrice,
-      unit: t('sales.perYear'),
+      unit: TEXTS.sales.perYear,
       discount: discount > 0 ? discount : 0
     })
   }
@@ -766,6 +789,12 @@ const getSelectedConfig = (priceGroup: any) => {
 
 // 更新配置
 const updateConfig = (priceGroup: any, key: string, value: number) => {
+  initPriceGroupSelection(priceGroup.id, priceGroup)
+  ;(priceGroupSelections.value[priceGroup.id] as any)[key] = value
+}
+
+// 更新布尔配置
+const updateConfigBoolean = (priceGroup: any, key: string, value: boolean) => {
   initPriceGroupSelection(priceGroup.id, priceGroup)
   ;(priceGroupSelections.value[priceGroup.id] as any)[key] = value
 }
@@ -817,7 +846,8 @@ const purchaseNow = async (priceGroup: any) => {
       osName: selection.osName || '',
       osVersion: selection.osVersion || '',
       initialPassword: selection.password,
-      sshPort: selection.port
+      sshPort: selection.port,
+      autoRenewal: selection.autoRenewal
     }
 
     const response = await orderApi.createOrder(orderRequest)
@@ -837,11 +867,11 @@ const purchaseNow = async (priceGroup: any) => {
       `
       console.log('订单详情:', orderInfo)
     } else {
-      showNotification(response.message || t('sales.orderCreateFailed'), 'error')
+      showNotification(response.message || '创建订单失败', 'error')
     }
   } catch (error: any) {
     console.error('创建订单失败:', error)
-    showNotification(error.message || t('sales.orderCreateFailed'), 'error')
+    showNotification(error.message || '创建订单失败', 'error')
   } finally {
     purchasing.value = false
   }

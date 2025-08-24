@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vps.vpsserver.service.I18nService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,8 +37,7 @@ public class ServerGroupController {
     @Autowired
     private ServerGroupService groupService;
     
-    @Autowired
-    private I18nService i18nService;
+    
     
     /**
      * 获取所有分组（分页）
@@ -72,7 +70,7 @@ public class ServerGroupController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", i18nService.getMessage("group.getListFailed") + ": " + e.getMessage());
+            response.put("message", "获取分组列表失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -93,7 +91,7 @@ public class ServerGroupController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", i18nService.getMessage("group.getActiveFailed") + ": " + e.getMessage());
+            response.put("message", "获取激活分组失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -114,7 +112,7 @@ public class ServerGroupController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", i18nService.getMessage("group.getByIdFailed") + ": " + e.getMessage());
+            response.put("message", "获取分组失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -130,13 +128,13 @@ public class ServerGroupController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("data", createdGroup);
-            response.put("message", i18nService.getMessage("group.created"));
+            response.put("message", "分组创建成功");
             
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", i18nService.getMessage("group.createFailed") + ": " + e.getMessage());
+            response.put("message", "创建分组失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -154,13 +152,13 @@ public class ServerGroupController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("data", updatedGroup);
-            response.put("message", i18nService.getMessage("group.updated"));
+            response.put("message", "分组更新成功");
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", i18nService.getMessage("group.updateFailed") + ": " + e.getMessage());
+            response.put("message", "更新分组失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -175,13 +173,13 @@ public class ServerGroupController {
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", i18nService.getMessage("group.deleted"));
+            response.put("message", "分组删除成功");
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", i18nService.getMessage("group.deleteFailed") + ": " + e.getMessage());
+            response.put("message", "删除分组失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -209,7 +207,7 @@ public class ServerGroupController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", i18nService.getMessage("group.checkNameFailed") + ": " + e.getMessage());
+            response.put("message", "检查分组名称失败: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }

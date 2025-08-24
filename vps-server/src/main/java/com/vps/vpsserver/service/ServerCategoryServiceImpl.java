@@ -23,8 +23,6 @@ public class ServerCategoryServiceImpl implements ServerCategoryService {
     @Autowired
     private ServerCategoryRepository categoryRepository;
     
-    @Autowired
-    private I18nService i18nService;
     
     
     @Override
@@ -32,7 +30,7 @@ public class ServerCategoryServiceImpl implements ServerCategoryService {
         // 检查名称是否已存在
         String nameToCheck = categoryDTO.getName();
         if (nameToCheck != null && categoryRepository.existsByName(nameToCheck)) {
-            throw new RuntimeException(i18nService.getMessage("category.nameExists") + ": " + nameToCheck);
+            throw new RuntimeException("类别名称已存在: " + nameToCheck);
         }
         
         ServerCategory category = categoryDTO.toEntity();
@@ -55,12 +53,12 @@ public class ServerCategoryServiceImpl implements ServerCategoryService {
     @Override
     public ServerCategoryDTO updateCategory(Long id, ServerCategoryDTO categoryDTO) {
         ServerCategory existingCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("category.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到类别: " + id));
         
         // 检查名称是否已被其他类别使用
         String nameToCheck = categoryDTO.getName();
         if (nameToCheck != null && categoryRepository.existsByNameAndIdNot(nameToCheck, id)) {
-            throw new RuntimeException(i18nService.getMessage("category.nameExists") + ": " + nameToCheck);
+            throw new RuntimeException("类别名称已存在: " + nameToCheck);
         }
         
         // 更新字段
@@ -86,11 +84,11 @@ public class ServerCategoryServiceImpl implements ServerCategoryService {
     @Override
     public void deleteCategory(Long id) {
         ServerCategory category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("category.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到类别: " + id));
         
         // 检查是否有关联的分组
         if (category.getGroups() != null && !category.getGroups().isEmpty()) {
-            throw new RuntimeException(i18nService.getMessage("category.cannotDeleteWithGroups"));
+            throw new RuntimeException("该类别下存在分组，无法删除");
         }
         
         categoryRepository.delete(category);
@@ -100,7 +98,7 @@ public class ServerCategoryServiceImpl implements ServerCategoryService {
     @Transactional(readOnly = true)
     public ServerCategoryDTO getCategoryById(Long id) {
         ServerCategory category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("category.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到类别: " + id));
         return ServerCategoryDTO.fromEntity(category);
     }
     

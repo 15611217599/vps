@@ -28,8 +28,6 @@ public class ServerGroupServiceImpl implements ServerGroupService {
     @Autowired
     private ServerCategoryRepository categoryRepository;
     
-    @Autowired
-    private I18nService i18nService;
     
     @Override
     @Transactional(readOnly = true)
@@ -50,7 +48,7 @@ public class ServerGroupServiceImpl implements ServerGroupService {
     @Transactional(readOnly = true)
     public ServerGroupDTO getGroupById(Long id) {
         ServerGroup group = groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("group.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到分组: " + id));
         return ServerGroupDTO.fromEntity(group);
     }
     
@@ -59,12 +57,12 @@ public class ServerGroupServiceImpl implements ServerGroupService {
         // 检查名称是否已存在
         String nameToCheck = groupDTO.getName();
         if (nameToCheck != null && groupRepository.existsByName(nameToCheck)) {
-            throw new RuntimeException(i18nService.getMessage("group.nameExists") + ": " + nameToCheck);
+            throw new RuntimeException("分组名称已存在: " + nameToCheck);
         }
         
         // 查找类别
         ServerCategory category = categoryRepository.findById(groupDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("category.notFound") + ": " + groupDTO.getCategoryId()));
+                .orElseThrow(() -> new RuntimeException("未找到类别: " + groupDTO.getCategoryId()));
         
         // 创建分组实体
         ServerGroup group = groupDTO.toEntity();
@@ -85,17 +83,17 @@ public class ServerGroupServiceImpl implements ServerGroupService {
     public ServerGroupDTO updateGroup(Long id, ServerGroupDTO groupDTO) {
         // 查找现有分组
         ServerGroup existingGroup = groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("group.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到分组: " + id));
         
         // 检查名称是否被其他分组使用
         String nameToCheck = groupDTO.getName();
         if (nameToCheck != null && groupRepository.existsByNameAndIdNot(nameToCheck, id)) {
-            throw new RuntimeException(i18nService.getMessage("group.nameExists") + ": " + nameToCheck);
+            throw new RuntimeException("分组名称已存在: " + nameToCheck);
         }
         
         // 查找类别
         ServerCategory category = categoryRepository.findById(groupDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("category.notFound") + ": " + groupDTO.getCategoryId()));
+                .orElseThrow(() -> new RuntimeException("未找到类别: " + groupDTO.getCategoryId()));
         
         // 更新分组信息
         existingGroup.setName(groupDTO.getName());
@@ -115,11 +113,11 @@ public class ServerGroupServiceImpl implements ServerGroupService {
     @Override
     public void deleteGroup(Long id) {
         ServerGroup group = groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("group.notFound") + ": " + id));
+                .orElseThrow(() -> new RuntimeException("未找到分组: " + id));
         
         // 检查是否有服务器关联到此分组
         if (group.getServers() != null && !group.getServers().isEmpty()) {
-            throw new RuntimeException(i18nService.getMessage("group.cannotDeleteWithServers", group.getServers().size()));
+            throw new RuntimeException("该分组下存在服务器，无法删除。服务器数量: " + group.getServers().size());
         }
         
         groupRepository.deleteById(id);

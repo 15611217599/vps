@@ -10,6 +10,8 @@ import ServerView from '../views/ServerView.vue'
 import PriceGroupView from '../views/PriceGroupView.vue'
 import OrderView from '../views/OrderView.vue'
 import SalesView from '../views/SalesView.vue'
+import ServerManageView from '../views/ServerManageView.vue'
+import TransactionView from '../views/TransactionView.vue'
 
 
 
@@ -67,7 +69,18 @@ const routes = [
     component: SalesView
     // 销售页面允许所有用户访问（已登录和未登录）
   },
-
+  {
+    path: '/server-manage',
+    name: 'ServerManage',
+    component: ServerManageView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/transactions',
+    name: 'Transactions',
+    component: TransactionView,
+    meta: { requiresAuth: true }
+  },
   {
     path: '/profile',
     name: 'Profile',

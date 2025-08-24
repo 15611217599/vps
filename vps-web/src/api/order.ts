@@ -12,6 +12,7 @@ export interface CreateOrderRequest {
   osVersion: string
   initialPassword: string
   sshPort: number
+  autoRenewal?: boolean
 }
 
 export interface OrderDTO {
@@ -39,6 +40,9 @@ export interface OrderDTO {
   createdAt: string
   updatedAt: string
   expiresAt: string
+  autoRenewal?: boolean
+  // 服务器管理相关字段
+  ipAddress?: string
 }
 
 export const orderApi = {
@@ -81,6 +85,12 @@ export const orderApi = {
   // 处理订单支付
   processOrderPayment: async (id: number) => {
     const response = await apiClient.post(`/orders/${id}/pay`)
+    return response.data
+  },
+
+  // 更新订单自动续费设置
+  updateAutoRenewal: async (id: number, autoRenewal: boolean) => {
+    const response = await apiClient.put(`/orders/${id}/auto-renewal`, { autoRenewal })
     return response.data
   }
 }

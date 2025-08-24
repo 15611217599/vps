@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="t('order.title')">
+  <PageLayout :title="TEXTS.order.title">
     <v-container fluid>
       <!-- 搜索和筛选 -->
 
@@ -8,7 +8,7 @@
         <v-col cols="12" md="4">
           <v-text-field
             v-model="searchQuery"
-            :label="t('order.searchPlaceholder')"
+            :label="TEXTS.order.searchPlaceholder"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             density="compact"
@@ -20,7 +20,7 @@
           <v-select
             v-model="statusFilter"
             :items="statusOptions"
-            :label="t('order.status')"
+            :label="TEXTS.order.status"
             variant="outlined"
             density="compact"
             clearable
@@ -31,7 +31,7 @@
           <v-select
             v-model="billingPeriodFilter"
             :items="billingPeriodOptions"
-            :label="t('order.billingPeriod')"
+            :label="TEXTS.order.billingPeriod"
             variant="outlined"
             density="compact"
             clearable
@@ -45,7 +45,7 @@
             block
             @click="resetFilters"
           >
-            {{ t('common.reset') }}
+            {{ TEXTS.common.reset }}
           </v-btn>
         </v-col>
       </v-row>
@@ -53,12 +53,12 @@
       <!-- 订单列表 -->
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
-          <span>{{ t('order.list') }}</span>
+          <span>{{ TEXTS.order.list }}</span>
           <v-chip
             :color="orders.length > 0 ? 'primary' : 'default'"
             variant="tonal"
           >
-            {{ t('common.total') }}: {{ totalItems }}
+            {{ TEXTS.common.total }}: {{ totalItems }}
           </v-chip>
         </v-card-title>
 
@@ -130,6 +130,18 @@
             </div>
           </template>
 
+          <!-- 自动续费列 -->
+          <template #item.autoRenewal="{ item }">
+            <v-switch
+              :model-value="item.autoRenewal || false"
+              color="success"
+              density="compact"
+              hide-details
+              :disabled="!['ACTIVE', 'PAID'].includes(item.status)"
+              @update:model-value="(value) => toggleAutoRenewal(item, value || false)"
+            ></v-switch>
+          </template>
+
           <!-- 过期时间列 -->
           <template #item.expiresAt="{ item }">
             <div class="text-body-2" :class="getExpirationClass(item.expiresAt)">
@@ -146,6 +158,14 @@
                 variant="text"
                 color="primary"
                 @click="viewOrder(item)"
+              />
+              <v-btn
+                v-if="item.status === 'ACTIVE'"
+                icon="mdi-cog"
+                size="small"
+                variant="text"
+                color="info"
+                @click="manageServer(item)"
               />
               <v-btn
                 v-if="item.status === 'PENDING'"
@@ -170,31 +190,34 @@
           <template #no-data>
             <div class="text-center py-8">
               <v-icon icon="mdi-receipt-outline" size="64" class="text-disabled mb-4" />
-              <p class="text-h6 text-disabled">{{ t('order.noOrders') }}</p>
-              <p class="text-body-2 text-disabled">{{ t('order.noOrdersDesc') }}</p>
+              <p class="text-h6 text-disabled">{{ TEXTS.order.noOrders }}</p>
+              <p class="text-body-2 text-disabled">{{ TEXTS.order.noOrdersDesc }}</p>
             </div>
           </template>
         </v-data-table-server>
       </v-card>
 
       <!-- 订单详情对话框 -->
-      <v-dialog v-model="detailDialog" max-width="800">
-        <v-card v-if="selectedOrder">
-          <v-card-title class="d-flex align-center">
-            <v-icon icon="mdi-receipt" class="me-2" />
-            {{ t('order.orderDetails') }}
-          </v-card-title>
-          
-          <v-card-text>
+      <UnifiedDialog
+        v-model="detailDialog"
+        :title="TEXTS.order.orderDetails"
+        header-icon="mdi-receipt"
+        max-width="800"
+        :show-save-button="false"
+        :show-cancel-button="false"
+        :show-close-button="true"
+        @cancel="detailDialog = false"
+      >
+        <div v-if="selectedOrder">
             <v-row>
               <v-col cols="12" md="6">
                 <v-list density="compact">
                   <v-list-item>
-                    <v-list-item-title>{{ t('order.orderNumber') }}</v-list-item-title>
+                    <v-list-item-title>{{ TEXTS.order.orderNumber }}</v-list-item-title>
                     <v-list-item-subtitle>{{ selectedOrder.orderNumber }}</v-list-item-subtitle>
                   </v-list-item>
                   <v-list-item>
-                    <v-list-item-title>{{ t('order.status') }}</v-list-item-title>
+                    <v-list-item-title>{{ TEXTS.order.status }}</v-list-item-title>
                     <v-list-item-subtitle>
                       <v-chip
                         :color="getStatusColor(selectedOrder.status)"
@@ -206,98 +229,116 @@
                     </v-list-item-subtitle>
                   </v-list-item>
                   <v-list-item>
-                    <v-list-item-title>{{ t('order.amount') }}</v-list-item-title>
+                    <v-list-item-title>{{ TEXTS.order.amount }}</v-list-item-title>
                     <v-list-item-subtitle>¥{{ selectedOrder.amount }}</v-list-item-subtitle>
                   </v-list-item>
                   <v-list-item>
-                    <v-list-item-title>{{ t('order.billingPeriod') }}</v-list-item-title>
+                    <v-list-item-title>{{ TEXTS.order.billingPeriod }}</v-list-item-title>
                     <v-list-item-subtitle>{{ getBillingPeriodText(selectedOrder.billingPeriod) }}</v-list-item-subtitle>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-title>{{ TEXTS.sales.autoRenewal }}</v-list-item-title>
+                    <v-list-item-subtitle>
+                      <v-chip
+                        :color="selectedOrder.autoRenewal ? 'success' : 'default'"
+                        variant="tonal"
+                        size="small"
+                      >
+                        <v-icon start size="14">{{ selectedOrder.autoRenewal ? 'mdi-check-circle' : 'mdi-close-circle' }}</v-icon>
+                        {{ selectedOrder.autoRenewal ? '已启用自动续费' : '已禁用自动续费' }}
+                      </v-chip>
+                    </v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
               </v-col>
               <v-col cols="12" md="6">
                 <v-list density="compact">
                   <v-list-item>
-                    <v-list-item-title>{{ t('order.serverName') }}</v-list-item-title>
+                    <v-list-item-title>{{ TEXTS.order.serverName }}</v-list-item-title>
                     <v-list-item-subtitle>{{ selectedOrder.serverName || 'N/A' }}</v-list-item-subtitle>
                   </v-list-item>
                   <v-list-item>
-                    <v-list-item-title>{{ t('order.createdAt') }}</v-list-item-title>
+                    <v-list-item-title>{{ TEXTS.order.createdAt }}</v-list-item-title>
                     <v-list-item-subtitle>{{ formatDateTime(selectedOrder.createdAt) }}</v-list-item-subtitle>
                   </v-list-item>
                   <v-list-item>
-                    <v-list-item-title>{{ t('order.expiresAt') }}</v-list-item-title>
+                    <v-list-item-title>{{ TEXTS.order.expiresAt }}</v-list-item-title>
                     <v-list-item-subtitle>{{ formatDateTime(selectedOrder.expiresAt) }}</v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
               </v-col>
             </v-row>
 
-            <!-- 服务器配置信息 -->
-            <v-divider class="my-4" />
-            <h3 class="text-h6 mb-3">{{ t('order.serverSpecs') }}</h3>
-            <v-row>
-              <v-col cols="6" md="3">
-                <v-card variant="tonal" class="pa-3">
-                  <div class="text-center">
-                    <v-icon icon="mdi-cpu-64-bit" size="24" class="mb-2" />
-                    <div class="text-body-2 text-medium-emphasis">CPU</div>
-                    <div class="text-h6">{{ selectedOrder.cpuCores }}{{ t('order.cores') }}</div>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col cols="6" md="3">
-                <v-card variant="tonal" class="pa-3">
-                  <div class="text-center">
-                    <v-icon icon="mdi-memory" size="24" class="mb-2" />
-                    <div class="text-body-2 text-medium-emphasis">{{ t('order.memory') }}</div>
-                    <div class="text-h6">{{ selectedOrder.memoryGb }}GB</div>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col cols="6" md="3">
-                <v-card variant="tonal" class="pa-3">
-                  <div class="text-center">
-                    <v-icon icon="mdi-harddisk" size="24" class="mb-2" />
-                    <div class="text-body-2 text-medium-emphasis">{{ t('order.storage') }}</div>
-                    <div class="text-h6">{{ selectedOrder.storageGb }}GB</div>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col cols="6" md="3">
-                <v-card variant="tonal" class="pa-3">
-                  <div class="text-center">
-                    <v-icon icon="mdi-speedometer" size="24" class="mb-2" />
-                    <div class="text-body-2 text-medium-emphasis">{{ t('order.bandwidth') }}</div>
-                    <div class="text-h6">{{ selectedOrder.bandwidthMbps }}Mbps</div>
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card-text>
+          <!-- 服务器配置信息 -->
+          <v-divider class="my-4" />
+          <h3 class="text-h6 mb-3">{{ TEXTS.order.serverSpecs }}</h3>
+          <v-row>
+            <v-col cols="6" md="3">
+              <v-card variant="tonal" class="pa-3">
+                <div class="text-center">
+                  <v-icon icon="mdi-cpu-64-bit" size="24" class="mb-2" />
+                  <div class="text-body-2 text-medium-emphasis">CPU</div>
+                  <div class="text-h6">{{ selectedOrder.cpuCores }}{{ TEXTS.order.cores }}</div>
+                </div>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3">
+              <v-card variant="tonal" class="pa-3">
+                <div class="text-center">
+                  <v-icon icon="mdi-memory" size="24" class="mb-2" />
+                  <div class="text-body-2 text-medium-emphasis">{{ TEXTS.order.memory }}</div>
+                  <div class="text-h6">{{ selectedOrder.memoryGb }}GB</div>
+                </div>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3">
+              <v-card variant="tonal" class="pa-3">
+                <div class="text-center">
+                  <v-icon icon="mdi-harddisk" size="24" class="mb-2" />
+                  <div class="text-body-2 text-medium-emphasis">{{ TEXTS.order.storage }}</div>
+                  <div class="text-h6">{{ selectedOrder.storageGb }}GB</div>
+                </div>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3">
+              <v-card variant="tonal" class="pa-3">
+                <div class="text-center">
+                  <v-icon icon="mdi-speedometer" size="24" class="mb-2" />
+                  <div class="text-body-2 text-medium-emphasis">{{ TEXTS.order.bandwidth }}</div>
+                  <div class="text-h6">{{ selectedOrder.bandwidthMbps }}Mbps</div>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
 
-          <v-card-actions>
-            <v-spacer />
+          <!-- 操作按钮 -->
+          <div class="d-flex justify-end mt-4">
             <v-btn
-              color="primary"
-              variant="text"
-              @click="detailDialog = false"
+              v-if="selectedOrder.status === 'ACTIVE'"
+              color="info"
+              variant="outlined"
+              class="me-3"
+              @click="manageServer(selectedOrder)"
             >
-              {{ t('common.close') }}
+              <v-icon start>mdi-cog</v-icon>
+              {{ TEXTS.order.manageServer }}
             </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+          </div>
+        </div>
+      </UnifiedDialog>
     </v-container>
   </PageLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+
+import { useRouter } from 'vue-router'
 import { orderApi } from '@/api/order'
 import { useNotification } from '@/composables/useNotification'
 import PageLayout from '@/components/PageLayout.vue'
+import UnifiedDialog from '@/components/UnifiedDialog.vue'
+import { TEXTS } from '@/constants/texts'
 
 // 简单的防抖函数实现
 const debounce = (func: Function, delay: number) => {
@@ -308,7 +349,8 @@ const debounce = (func: Function, delay: number) => {
   }
 }
 
-const { t } = useI18n()
+// 移除国际化
+const router = useRouter()
 const { showNotification } = useNotification()
 
 // 定义订单类型
@@ -325,6 +367,7 @@ interface Order {
   memoryGb: number
   storageGb: number
   bandwidthMbps: number
+  autoRenewal?: boolean
 }
 
 // 响应式数据
@@ -341,35 +384,36 @@ const selectedOrder = ref<Order | null>(null)
 
 // 表格列定义
 const headers = computed(() => [
-  { title: t('order.orderNumber'), key: 'orderNumber', sortable: false },
-  { title: t('order.serverName'), key: 'serverName', sortable: false },
-  { title: t('order.amount'), key: 'amount', sortable: true },
-  { title: t('order.status'), key: 'status', sortable: false },
-  { title: t('order.billingPeriod'), key: 'billingPeriod', sortable: false },
-  { title: t('order.createdAt'), key: 'createdAt', sortable: true },
-  { title: t('order.expiresAt'), key: 'expiresAt', sortable: true },
-  { title: t('common.actions'), key: 'actions', sortable: false, width: 120 }
+  { title: TEXTS.order.orderNumber, key: 'orderNumber', sortable: false },
+  { title: TEXTS.order.serverName, key: 'serverName', sortable: false },
+  { title: TEXTS.order.amount, key: 'amount', sortable: true },
+  { title: TEXTS.order.status, key: 'status', sortable: false },
+  { title: TEXTS.order.billingPeriod, key: 'billingPeriod', sortable: false },
+  { title: TEXTS.sales.autoRenewal, key: 'autoRenewal', sortable: false },
+  { title: TEXTS.order.createdAt, key: 'createdAt', sortable: true },
+  { title: TEXTS.order.expiresAt, key: 'expiresAt', sortable: true },
+  { title: '操作', key: 'actions', sortable: false, width: 120 }
 ])
 
 // 状态选项
 const statusOptions = computed(() => [
-  { title: t('order.statusPending'), value: 'PENDING' },
-  { title: t('order.statusPaid'), value: 'PAID' },
-  { title: t('order.statusProcessing'), value: 'PROCESSING' },
-  { title: t('order.statusActive'), value: 'ACTIVE' },
-  { title: t('order.statusSuspended'), value: 'SUSPENDED' },
-  { title: t('order.statusCancelled'), value: 'CANCELLED' },
-  { title: t('order.statusExpired'), value: 'EXPIRED' }
+  { title: TEXTS.order.statusPending, value: 'PENDING' },
+  { title: TEXTS.order.statusPaid, value: 'PAID' },
+  { title: TEXTS.order.statusProcessing, value: 'PROCESSING' },
+  { title: TEXTS.order.statusActive, value: 'ACTIVE' },
+  { title: TEXTS.order.statusSuspended, value: 'SUSPENDED' },
+  { title: TEXTS.order.statusCancelled, value: 'CANCELLED' },
+  { title: TEXTS.order.statusExpired, value: 'EXPIRED' }
 ])
 
 // 计费周期选项
 const billingPeriodOptions = computed(() => [
-  { title: t('order.hourly'), value: 'hourly' },
-  { title: t('order.daily'), value: 'daily' },
-  { title: t('order.monthly'), value: 'monthly' },
-  { title: t('order.quarterly'), value: 'quarterly' },
-  { title: t('order.semiAnnual'), value: 'semi_annual' },
-  { title: t('order.annual'), value: 'annual' }
+  { title: TEXTS.order.hourly, value: 'hourly' },
+  { title: TEXTS.order.daily, value: 'daily' },
+  { title: TEXTS.order.monthly, value: 'monthly' },
+  { title: TEXTS.order.quarterly, value: 'quarterly' },
+  { title: TEXTS.order.semiAnnual, value: 'semi_annual' },
+  { title: TEXTS.order.annual, value: 'annual' }
 ])
 
 // 防抖搜索
@@ -387,11 +431,11 @@ const loadOrders = async () => {
       orders.value = response.data || []
       totalItems.value = response.data?.length || 0
     } else {
-      showNotification(response.message || t('order.loadFailed'), 'error')
+      showNotification(response.message || '加载订单失败', 'error')
     }
   } catch (error: any) {
     console.error('加载订单失败:', error)
-    showNotification(error.message || t('order.loadFailed'), 'error')
+    showNotification(error.message || '加载订单失败', 'error')
   } finally {
     loading.value = false
   }
@@ -417,14 +461,14 @@ const payOrder = async (order: any) => {
   try {
     const response = await orderApi.processOrderPayment(order.id)
     if (response.success) {
-      showNotification(t('order.paySuccess'), 'success')
+      showNotification('支付成功', 'success')
       loadOrders()
     } else {
-      showNotification(response.message || t('order.payFailed'), 'error')
+      showNotification(response.message || '支付失败', 'error')
     }
   } catch (error: any) {
     console.error('支付订单失败:', error)
-    showNotification(error.message || t('order.payFailed'), 'error')
+    showNotification(error.message || '支付失败', 'error')
   }
 }
 
@@ -433,14 +477,14 @@ const cancelOrder = async (order: any) => {
   try {
     const response = await orderApi.cancelOrder(order.id)
     if (response.success) {
-      showNotification(t('order.cancelSuccess'), 'success')
+      showNotification('取消订单成功', 'success')
       loadOrders()
     } else {
-      showNotification(response.message || t('order.cancelFailed'), 'error')
+      showNotification(response.message || '取消订单失败', 'error')
     }
   } catch (error: any) {
     console.error('取消订单失败:', error)
-    showNotification(error.message || t('order.cancelFailed'), 'error')
+    showNotification(error.message || '取消订单失败', 'error')
   }
 }
 
@@ -461,13 +505,13 @@ const getStatusColor = (status: string) => {
 // 获取状态文本
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    PENDING: t('order.statusPending'),
-    PAID: t('order.statusPaid'),
-    PROCESSING: t('order.statusProcessing'),
-    ACTIVE: t('order.statusActive'),
-    SUSPENDED: t('order.statusSuspended'),
-    CANCELLED: t('order.statusCancelled'),
-    EXPIRED: t('order.statusExpired')
+    PENDING: TEXTS.order.statusPending,
+    PAID: TEXTS.order.statusPaid,
+    PROCESSING: TEXTS.order.statusProcessing,
+    ACTIVE: TEXTS.order.statusActive,
+    SUSPENDED: TEXTS.order.statusSuspended,
+    CANCELLED: TEXTS.order.statusCancelled,
+    EXPIRED: TEXTS.order.statusExpired
   }
   return statusMap[status] || status
 }
@@ -475,12 +519,12 @@ const getStatusText = (status: string) => {
 // 获取计费周期文本
 const getBillingPeriodText = (period: string) => {
   const periodMap: Record<string, string> = {
-    hourly: t('order.hourly'),
-    daily: t('order.daily'),
-    monthly: t('order.monthly'),
-    quarterly: t('order.quarterly'),
-    semi_annual: t('order.semiAnnual'),
-    annual: t('order.annual')
+    hourly: TEXTS.order.hourly,
+    daily: TEXTS.order.daily,
+    monthly: TEXTS.order.monthly,
+    quarterly: TEXTS.order.quarterly,
+    semi_annual: TEXTS.order.semiAnnual,
+    annual: TEXTS.order.annual
   }
   return periodMap[period] || period
 }
@@ -501,6 +545,34 @@ const getExpirationClass = (expiresAt: string) => {
   if (diffDays < 0) return 'text-error'
   if (diffDays <= 7) return 'text-warning'
   return ''
+}
+
+// 管理服务器
+const manageServer = (order: any) => {
+  router.push(`/server-manage/${order.id}`)
+}
+
+// 切换自动续费
+const toggleAutoRenewal = async (order: any, autoRenewal: boolean) => {
+  try {
+    const response = await orderApi.updateAutoRenewal(order.id, autoRenewal)
+    if (response.success) {
+      // 更新本地订单状态
+      const orderIndex = orders.value.findIndex(o => o.id === order.id)
+      if (orderIndex !== -1) {
+        orders.value[orderIndex].autoRenewal = autoRenewal
+      }
+      showNotification(
+        autoRenewal ? TEXTS.sales.autoRenewal + '启用成功' : TEXTS.sales.autoRenewal + '禁用成功', 
+        'success'
+      )
+    } else {
+      showNotification(response.message || '自动续费设置更新失败', 'error')
+    }
+  } catch (error: any) {
+    console.error('更新自动续费设置失败:', error)
+    showNotification(error.message || '自动续费设置更新失败', 'error')
+  }
 }
 
 // 组件挂载时加载数据

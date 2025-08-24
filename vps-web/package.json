@@ -13,7 +13,6 @@
     "axios": "*",
     "pinia": "*",
     "vue": "*",
-    "vue-i18n": "*",
     "vue-router": "*",
     "vuetify": "*"
   },

@@ -14,7 +14,7 @@
       rounded="lg"
       @click="$emit('add')"
     >
-      {{ addText || $t('common.add') }}
+      {{ addText || TEXTS.common.add }}
     </v-btn>
 
     <!-- 编辑按钮 -->
@@ -30,7 +30,7 @@
     >
       <v-icon>{{ editIcon }}</v-icon>
       <v-tooltip activator="parent" location="top">
-        {{ editText || $t('common.edit') }}
+        {{ editText || TEXTS.common.edit }}
       </v-tooltip>
     </v-btn>
 
@@ -47,7 +47,7 @@
     >
       <v-icon>{{ deleteIcon }}</v-icon>
       <v-tooltip activator="parent" location="top">
-        {{ deleteText || $t('common.delete') }}
+        {{ deleteText || TEXTS.common.delete }}
       </v-tooltip>
     </v-btn>
 
@@ -64,7 +64,7 @@
     >
       <v-icon>{{ viewIcon }}</v-icon>
       <v-tooltip activator="parent" location="top">
-        {{ viewText || $t('common.view') }}
+        {{ viewText || TEXTS.common.view }}
       </v-tooltip>
     </v-btn>
 
@@ -89,6 +89,8 @@
 </template>
 
 <script setup lang="ts">
+import { TEXTS } from '@/constants/texts'
+
 interface CustomAction {
   key: string
   icon: string

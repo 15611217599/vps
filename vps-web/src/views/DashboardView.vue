@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="$t('dashboard.myServers')">
+  <PageLayout title="我的服务器">
     <v-container class="py-8">
       <!-- 统计概览 -->
       <v-row class="mb-6">
@@ -9,7 +9,7 @@
               mdi-server
             </v-icon>
             <div class="text-h4 font-weight-bold">{{ stats.totalServers }}</div>
-            <div class="text-body-2 text-medium-emphasis">{{ $t('dashboard.totalServers') }}</div>
+            <div class="text-body-2 text-medium-emphasis">总服务器数</div>
           </v-card>
         </v-col>
         
@@ -19,7 +19,7 @@
               mdi-check-circle
             </v-icon>
             <div class="text-h4 font-weight-bold">{{ stats.activeServers }}</div>
-            <div class="text-body-2 text-medium-emphasis">{{ $t('dashboard.activeServers') }}</div>
+            <div class="text-body-2 text-medium-emphasis">活跃服务器</div>
           </v-card>
         </v-col>
         
@@ -29,7 +29,7 @@
               mdi-pause-circle
             </v-icon>
             <div class="text-h4 font-weight-bold">{{ stats.suspendedServers }}</div>
-            <div class="text-body-2 text-medium-emphasis">{{ $t('dashboard.suspendedServers') }}</div>
+            <div class="text-body-2 text-medium-emphasis">暂停服务器</div>
           </v-card>
         </v-col>
         
@@ -39,7 +39,7 @@
               mdi-clock-outline
             </v-icon>
             <div class="text-h4 font-weight-bold">{{ stats.expiringServers }}</div>
-            <div class="text-body-2 text-medium-emphasis">{{ $t('dashboard.expiringServers') }}</div>
+            <div class="text-body-2 text-medium-emphasis">即将到期</div>
           </v-card>
         </v-col>
       </v-row>
@@ -49,13 +49,13 @@
         <v-card-title class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
             <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-server-network</v-icon>
-            {{ $t('dashboard.serverList') }}
+            服务器列表
           </div>
           
           <div class="d-flex align-center gap-2">
             <v-text-field
               v-model="searchQuery"
-              :placeholder="$t('dashboard.searchServers')"
+              placeholder="搜索服务器"
               prepend-inner-icon="mdi-magnify"
               variant="outlined"
               density="compact"
@@ -67,7 +67,7 @@
             <v-select
               v-model="statusFilter"
               :items="statusOptions"
-              :placeholder="$t('dashboard.filterStatus')"
+              placeholder="筛选状态"
               variant="outlined"
               density="compact"
               hide-details
@@ -101,7 +101,7 @@
                 variant="elevated"
               >
                 <v-icon start size="16">{{ getStatusIcon(item.status) }}</v-icon>
-                {{ $t(`order.status.${item.status.toLowerCase()}`) }}
+                {{ getStatusText(item.status) }}
               </v-chip>
             </template>
             
@@ -171,16 +171,16 @@
                   mdi-server-off
                 </v-icon>
                 <div class="text-h6 text-medium-emphasis mb-2">
-                  {{ $t('dashboard.noServers') }}
+                  暂无服务器
                 </div>
                 <div class="text-body-2 text-medium-emphasis mb-4">
-                  {{ $t('dashboard.noServersDescription') }}
+                  您还没有购买任何服务器，立即购买开始使用吧
                 </div>
                 <v-btn
                   :color="themeStore.currentColors.primary"
                   @click="router.push('/sales')"
                 >
-                  {{ $t('dashboard.orderServer') }}
+                  购买服务器
                 </v-btn>
               </div>
             </template>
@@ -203,31 +203,31 @@
           <v-row>
             <v-col cols="12" md="6">
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('dashboard.orderNumber') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">订单号</div>
                 <div class="font-weight-bold">{{ selectedServer.orderNumber }}</div>
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('dashboard.status') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">状态</div>
                 <v-chip :color="getStatusColor(selectedServer.status)" size="small">
-                  {{ $t(`order.status.${selectedServer.status.toLowerCase()}`) }}
+                  {{ getStatusText(selectedServer.status) }}
                 </v-chip>
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('dashboard.billingPeriod') }}</div>
-                <div>{{ $t(`order.billingPeriod.${selectedServer.billingPeriod}`) }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">计费周期</div>
+                <div>{{ getBillingPeriodText(selectedServer.billingPeriod) }}</div>
               </div>
             </v-col>
             
             <v-col cols="12" md="6">
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('dashboard.serverSpecs') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">服务器规格</div>
                 <div>{{ selectedServer.cpuCores }}C / {{ selectedServer.memoryGb }}GB RAM / {{ selectedServer.storageGb }}GB</div>
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('dashboard.operatingSystem') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">操作系统</div>
                 <div class="d-flex align-center">
                   <v-icon class="me-2" size="20">{{ getOsIcon(selectedServer.osName) }}</v-icon>
                   {{ selectedServer.osName }} {{ selectedServer.osVersion }}
@@ -235,7 +235,7 @@
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('dashboard.expiryDate') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">到期时间</div>
                 <div :class="getExpiryClass(selectedServer.expiresAt)">
                   {{ formatDate(selectedServer.expiresAt) }}
                 </div>
@@ -250,7 +250,7 @@
             variant="text"
             @click="detailDialog = false"
           >
-            {{ $t('common.close') }}
+            关闭
           </v-btn>
           
           <v-btn
@@ -259,7 +259,7 @@
             @click="connectToServer(selectedServer)"
           >
             <v-icon start>mdi-console</v-icon>
-            {{ $t('dashboard.connect') }}
+            连接
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -269,13 +269,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 import PageLayout from '@/components/PageLayout.vue'
 import { orderApi, type OrderDTO } from '@/api/order'
-
-const { t } = useI18n()
 const themeStore = useThemeStore()
 const router = useRouter()
 
@@ -289,23 +286,23 @@ const selectedServer = ref<OrderDTO | null>(null)
 
 // 状态选项
 const statusOptions = computed(() => [
-  { title: t('dashboard.allStatus'), value: '' },
-  { title: t('order.status.pending'), value: 'PENDING' },
-  { title: t('order.status.paid'), value: 'PAID' },
-  { title: t('order.status.processing'), value: 'PROCESSING' },
-  { title: t('order.status.active'), value: 'ACTIVE' },
-  { title: t('order.status.suspended'), value: 'SUSPENDED' },
-  { title: t('order.status.cancelled'), value: 'CANCELLED' },
-  { title: t('order.status.expired'), value: 'EXPIRED' }
+  { title: '全部状态', value: '' },
+  { title: '待付款', value: 'PENDING' },
+  { title: '已付款', value: 'PAID' },
+  { title: '处理中', value: 'PROCESSING' },
+  { title: '活跃', value: 'ACTIVE' },
+  { title: '暂停', value: 'SUSPENDED' },
+  { title: '已取消', value: 'CANCELLED' },
+  { title: '已过期', value: 'EXPIRED' }
 ])
 
 // 表格头部
 const headers = computed(() => [
-  { title: t('dashboard.serverInfo'), key: 'serverInfo', sortable: false },
-  { title: t('dashboard.status'), key: 'status', sortable: true },
-  { title: t('dashboard.operatingSystem'), key: 'osInfo', sortable: false },
-  { title: t('dashboard.expiryDate'), key: 'expiresAt', sortable: true },
-  { title: t('dashboard.actions'), key: 'actions', sortable: false, align: 'center' as const }
+  { title: '服务器信息', key: 'serverInfo', sortable: false },
+  { title: '状态', key: 'status', sortable: true },
+  { title: '操作系统', key: 'osInfo', sortable: false },
+  { title: '到期时间', key: 'expiresAt', sortable: true },
+  { title: '操作', key: 'actions', sortable: false, align: 'center' as const }
 ])
 
 // 过滤后的服务器列表
@@ -406,9 +403,9 @@ const getExpiryText = (expiresAt: string) => {
   const now = new Date()
   const daysUntilExpiry = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
   
-  if (daysUntilExpiry <= 0) return t('dashboard.expired')
-  if (daysUntilExpiry <= 7) return t('dashboard.expiringSoon', { days: daysUntilExpiry })
-  return t('dashboard.daysRemaining', { days: daysUntilExpiry })
+  if (daysUntilExpiry <= 0) return '已过期'
+  if (daysUntilExpiry <= 7) return `${daysUntilExpiry}天后到期`
+  return `剩余${daysUntilExpiry}天`
 }
 
 // 刷新服务器列表
@@ -440,8 +437,34 @@ const connectToServer = (server: OrderDTO) => {
 
 // 管理服务器
 const manageServer = (server: OrderDTO) => {
-  // TODO: 跳转到服务器管理页面
-  console.log('Manage server:', server)
+  router.push(`/server-manage/${server.id}`)
+}
+
+// 获取状态文本
+const getStatusText = (status: string) => {
+  const statusMap: Record<string, string> = {
+    'PENDING': '待付款',
+    'PAID': '已付款',
+    'PROCESSING': '处理中',
+    'ACTIVE': '活跃',
+    'SUSPENDED': '暂停',
+    'CANCELLED': '已取消',
+    'EXPIRED': '已过期'
+  }
+  return statusMap[status] || status
+}
+
+// 获取计费周期文本
+const getBillingPeriodText = (period: string) => {
+  const periodMap: Record<string, string> = {
+    'HOURLY': '按小时',
+    'DAILY': '按天',
+    'WEEKLY': '按周',
+    'MONTHLY': '按月',
+    'QUARTERLY': '按季度',
+    'YEARLY': '按年'
+  }
+  return periodMap[period] || period
 }
 
 // 组件挂载时加载数据

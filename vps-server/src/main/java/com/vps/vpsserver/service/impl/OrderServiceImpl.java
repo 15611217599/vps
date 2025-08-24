@@ -8,7 +8,7 @@ import com.vps.vpsserver.repository.PriceGroupRepository;
 import com.vps.vpsserver.repository.ServerRepository;
 import com.vps.vpsserver.repository.WalletRepository;
 import com.vps.vpsserver.service.OrderService;
-import com.vps.vpsserver.service.I18nService;
+import com.vps.vpsserver.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,24 +26,25 @@ public class OrderServiceImpl implements OrderService {
     private final PriceGroupRepository priceGroupRepository;
     private final ServerRepository serverRepository;
     private final WalletRepository walletRepository;
-    private final I18nService i18nService;
+    private final TransactionService transactionService;
+    
 
     @Override
     @Transactional
     public OrderDTO createOrder(CreateOrderRequest request, User user) {
         // 获取价格组
         PriceGroup priceGroup = priceGroupRepository.findById(request.getPriceGroupId())
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.priceGroup.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到价格组"));
 
         // 计算订单金额
         BigDecimal amount = calculateOrderAmount(priceGroup, request.getBillingPeriod());
 
         // 检查用户余额
         Wallet wallet = walletRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.wallet.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到钱包账户"));
 
         if (wallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException(i18nService.getMessage("order.wallet.insufficient", wallet.getBalance(), amount));
+            throw new RuntimeException("钱包余额不足，当前余额: " + wallet.getBalance() + ", 需要: " + amount);
         }
 
         // 分配服务器
@@ -65,17 +66,33 @@ public class OrderServiceImpl implements OrderService {
         order.setOsVersion(request.getOsVersion());
         order.setInitialPassword(request.getInitialPassword());
         order.setSshPort(request.getSshPort());
+        order.setAutoRenewal(request.getAutoRenewal() != null ? request.getAutoRenewal() : false);
         order.setStatus(Order.OrderStatus.PAID);
 
         // 计算过期时间
         order.setExpiresAt(calculateExpirationDate(request.getBillingPeriod()));
 
+        // 记录余额变化前的金额
+        BigDecimal balanceBefore = wallet.getBalance();
+        
         // 扣除余额
         wallet.setBalance(wallet.getBalance().subtract(amount));
         walletRepository.save(wallet);
+        
+        BigDecimal balanceAfter = wallet.getBalance();
 
         // 保存订单
         order = orderRepository.save(order);
+        
+        // 创建交易流水记录
+        transactionService.createOrderPaymentTransaction(
+            user, 
+            order.getId(), 
+            order.getOrderNumber(), 
+            amount, 
+            balanceBefore, 
+            balanceAfter
+        );
 
         // 标记服务器为已售（保持在线状态）
         if (assignedServer != null) {
@@ -89,10 +106,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO getOrderById(Long id, User user) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到订单"));
 
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException(i18nService.getMessage("order.accessDenied"));
+            throw new RuntimeException("无权访问该订单");
         }
 
         return convertToDTO(order);
@@ -107,10 +124,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO getOrderByNumber(String orderNumber, User user) {
         Order order = orderRepository.findByOrderNumber(orderNumber)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到订单"));
 
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException(i18nService.getMessage("order.accessDenied"));
+            throw new RuntimeException("无权访问该订单");
         }
 
         return convertToDTO(order);
@@ -120,10 +137,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO updateOrderStatus(Long orderId, Order.OrderStatus status, User user) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到订单"));
 
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException(i18nService.getMessage("order.accessDenied"));
+            throw new RuntimeException("无权访问该订单");
         }
 
         order.setStatus(status);
@@ -136,14 +153,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO cancelOrder(Long orderId, User user) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到订单"));
 
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException(i18nService.getMessage("order.accessDenied"));
+            throw new RuntimeException("无权访问该订单");
         }
 
         if (order.getStatus() != Order.OrderStatus.PENDING) {
-            throw new RuntimeException(i18nService.getMessage("order.cannotCancel"));
+            throw new RuntimeException("该订单当前状态不可取消");
         }
 
         order.setStatus(Order.OrderStatus.CANCELLED);
@@ -156,31 +173,46 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO processOrderPayment(Long orderId, User user) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到订单"));
 
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException(i18nService.getMessage("order.accessDenied"));
+            throw new RuntimeException("无权访问该订单");
         }
 
         if (order.getStatus() != Order.OrderStatus.PENDING) {
-            throw new RuntimeException(i18nService.getMessage("order.statusInvalid"));
+            throw new RuntimeException("订单状态无效，无法支付");
         }
 
         // 检查用户余额
         Wallet wallet = walletRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException(i18nService.getMessage("order.wallet.notFound")));
+                .orElseThrow(() -> new RuntimeException("未找到钱包账户"));
 
         if (wallet.getBalance().compareTo(order.getAmount()) < 0) {
-            throw new RuntimeException(i18nService.getMessage("order.wallet.insufficient", wallet.getBalance(), order.getAmount()));
+            throw new RuntimeException("钱包余额不足，当前余额: " + wallet.getBalance() + ", 需要: " + order.getAmount());
         }
 
+        // 记录余额变化前的金额
+        BigDecimal balanceBefore = wallet.getBalance();
+        
         // 扣除余额
         wallet.setBalance(wallet.getBalance().subtract(order.getAmount()));
         walletRepository.save(wallet);
+        
+        BigDecimal balanceAfter = wallet.getBalance();
 
         // 更新订单状态
         order.setStatus(Order.OrderStatus.PAID);
         order = orderRepository.save(order);
+        
+        // 创建交易流水记录
+        transactionService.createOrderPaymentTransaction(
+            user, 
+            order.getId(), 
+            order.getOrderNumber(), 
+            order.getAmount(), 
+            balanceBefore, 
+            balanceAfter
+        );
 
         return convertToDTO(order);
     }
@@ -200,7 +232,7 @@ public class OrderServiceImpl implements OrderService {
             case "annual":
                 return priceGroup.getAnnualPrice() != null ? priceGroup.getAnnualPrice() : BigDecimal.ZERO;
             default:
-                throw new RuntimeException(i18nService.getMessage("order.billingPeriod.unsupported", billingPeriod));
+                throw new RuntimeException("不支持的计费周期: " + billingPeriod);
         }
     }
 
@@ -230,7 +262,7 @@ public class OrderServiceImpl implements OrderService {
             serverGroup, Server.ServerStatus.ONLINE, false);
         
         if (availableServers.isEmpty()) {
-            throw new RuntimeException(i18nService.getMessage("order.server.noAvailable"));
+            throw new RuntimeException("当前分组没有可用服务器");
         }
 
         // 返回第一个可用的服务器
@@ -267,6 +299,7 @@ public class OrderServiceImpl implements OrderService {
         dto.setCreatedAt(order.getCreatedAt());
         dto.setUpdatedAt(order.getUpdatedAt());
         dto.setExpiresAt(order.getExpiresAt());
+        dto.setAutoRenewal(order.getAutoRenewal());
         
         return dto;
     }

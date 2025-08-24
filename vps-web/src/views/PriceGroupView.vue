@@ -4,9 +4,9 @@
       <!-- 页面标题和添加按钮 -->
       <div class="d-flex justify-space-between align-center mb-6">
         <div>
-          <h1 class="text-h4 font-weight-bold">{{ $t('priceGroup.title') }}</h1>
+          <h1 class="text-h4 font-weight-bold">{{ TEXTS.priceGroup.title }}</h1>
           <p class="text-subtitle-1 text-medium-emphasis mt-1">
-            {{ $t('priceGroup.subtitle') }}
+            {{ TEXTS.priceGroup.subtitle }}
           </p>
         </div>
         <v-btn
@@ -14,7 +14,7 @@
           prepend-icon="mdi-plus"
           @click="showAddDialog = true"
         >
-          {{ $t('priceGroup.add') }}
+          {{ TEXTS.priceGroup.add }}
         </v-btn>
       </div>
 
@@ -22,11 +22,11 @@
     <v-card>
       <v-card-title class="d-flex align-center">
         <v-icon class="me-2">mdi-currency-usd</v-icon>
-        {{ $t('priceGroup.list') }}
+        {{ TEXTS.priceGroup.list }}
         <v-spacer />
         <v-text-field
           v-model="searchQuery"
-          :placeholder="$t('priceGroup.searchPlaceholder')"
+          :placeholder="TEXTS.priceGroup.searchPlaceholder"
           prepend-inner-icon="mdi-magnify"
           variant="outlined"
           density="compact"
@@ -44,15 +44,15 @@
         :items-length="totalItems"
         :items-per-page="pageSize"
         :items-per-page-options="[5, 10, 20, 50]"
-        :items-per-page-text="$t('common.itemsPerPage')"
+        :items-per-page-text="TEXTS.common.itemsPerPage"
         @update:options="handleOptionsUpdate"
       >
         <!-- 名称列 -->
         <template #item.name="{ item }">
           <div>
-            <div class="font-weight-medium">{{ getLocalizedText(item.name) }}</div>
+            <div class="font-weight-medium">{{ item.name }}</div>
             <div class="text-caption text-medium-emphasis" v-if="item.description">
-              {{ getLocalizedText(item.description) }}
+              {{ item.description }}
             </div>
           </div>
         </template>
@@ -61,22 +61,22 @@
         <template #item.prices="{ item }">
           <div class="text-body-2 d-flex flex-wrap ga-2">
             <v-chip size="small" variant="outlined" color="primary">
-              {{ $t('priceGroup.hour') }}: {{ $t('priceGroup.priceUnit') }}{{ item.hourlyPrice }}
+              {{ TEXTS.priceGroup.hour }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.hourlyPrice }}
             </v-chip>
             <v-chip size="small" variant="outlined" color="success">
-              {{ $t('priceGroup.day') }}: {{ $t('priceGroup.priceUnit') }}{{ item.dailyPrice }}
+              {{ TEXTS.priceGroup.day }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.dailyPrice }}
             </v-chip>
             <v-chip size="small" variant="outlined" color="info">
-              {{ $t('priceGroup.month') }}: {{ $t('priceGroup.priceUnit') }}{{ item.monthlyPrice }}
+              {{ TEXTS.priceGroup.month }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.monthlyPrice }}
             </v-chip>
             <v-chip size="small" variant="outlined" color="warning">
-              {{ $t('priceGroup.quarter') }}: {{ $t('priceGroup.priceUnit') }}{{ item.quarterlyPrice }}
+              {{ TEXTS.priceGroup.quarter }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.quarterlyPrice }}
             </v-chip>
             <v-chip size="small" variant="outlined" color="orange">
-              {{ $t('priceGroup.halfYear') }}: {{ $t('priceGroup.priceUnit') }}{{ item.semiAnnualPrice }}
+              {{ TEXTS.priceGroup.halfYear }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.semiAnnualPrice }}
             </v-chip>
             <v-chip size="small" variant="outlined" color="deep-purple">
-              {{ $t('priceGroup.year') }}: {{ $t('priceGroup.priceUnit') }}{{ item.annualPrice }}
+              {{ TEXTS.priceGroup.year }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.annualPrice }}
             </v-chip>
           </div>
         </template>
@@ -89,7 +89,7 @@
             </v-chip>
           </div>
           <div v-else class="text-caption text-medium-emphasis">
-            {{ $t('priceGroup.noServerGroup') }}
+            {{ TEXTS.priceGroup.noServerGroup }}
           </div>
         </template>
 
@@ -103,11 +103,11 @@
               prepend-icon="mdi-code-tags"
               @click="previewSalesPage(item)"
             >
-              {{ $t('priceGroup.preview') }}
+              {{ TEXTS.priceGroup.preview }}
             </v-btn>
           </div>
           <div v-else class="text-caption text-medium-emphasis">
-            {{ $t('priceGroup.noSalesPage') }}
+            {{ TEXTS.priceGroup.noSalesPage }}
           </div>
         </template>
 
@@ -118,7 +118,7 @@
             size="small"
             variant="flat"
           >
-            {{ item.isActive ? $t('priceGroup.active') : $t('priceGroup.inactive') }}
+            {{ item.isActive ? TEXTS.priceGroup.active : TEXTS.priceGroup.inactive }}
           </v-chip>
         </template>
 
@@ -144,7 +144,7 @@
     <!-- 添加/编辑对话框 -->
     <UnifiedDialog
       v-model="showAddDialog"
-      :title="editingItem ? $t('priceGroup.editDialog') : $t('priceGroup.addDialog')"
+      :title="editingItem ? TEXTS.priceGroup.editDialog : TEXTS.priceGroup.addDialog"
       :is-edit="!!editingItem"
       :loading="saving"
       :disabled="!formValid"
@@ -158,7 +158,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.name"
-              :label="$t('priceGroup.name')"
+              :label="TEXTS.priceGroup.name"
               :rules="[rules.required]"
               variant="outlined"
               prepend-inner-icon="mdi-tag"
@@ -172,7 +172,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.sortOrder"
-              :label="$t('priceGroup.sortOrder')"
+              :label="TEXTS.priceGroup.sortOrder"
               type="number"
               :rules="[rules.nonNegativeNumber]"
               variant="outlined"
@@ -190,7 +190,7 @@
           <v-col cols="12">
             <v-textarea
               v-model="formData.description"
-              :label="$t('priceGroup.description')"
+              :label="TEXTS.priceGroup.description"
               variant="outlined"
               prepend-inner-icon="mdi-text"
               color="primary"
@@ -207,7 +207,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.hourlyPrice"
-              :label="$t('priceGroup.hourlyPrice') + ' (' + $t('priceGroup.priceUnit') + ')'"
+              :label="TEXTS.priceGroup.hourlyPrice + ' (' + TEXTS.priceGroup.priceUnit + ')'"
               type="number"
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
@@ -223,7 +223,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.dailyPrice"
-              :label="$t('priceGroup.dailyPrice') + ' (' + $t('priceGroup.priceUnit') + ')'"
+              :label="TEXTS.priceGroup.dailyPrice + ' (' + TEXTS.priceGroup.priceUnit + ')'"
               type="number"
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
@@ -242,7 +242,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.monthlyPrice"
-              :label="$t('priceGroup.monthlyPrice') + ' (' + $t('priceGroup.priceUnit') + ')'"
+              :label="TEXTS.priceGroup.monthlyPrice + ' (' + TEXTS.priceGroup.priceUnit + ')'"
               type="number"
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
@@ -258,7 +258,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.quarterlyPrice"
-              :label="$t('priceGroup.quarterlyPrice') + ' (' + $t('priceGroup.priceUnit') + ')'"
+              :label="TEXTS.priceGroup.quarterlyPrice + ' (' + TEXTS.priceGroup.priceUnit + ')'"
               type="number"
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
@@ -277,7 +277,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.semiAnnualPrice"
-              :label="$t('priceGroup.semiAnnualPrice') + ' (' + $t('priceGroup.priceUnit') + ')'"
+              :label="TEXTS.priceGroup.semiAnnualPrice + ' (' + TEXTS.priceGroup.priceUnit + ')'"
               type="number"
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
@@ -293,7 +293,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="formData.annualPrice"
-              :label="$t('priceGroup.annualPrice') + ' (' + $t('priceGroup.priceUnit') + ')'"
+              :label="TEXTS.priceGroup.annualPrice + ' (' + TEXTS.priceGroup.priceUnit + ')'"
               type="number"
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
@@ -313,8 +313,8 @@
             <v-select
               v-model="formData.serverGroupId"
               :items="serverGroups"
-              :label="$t('priceGroup.serverGroup')"
-              :item-title="(item) => getLocalizedText(item.originalName || item.name)"
+              :label="TEXTS.priceGroup.serverGroup"
+              :item-title="(item) => item.originalName || item.name"
               item-value="id"
               variant="outlined"
               prepend-inner-icon="mdi-server-network"
@@ -325,18 +325,18 @@
               clearable
             >
               <template #item="{ props, item }">
-                <v-list-item v-bind="props" :title="getLocalizedText(item.raw.originalName || item.raw.name)">
+                <v-list-item v-bind="props" :title="item.raw.originalName || item.raw.name">
                 </v-list-item>
               </template>
               <template #selection="{ item }">
-                {{ getLocalizedText(item.raw.originalName || item.raw.name) }}
+                {{ item.raw.originalName || item.raw.name }}
               </template>
             </v-select>
           </v-col>
           <v-col cols="12" md="6">
             <v-switch
               v-model="formData.isActive"
-              :label="$t('common.status')"
+              :label="'状态'"
               color="primary"
               class="mt-4"
             />
@@ -347,7 +347,7 @@
           <v-col cols="12">
             <v-textarea
               v-model="formData.salesPageHtml"
-              :label="$t('priceGroup.salesPageHtml')"
+              :label="TEXTS.priceGroup.salesPageHtml"
               variant="outlined"
               prepend-inner-icon="mdi-code-tags"
               color="primary"
@@ -356,7 +356,7 @@
               bg-color="white"
               rows="6"
               auto-grow
-              :placeholder="$t('priceGroup.salesPageHtmlPlaceholder')"
+              :placeholder="TEXTS.priceGroup.salesPageHtmlPlaceholder"
             />
           </v-col>
         </v-row>
@@ -372,7 +372,7 @@
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="me-2">mdi-eye</v-icon>
-          {{ $t('priceGroup.salesPagePreview') }}
+          {{ TEXTS.priceGroup.salesPagePreview }}
           <v-spacer />
           <v-btn
             icon="mdi-close"
@@ -396,7 +396,7 @@
             variant="text"
             @click="showPreviewDialog = false"
           >
-            {{ $t('common.close') }}
+            {{ '关闭' }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -405,8 +405,8 @@
     <!-- 删除确认对话框 -->
     <ConfirmDeleteDialog
       v-model="showDeleteDialog"
-      :title="$t('priceGroup.deleteWarning')"
-      :message="$t('priceGroup.confirmDelete', { name: deletingItem?.name })"
+      :title="TEXTS.priceGroup.deleteWarning"
+      :message="`确定要删除价格组 '${deletingItem?.name || ''}' 吗？`"
       :item-name="deletingItem?.name"
       :loading="deleting"
       @confirm="confirmDelete"
@@ -425,15 +425,16 @@
 
 <script>
 import { ref, reactive, onMounted, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+
 import { priceGroupApi } from '@/api/priceGroup'
 import { serverGroupApi } from '@/api/serverGroup'
 import PageLayout from '@/components/PageLayout.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
 import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
-import { getLocalizedText } from '@/utils/i18n'
+
 import { useNotification } from '@/composables/useNotification'
+import { TEXTS } from '@/constants/texts'
 
 export default {
   name: 'PriceGroupView',
@@ -444,7 +445,7 @@ export default {
     NotificationSnackbar
   },
   setup() {
-    const { t } = useI18n()
+    // 移除国际化
     const { notificationState, showNotification } = useNotification()
 
     // 响应式数据
@@ -469,13 +470,13 @@ export default {
     
     // 表格头部
     const headers = [
-      { title: computed(() => t('priceGroup.name')), key: 'name', sortable: false },
-      { title: computed(() => t('priceGroup.prices')), key: 'prices', sortable: false },
-      { title: computed(() => t('priceGroup.serverGroup')), key: 'serverGroup', sortable: false },
-      { title: computed(() => t('priceGroup.salesPage')), key: 'salesPage', sortable: false },
-      { title: computed(() => t('common.status')), key: 'isActive', sortable: false },
-      { title: computed(() => t('priceGroup.sortOrder')), key: 'sortOrder', sortable: false },
-      { title: computed(() => t('common.actions')), key: 'actions', sortable: false, width: 120 }
+      { title: TEXTS.priceGroup.name, key: 'name', sortable: false },
+      { title: TEXTS.priceGroup.prices, key: 'prices', sortable: false },
+      { title: TEXTS.priceGroup.serverGroup, key: 'serverGroup', sortable: false },
+      { title: '销售页面', key: 'salesPage', sortable: false },
+      { title: '状态', key: 'isActive', sortable: false },
+      { title: TEXTS.priceGroup.sortOrder, key: 'sortOrder', sortable: false },
+      { title: '操作', key: 'actions', sortable: false, width: 120 }
     ]
     
     // 表单数据
@@ -496,9 +497,9 @@ export default {
     
     // 验证规则
     const rules = {
-      required: value => (value !== null && value !== undefined && value !== '') || t('priceGroup.required'),
-      positiveNumber: value => (value > 0) || t('priceGroup.positiveNumber'),
-      nonNegativeNumber: value => (value >= 0) || t('priceGroup.nonNegativeNumber')
+      required: value => (value !== null && value !== undefined && value !== '') || TEXTS.priceGroup.required,
+      positiveNumber: value => (value > 0) || TEXTS.priceGroup.positiveNumber,
+      nonNegativeNumber: value => (value >= 0) || TEXTS.priceGroup.nonNegativeNumber
     }
     
     // 获取价格组列表
@@ -520,11 +521,11 @@ export default {
           priceGroups.value = response.data
           totalItems.value = response.totalElements
         } else {
-          showNotification(response.message || t('priceGroup.loadError'), 'error')
+          showNotification(response.message || TEXTS.priceGroup.loadError, 'error')
         }
       } catch (error) {
         console.error('获取价格组列表失败:', error)
-        showNotification(t('priceGroup.loadError'), 'error')
+        showNotification(TEXTS.priceGroup.loadError, 'error')
       } finally {
         loading.value = false
       }
@@ -652,15 +653,15 @@ export default {
         }
         
         if (response.success) {
-          showNotification(editingItem.value ? t('priceGroup.updateSuccess') : t('priceGroup.createSuccess'), 'success')
+          showNotification(editingItem.value ? TEXTS.priceGroup.updateSuccess : TEXTS.priceGroup.createSuccess, 'success')
           closeDialog()
           fetchPriceGroups()
         } else {
-          showNotification(response.message || t('priceGroup.saveError'), 'error')
+          showNotification(response.message || TEXTS.priceGroup.saveError, 'error')
         }
       } catch (error) {
         console.error('保存价格组失败:', error)
-        showNotification(t('priceGroup.saveError'), 'error')
+        showNotification(TEXTS.priceGroup.saveError, 'error')
       } finally {
         saving.value = false
       }
@@ -678,15 +679,15 @@ export default {
         const response = await priceGroupApi.deletePriceGroup(deletingItem.value.id)
         
         if (response.success) {
-          showNotification(t('priceGroup.deleteSuccess'), 'success')
+          showNotification(TEXTS.priceGroup.deleteSuccess, 'success')
           showDeleteDialog.value = false
           fetchPriceGroups()
         } else {
-          showNotification(response.message || t('priceGroup.deleteError'), 'error')
+          showNotification(response.message || TEXTS.priceGroup.deleteError, 'error')
         }
       } catch (error) {
         console.error('删除价格组失败:', error)
-        showNotification(t('priceGroup.deleteError'), 'error')
+        showNotification(TEXTS.priceGroup.deleteError, 'error')
       } finally {
         deleting.value = false
       }
@@ -705,7 +706,7 @@ export default {
       const group = serverGroups.value.find(g => g.id === serverGroupId)
       console.log('找到的分组:', group)
       if (group) {
-        const localizedName = getLocalizedText(group.originalName || group.name)
+        const localizedName = group.originalName || group.name
         console.log('本地化名称:', localizedName)
         return localizedName
       }
@@ -753,13 +754,16 @@ export default {
       closeDialog,
       notificationState,
       showNotification,
-      getLocalizedText,
+
       serverGroups,
       fetchServerGroups,
       showPreviewDialog,
       previewContent,
       getServerGroupName,
-      previewSalesPage
+      previewSalesPage,
+      
+      // 添加文本常量
+      TEXTS
     }
   }
 }

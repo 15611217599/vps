@@ -1,11 +1,11 @@
 <template>
-  <PageLayout :title="$t('serverManage.title')">
+  <PageLayout title="服务器管理">
     <v-container class="py-8">
       <!-- 服务器基本信息 -->
       <v-card elevation="2" class="mb-6">
         <v-card-title class="d-flex align-center">
           <v-icon :color="themeStore.currentColors.primary" class="me-2">mdi-server</v-icon>
-          {{ $t('serverManage.serverInfo') }}
+          服务器信息
         </v-card-title>
         
         <v-divider />
@@ -14,20 +14,20 @@
           <v-row v-if="server">
             <v-col cols="12" md="6">
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('serverManage.serverName') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">服务器名称</div>
                 <div class="font-weight-bold">{{ server.serverName || server.orderNumber }}</div>
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('serverManage.status') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">状态</div>
                 <v-chip :color="getStatusColor(server.status)" size="small">
                   <v-icon start size="16">{{ getStatusIcon(server.status) }}</v-icon>
-                  {{ $t(`order.status.${server.status.toLowerCase()}`) }}
+                  {{ server.status }}
                 </v-chip>
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('serverManage.operatingSystem') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">操作系统</div>
                 <div class="d-flex align-center">
                   <v-icon class="me-2" size="20">{{ getOsIcon(server.osName) }}</v-icon>
                   {{ server.osName }} {{ server.osVersion }}
@@ -37,19 +37,19 @@
             
             <v-col cols="12" md="6">
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('serverManage.serverSpecs') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">服务器规格</div>
                 <div>{{ server.cpuCores }}C / {{ server.memoryGb }}GB RAM / {{ server.storageGb }}GB</div>
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('serverManage.expiryDate') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">到期时间</div>
                 <div :class="getExpiryClass(server.expiresAt)">
                   {{ formatDate(server.expiresAt) }}
                 </div>
               </div>
               
               <div class="mb-4">
-                <div class="text-subtitle-2 text-medium-emphasis mb-1">{{ $t('serverManage.sshPort') }}</div>
+                <div class="text-subtitle-2 text-medium-emphasis mb-1">SSH端口</div>
                 <div>{{ server.sshPort || 22 }}</div>
               </div>
             </v-col>
@@ -66,7 +66,7 @@
           <v-card elevation="2" class="h-100">
             <v-card-title class="d-flex align-center">
               <v-icon :color="themeStore.currentColors.warning" class="me-2">mdi-power</v-icon>
-              {{ $t('serverManage.powerManagement') }}
+              电源管理
             </v-card-title>
             
             <v-divider />
@@ -74,7 +74,7 @@
             <v-card-text class="pa-6">
               <div class="mb-4">
                 <p class="text-body-2 text-medium-emphasis mb-4">
-                  {{ $t('serverManage.powerDescription') }}
+                  您可以通过以下按钮控制服务器的电源状态
                 </p>
                 
                 <div class="d-flex flex-column gap-3">
@@ -87,7 +87,7 @@
                     @click="performAction('start')"
                   >
                     <v-icon start>mdi-play</v-icon>
-                    {{ $t('serverManage.start') }}
+                    启动
                   </v-btn>
                   
                   <v-btn
@@ -99,7 +99,7 @@
                     @click="performAction('restart')"
                   >
                     <v-icon start>mdi-restart</v-icon>
-                    {{ $t('serverManage.restart') }}
+                    重启
                   </v-btn>
                   
                   <v-btn
@@ -111,7 +111,7 @@
                     @click="performAction('stop')"
                   >
                     <v-icon start>mdi-stop</v-icon>
-                    {{ $t('serverManage.stop') }}
+                    关机
                   </v-btn>
                 </div>
               </div>
@@ -124,7 +124,7 @@
           <v-card elevation="2" class="h-100">
             <v-card-title class="d-flex align-center">
               <v-icon :color="themeStore.currentColors.info" class="me-2">mdi-key</v-icon>
-              {{ $t('serverManage.passwordManagement') }}
+              密码管理
             </v-card-title>
             
             <v-divider />
@@ -132,12 +132,12 @@
             <v-card-text class="pa-6">
               <div class="mb-4">
                 <p class="text-body-2 text-medium-emphasis mb-4">
-                  {{ $t('serverManage.passwordDescription') }}
+                  您可以重置服务器的root密码
                 </p>
                 
                 <v-text-field
                   v-model="newPassword"
-                  :label="$t('serverManage.newPassword')"
+                  label="新密码"
                   :type="showPassword ? 'text' : 'password'"
                   variant="outlined"
                   density="compact"
@@ -156,7 +156,7 @@
                   @click="performAction('resetPassword')"
                 >
                   <v-icon start>mdi-key-change</v-icon>
-                  {{ $t('serverManage.resetPassword') }}
+                  重置密码
                 </v-btn>
                 
                 <v-btn
@@ -167,7 +167,7 @@
                   @click="generateRandomPassword"
                 >
                   <v-icon start>mdi-dice-6</v-icon>
-                  {{ $t('serverManage.generatePassword') }}
+                  生成密码
                 </v-btn>
               </div>
             </v-card-text>
@@ -182,7 +182,7 @@
           <v-card elevation="2" class="h-100">
             <v-card-title class="d-flex align-center">
               <v-icon :color="themeStore.currentColors.success" class="me-2">mdi-monitor</v-icon>
-              {{ $t('serverManage.systemMonitoring') }}
+              系统监控
             </v-card-title>
             
             <v-divider />
@@ -190,7 +190,7 @@
             <v-card-text class="pa-6">
               <div v-if="systemInfo">
                 <div class="mb-3">
-                  <div class="text-subtitle-2 mb-1">{{ $t('serverManage.cpuUsage') }}</div>
+                  <div class="text-subtitle-2 mb-1">CPU使用率</div>
                   <v-progress-linear
                     :model-value="systemInfo.cpuUsage"
                     :color="getUsageColor(systemInfo.cpuUsage)"
@@ -204,7 +204,7 @@
                 </div>
                 
                 <div class="mb-3">
-                  <div class="text-subtitle-2 mb-1">{{ $t('serverManage.memoryUsage') }}</div>
+                  <div class="text-subtitle-2 mb-1">内存使用率</div>
                   <v-progress-linear
                     :model-value="systemInfo.memoryUsage"
                     :color="getUsageColor(systemInfo.memoryUsage)"
@@ -218,7 +218,7 @@
                 </div>
                 
                 <div class="mb-3">
-                  <div class="text-subtitle-2 mb-1">{{ $t('serverManage.diskUsage') }}</div>
+                  <div class="text-subtitle-2 mb-1">磁盘使用率</div>
                   <v-progress-linear
                     :model-value="systemInfo.diskUsage"
                     :color="getUsageColor(systemInfo.diskUsage)"
@@ -239,7 +239,7 @@
                     @click="refreshSystemInfo"
                   >
                     <v-icon start>mdi-refresh</v-icon>
-                    {{ $t('common.refresh') }}
+                    刷新
                   </v-btn>
                 </div>
               </div>
@@ -247,7 +247,7 @@
               <div v-else class="text-center py-4">
                 <v-icon size="48" color="grey-lighten-2" class="mb-2">mdi-information-outline</v-icon>
                 <div class="text-body-2 text-medium-emphasis">
-                  {{ $t('serverManage.noSystemInfo') }}
+                  暂无系统信息
                 </div>
               </div>
             </v-card-text>
@@ -259,7 +259,7 @@
           <v-card elevation="2" class="h-100">
             <v-card-title class="d-flex align-center">
               <v-icon :color="themeStore.currentColors.info" class="me-2">mdi-network</v-icon>
-              {{ $t('serverManage.networkInfo') }}
+              网络信息
             </v-card-title>
             
             <v-divider />
@@ -270,7 +270,7 @@
                   <template v-slot:prepend>
                     <v-icon color="primary">mdi-ip</v-icon>
                   </template>
-                  <v-list-item-title>{{ $t('serverManage.ipAddress') }}</v-list-item-title>
+                  <v-list-item-title>IP地址</v-list-item-title>
                   <v-list-item-subtitle>{{ server.ipAddress || 'N/A' }}</v-list-item-subtitle>
                 </v-list-item>
                 
@@ -278,7 +278,7 @@
                   <template v-slot:prepend>
                     <v-icon color="info">mdi-ethernet</v-icon>
                   </template>
-                  <v-list-item-title>{{ $t('serverManage.bandwidth') }}</v-list-item-title>
+                  <v-list-item-title>带宽</v-list-item-title>
                   <v-list-item-subtitle>{{ server.bandwidthMbps }}Mbps</v-list-item-subtitle>
                 </v-list-item>
                 
@@ -286,7 +286,7 @@
                   <template v-slot:prepend>
                     <v-icon color="success">mdi-console-network</v-icon>
                   </template>
-                  <v-list-item-title>{{ $t('serverManage.sshAccess') }}</v-list-item-title>
+                  <v-list-item-title>SSH访问</v-list-item-title>
                   <v-list-item-subtitle>
                     {{ server.ipAddress }}:{{ server.sshPort || 22 }}
                   </v-list-item-subtitle>
@@ -301,7 +301,7 @@
                   @click="openSSHConnection"
                 >
                   <v-icon start>mdi-console</v-icon>
-                  {{ $t('serverManage.connectSSH') }}
+                  连接SSH
                 </v-btn>
               </div>
             </v-card-text>
@@ -317,18 +317,18 @@
           <v-icon :color="getActionColor(pendingAction)" class="me-2">
             {{ getActionIcon(pendingAction) }}
           </v-icon>
-          {{ $t(`serverManage.confirm${capitalize(pendingAction)}`) }}
+          确认{{ pendingAction === 'start' ? '启动' : pendingAction === 'restart' ? '重启' : pendingAction === 'stop' ? '关机' : '重置密码' }}
         </v-card-title>
         
         <v-divider />
         
         <v-card-text class="pa-6">
-          <p>{{ $t(`serverManage.confirm${capitalize(pendingAction)}Description`) }}</p>
+          <p>确认要执行此操作吗？</p>
           <div v-if="pendingAction === 'resetPassword'" class="mt-3">
             <v-alert type="warning" variant="tonal" class="mb-3">
-              {{ $t('serverManage.passwordWarning') }}
+              重置密码后，请妥善保管新密码
             </v-alert>
-            <div class="text-subtitle-2 mb-1">{{ $t('serverManage.newPassword') }}:</div>
+            <div class="text-subtitle-2 mb-1">新密码:</div>
             <div class="font-weight-bold">{{ newPassword }}</div>
           </div>
         </v-card-text>
@@ -339,13 +339,13 @@
             variant="text"
             @click="confirmDialog = false"
           >
-            {{ $t('common.cancel') }}
+            {{ '取消' }}
           </v-btn>
           <v-btn
             :color="getActionColor(pendingAction)"
             @click="executeAction"
           >
-            {{ $t('common.confirm') }}
+            {{ '确认' }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -356,14 +356,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+
 import { useThemeStore } from '@/stores/theme'
 import PageLayout from '@/components/PageLayout.vue'
 import { orderApi, type OrderDTO } from '@/api/order'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+// 移除国际化
 const themeStore = useThemeStore()
 
 // 响应式数据
@@ -397,11 +397,11 @@ const isActionDisabled = computed(() => {
 
 // 密码验证规则
 const passwordRules = [
-  (v: string) => !!v || t('validation.required'),
-  (v: string) => v.length >= 8 || t('validation.minLength', { min: 8 }),
-  (v: string) => /[A-Z]/.test(v) || t('serverManage.passwordUppercase'),
-  (v: string) => /[a-z]/.test(v) || t('serverManage.passwordLowercase'),
-  (v: string) => /[0-9]/.test(v) || t('serverManage.passwordNumber')
+  (v: string) => !!v || '此字段为必填项',
+  (v: string) => v.length >= 8 || '密码长度至少需要8个字符',
+  (v: string) => /[A-Z]/.test(v) || '密码必须包含大写字母',
+  (v: string) => /[a-z]/.test(v) || '密码必须包含小写字母',
+  (v: string) => /[0-9]/.test(v) || '密码必须包含数字'
 ]
 
 // 获取状态颜色

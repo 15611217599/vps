@@ -102,7 +102,7 @@
             class="cancel-btn"
             @click="$emit('cancel')"
           >
-            {{ cancelButtonText || $t('common.cancel') }}
+            {{ cancelButtonText || TEXTS.common.cancel }}
           </v-btn>
           
           <!-- 自定义中间按钮 -->
@@ -122,7 +122,7 @@
             class="save-btn px-8"
             @click="$emit('save')"
           >
-            {{ saveButtonText || $t('common.save') }}
+            {{ saveButtonText || TEXTS.common.save }}
           </v-btn>
         </div>
       </v-card-actions>
@@ -132,6 +132,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { TEXTS } from '@/constants/texts'
 
 interface Props {
   modelValue: boolean

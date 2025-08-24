@@ -16,7 +16,7 @@
       <v-text-field
         v-if="showSearch"
         v-model="searchQuery"
-        :placeholder="searchPlaceholder || $t('common.search')"
+        :placeholder="searchPlaceholder || TEXTS.common.search"
         prepend-inner-icon="mdi-magnify"
         variant="outlined"
         density="compact"
@@ -47,9 +47,9 @@
       :items-length="totalItems"
       :items-per-page="itemsPerPage"
       :items-per-page-options="itemsPerPageOptions"
-      :items-per-page-text="$t('common.itemsPerPage')"
-      :loading-text="$t('common.loading')"
-      :no-data-text="$t('common.noData')"
+      :items-per-page-text="TEXTS.common.itemsPerPage"
+      :loading-text="TEXTS.common.loading"
+      :no-data-text="TEXTS.common.noData"
       class="table-content"
       @update:options="$emit('update:options', $event)"
     >
@@ -82,9 +82,9 @@
       :loading="loading"
       :items-per-page="itemsPerPage"
       :items-per-page-options="itemsPerPageOptions"
-      :items-per-page-text="$t('common.itemsPerPage')"
-      :loading-text="$t('common.loading')"
-      :no-data-text="$t('common.noData')"
+      :items-per-page-text="TEXTS.common.itemsPerPage"
+      :loading-text="TEXTS.common.loading"
+      :no-data-text="TEXTS.common.noData"
       class="table-content"
     >
       <!-- 传递所有插槽 -->
@@ -113,6 +113,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import ActionButtonGroup from './ActionButtonGroup.vue'
+import { TEXTS } from '@/constants/texts'
 
 interface Props {
   title: string

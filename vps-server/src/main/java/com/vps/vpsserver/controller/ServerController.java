@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.vps.vpsserver.service.I18nService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +39,6 @@ public class ServerController {
     @Autowired
     private ServerService serverService;
     
-    @Autowired
-    private I18nService i18nService;
     
     /**
      * 获取所有服务器
@@ -87,7 +84,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.getListFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "获取服务器列表失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -106,7 +103,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.getStatsFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "获取服务器统计失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -130,7 +127,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.getByIdFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "根据ID获取服务器失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -144,7 +141,7 @@ public class ServerController {
             ServerResponseDTO createdServer = serverService.createServer(serverRequestDTO);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", i18nService.getMessage("server.created"));
+            response.put("message", "服务器创建成功");
             response.put("data", createdServer);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
@@ -155,7 +152,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.createFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "创建服务器失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -170,7 +167,7 @@ public class ServerController {
             ServerResponseDTO updatedServer = serverService.updateServer(id, serverRequestDTO);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", i18nService.getMessage("server.updated"));
+            response.put("message", "服务器更新成功");
             response.put("data", updatedServer);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
@@ -181,7 +178,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.updateFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "更新服务器失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -195,7 +192,7 @@ public class ServerController {
             serverService.deleteServer(id);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", i18nService.getMessage("server.deleted"));
+            response.put("message", "服务器删除成功");
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -205,7 +202,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.deleteFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "删除服务器失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -224,7 +221,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.getListFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "获取服务器列表失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -243,7 +240,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.getListFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "获取服务器列表失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -269,7 +266,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.checkIpFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "检查IP失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -289,7 +286,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.getGroupedFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "获取按分组组织的数据失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -326,7 +323,7 @@ public class ServerController {
             ServerResponseDTO createdServer = serverService.createServer(serverRequestDTO);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", i18nService.getMessage("server.created"));
+            response.put("message", "服务器创建成功");
             response.put("data", createdServer);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
@@ -337,7 +334,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.createFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "创建服务器失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -368,7 +365,7 @@ public class ServerController {
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("message", i18nService.getMessage("server.getGroupsFailed") + ": " + e.getMessage());
+            errorResponse.put("message", "获取分组列表失败" + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
