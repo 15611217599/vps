@@ -33,6 +33,10 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -59,6 +63,17 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        // 如果UserDetails是User实例，添加userId到claims
+        if (userDetails instanceof com.vps.vpsserver.entity.User) {
+            com.vps.vpsserver.entity.User user = (com.vps.vpsserver.entity.User) userDetails;
+            claims.put("userId", user.getId());
+        }
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    public String generateToken(UserDetails userDetails, Long userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
         return createToken(claims, userDetails.getUsername());
     }
 

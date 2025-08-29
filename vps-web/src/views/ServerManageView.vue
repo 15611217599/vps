@@ -11,7 +11,14 @@
         <v-divider />
         
         <v-card-text class="pa-6">
-          <v-row v-if="server">
+          <!-- 加载状态 -->
+          <div v-if="loading" class="text-center py-8">
+            <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
+            <div class="text-h6">加载服务器信息中...</div>
+          </div>
+          
+          <!-- 服务器信息 -->
+          <v-row v-else-if="server">
             <v-col cols="12" md="6">
               <div class="mb-4">
                 <div class="text-subtitle-2 text-medium-emphasis mb-1">服务器名称</div>
@@ -55,12 +62,22 @@
             </v-col>
           </v-row>
           
-          <v-skeleton-loader v-else type="article" />
+          <!-- 错误状态 -->
+          <div v-else class="text-center py-8">
+            <v-icon size="64" color="error" class="mb-4">mdi-server-off</v-icon>
+            <div class="text-h6 mb-2">无法加载服务器信息</div>
+            <div class="text-body-2 text-medium-emphasis mb-4">
+              服务器信息加载失败，请检查服务器ID是否正确
+            </div>
+            <v-btn color="primary" @click="loadServerInfo">
+              重新加载
+            </v-btn>
+          </div>
         </v-card-text>
       </v-card>
 
       <!-- 管理操作 -->
-      <v-row>
+      <v-row v-if="server && !loading">
         <!-- 电源管理 -->
         <v-col cols="12" md="6">
           <v-card elevation="2" class="h-100">
@@ -596,9 +613,14 @@ const loadServerInfo = async () => {
       if (server.value) {
         server.value.ipAddress = '192.168.1.100'
       }
+    } else {
+      console.error('API returned error:', response.message || 'Unknown error')
+      alert(`加载服务器信息失败: ${response.message || '未知错误'}`)
+      router.push('/dashboard')
     }
   } catch (error) {
     console.error('Failed to load server info:', error)
+    alert('加载服务器信息失败，请稍后重试')
     router.push('/dashboard')
   } finally {
     loading.value = false

@@ -19,6 +19,13 @@ public class ServerResponseDTO {
     private String password;
     private Boolean isSold;
     
+    // 安装状态信息
+    private String installStatus;
+    private Integer installProgress;
+    private String installStep;
+    private String installError;
+    private LocalDateTime installStartedAt;
+    
     // 分组信息
     private Long groupId;
     private String groupName;
@@ -43,6 +50,13 @@ public class ServerResponseDTO {
         this.username = server.getUsername();
         this.password = server.getPassword();
         this.isSold = server.getIsSold();
+        
+        // 设置安装状态信息
+        this.installStatus = server.getInstallStatus() != null ? server.getInstallStatus().name() : "NONE";
+        this.installProgress = server.getInstallProgress();
+        this.installStep = server.getInstallStep();
+        this.installError = server.getInstallError();
+        this.installStartedAt = server.getInstallStartedAt();
         
         // 设置分组信息
         if (server.getGroup() != null) {
@@ -194,6 +208,46 @@ public class ServerResponseDTO {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public String getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(String installStatus) {
+        this.installStatus = installStatus;
+    }
+
+    public Integer getInstallProgress() {
+        return installProgress;
+    }
+
+    public void setInstallProgress(Integer installProgress) {
+        this.installProgress = installProgress;
+    }
+
+    public String getInstallStep() {
+        return installStep;
+    }
+
+    public void setInstallStep(String installStep) {
+        this.installStep = installStep;
+    }
+
+    public String getInstallError() {
+        return installError;
+    }
+
+    public void setInstallError(String installError) {
+        this.installError = installError;
+    }
+
+    public LocalDateTime getInstallStartedAt() {
+        return installStartedAt;
+    }
+
+    public void setInstallStartedAt(LocalDateTime installStartedAt) {
+        this.installStartedAt = installStartedAt;
     }
 
     @Override

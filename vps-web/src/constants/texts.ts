@@ -111,13 +111,11 @@ export const TEXTS = {
   },
 
   // 订单状态
-  order: {
-    status: {
-      pending: '待处理',
-      paid: '已支付',
-      cancelled: '已取消',
-      expired: '已过期'
-    }
+  orderStatus: {
+    pending: '待处理',
+    paid: '已支付',
+    cancelled: '已取消',
+    expired: '已过期'
   },
 
   // 表单验证
@@ -376,6 +374,8 @@ export const TEXTS = {
     processing: '处理中...',
     purchaseNow: '立即购买',
     selectPricePlan: '请选择价格方案',
+    selectPriceFirst: '请先选择价格方案',
+    orderCreatedSuccess: '订单创建成功',
     noProducts: '暂无产品',
     noProductsHint: '当前没有可用的产品，请联系我们了解更多信息',
     contactUs: '联系我们',

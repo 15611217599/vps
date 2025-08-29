@@ -392,7 +392,7 @@
                 <!-- 价格选择器 -->
                 <v-card class="price-selector mb-4" variant="outlined" elevation="2">
                   <v-card-title class="d-flex align-center pa-4 pb-2">
-                    <v-icon size="20" class="me-2" color="success">mdi-currency-usd</v-icon>
+                    <v-icon size="20" class="me-2" color="success">mdi-currency-cny</v-icon>
                     <span class="text-h6 font-weight-bold">{{ TEXTS.sales.pricingPlans }}</span>
                   </v-card-title>
                   <v-card-text class="pa-4 pt-2">
@@ -421,7 +421,7 @@
                       </div>
                     </div>
                     <div v-else class="text-center py-4">
-                      <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-currency-usd-off</v-icon>
+                      <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-currency-cny-off</v-icon>
                       <div class="text-body-1 text-medium-emphasis">{{ TEXTS.sales.noPriceInfo }}</div>
                     </div>
                   </v-card-text>
@@ -828,7 +828,7 @@ const onPriceGroupOSVersionChange = (priceGroup: any, value: string) => {
 const purchaseNow = async (priceGroup: any) => {
   const selection = priceGroupSelections.value[priceGroup.id]
   if (!selection || !selection.selectedPricePeriod) {
-    showNotification(t('sales.selectPriceFirst'), 'warning')
+    showNotification(TEXTS.sales.selectPriceFirst, 'warning')
     return
   }
 
@@ -853,7 +853,7 @@ const purchaseNow = async (priceGroup: any) => {
     const response = await orderApi.createOrder(orderRequest)
     
     if (response.success) {
-      showNotification(t('sales.orderCreatedSuccess'), 'success')
+      showNotification(TEXTS.sales.orderCreatedSuccess, 'success')
       console.log('订单创建成功:', response.data)
       
       // 显示订单详情信息

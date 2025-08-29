@@ -292,6 +292,13 @@
           </v-row>
         </div>
       </UnifiedDialog>
+
+      <!-- 通知组件 -->
+      <NotificationSnackbar
+        v-model="notificationState.show"
+        :message="notificationState.message"
+        :type="notificationState.type"
+      />
     </v-container>
   </PageLayout>
 </template>
@@ -304,6 +311,7 @@ import { transactionApi, type TransactionDTO } from '@/api/transaction'
 import { useNotification } from '@/composables/useNotification'
 import PageLayout from '@/components/PageLayout.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
+import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
 import { TEXTS } from '@/constants/texts'
 
 // 简单的防抖函数实现
@@ -317,7 +325,7 @@ const debounce = (func: Function, delay: number) => {
 
 // 移除国际化
 const router = useRouter()
-const { showNotification } = useNotification()
+const { notificationState, showNotification } = useNotification()
 
 // 响应式数据
 const transactions = ref<TransactionDTO[]>([])

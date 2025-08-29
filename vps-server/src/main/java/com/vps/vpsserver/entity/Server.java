@@ -68,6 +68,26 @@ public class Server {
     @Column(name = "is_sold", nullable = false)
     private Boolean isSold = false;
 
+    // 安装状态相关字段
+    @Enumerated(EnumType.STRING)
+    @Column(name = "install_status")
+    private InstallStatus installStatus = InstallStatus.NONE;
+
+    @Column(name = "install_progress")
+    private Integer installProgress = 0;
+
+    @Column(name = "install_step")
+    private String installStep;
+
+    @Column(name = "install_log", columnDefinition = "TEXT")
+    private String installLog;
+
+    @Column(name = "install_error", columnDefinition = "TEXT")
+    private String installError;
+
+    @Column(name = "install_started_at")
+    private LocalDateTime installStartedAt;
+
     @CreationTimestamp
     @Column(name = "create_time", nullable = false, updatable = false)
     private LocalDateTime createTime;
@@ -243,6 +263,55 @@ public class Server {
         return this.ip;
     }
 
+    // 添加安装状态的getter和setter
+    public InstallStatus getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(InstallStatus installStatus) {
+        this.installStatus = installStatus;
+    }
+
+    public Integer getInstallProgress() {
+        return installProgress;
+    }
+
+    public void setInstallProgress(Integer installProgress) {
+        this.installProgress = installProgress;
+    }
+
+    public String getInstallStep() {
+        return installStep;
+    }
+
+    public void setInstallStep(String installStep) {
+        this.installStep = installStep;
+    }
+
+    public String getInstallLog() {
+        return installLog;
+    }
+
+    public void setInstallLog(String installLog) {
+        this.installLog = installLog;
+    }
+
+    public String getInstallError() {
+        return installError;
+    }
+
+    public void setInstallError(String installError) {
+        this.installError = installError;
+    }
+
+    public LocalDateTime getInstallStartedAt() {
+        return installStartedAt;
+    }
+
+    public void setInstallStartedAt(LocalDateTime installStartedAt) {
+        this.installStartedAt = installStartedAt;
+    }
+
     // 服务器状态枚举
     public enum ServerStatus {
         ONLINE("online"),
@@ -266,5 +335,13 @@ public class Server {
             }
             throw new IllegalArgumentException("Unknown status: " + value);
         }
+    }
+
+    // 安装状态枚举
+    public enum InstallStatus {
+        NONE,        // 未安装
+        INSTALLING,  // 安装中
+        COMPLETED,   // 安装完成
+        FAILED       // 安装失败
     }
 }

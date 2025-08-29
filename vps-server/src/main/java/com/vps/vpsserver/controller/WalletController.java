@@ -1,14 +1,22 @@
 package com.vps.vpsserver.controller;
 
-import com.vps.vpsserver.dto.WalletDTO;
-import com.vps.vpsserver.service.WalletService;
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
+import com.vps.vpsserver.dto.WalletDTO;
+import com.vps.vpsserver.service.WalletService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/wallet")
@@ -26,11 +34,9 @@ public class WalletController {
     }
 
     @PostMapping
-    public ResponseEntity<WalletDTO> createWallet(
-            @RequestParam(required = false, defaultValue = "USD") String currency,
-            Authentication authentication) {
+    public ResponseEntity<WalletDTO> createWallet(Authentication authentication) {
         Long userId = getUserIdFromAuthentication(authentication);
-        WalletDTO wallet = walletService.createWallet(userId, currency);
+        WalletDTO wallet = walletService.createWallet(userId, "CNY");
         return ResponseEntity.ok(wallet);
     }
 
@@ -43,14 +49,7 @@ public class WalletController {
         return ResponseEntity.ok(wallet);
     }
 
-    @PutMapping("/currency")
-    public ResponseEntity<WalletDTO> updateCurrency(
-            @RequestParam String currency,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuthentication(authentication);
-        WalletDTO wallet = walletService.updateCurrency(userId, currency);
-        return ResponseEntity.ok(wallet);
-    }
+
 
     private Long getUserIdFromAuthentication(Authentication authentication) {
         // 这里需要根据你的用户认证实现来获取用户ID

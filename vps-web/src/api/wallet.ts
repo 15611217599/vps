@@ -17,10 +17,8 @@ export const walletApi = {
   },
 
   // 创建钱包
-  createWallet: async (currency: string = 'USD'): Promise<Wallet> => {
-    const response = await apiClient.post('/wallet', null, {
-      params: { currency }
-    })
+  createWallet: async (): Promise<Wallet> => {
+    const response = await apiClient.post('/wallet')
     return response.data
   },
 
@@ -32,11 +30,5 @@ export const walletApi = {
     return response.data
   },
 
-  // 更新货币
-  updateCurrency: async (currency: string): Promise<Wallet> => {
-    const response = await apiClient.put('/wallet/currency', null, {
-      params: { currency }
-    })
-    return response.data
-  }
+
 }

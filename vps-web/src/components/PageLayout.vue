@@ -83,7 +83,7 @@ const navigationItems = computed(() => [
   },
   {
     title: '价格组',
-    icon: 'mdi-currency-usd',
+    icon: 'mdi-currency-cny',
     to: '/price-groups'
   },
   {
@@ -96,6 +96,12 @@ const navigationItems = computed(() => [
     icon: 'mdi-bank-transfer',
     to: '/transactions'
   },
+  {
+    title: '支付记录',
+    icon: 'mdi-history',
+    to: '/payment/history'
+  },
+
   {
     title: '销售页面',
     icon: 'mdi-storefront',

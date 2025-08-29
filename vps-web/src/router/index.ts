@@ -12,6 +12,10 @@ import OrderView from '../views/OrderView.vue'
 import SalesView from '../views/SalesView.vue'
 import ServerManageView from '../views/ServerManageView.vue'
 import TransactionView from '../views/TransactionView.vue'
+import RechargeView from '../views/RechargeView.vue'
+import PaymentResultView from '../views/PaymentResultView.vue'
+import PaymentHistoryView from '../views/PaymentHistoryView.vue'
+
 
 
 
@@ -70,7 +74,7 @@ const routes = [
     // 销售页面允许所有用户访问（已登录和未登录）
   },
   {
-    path: '/server-manage',
+    path: '/server-manage/:id',
     name: 'ServerManage',
     component: ServerManageView,
     meta: { requiresAuth: true }
@@ -79,6 +83,35 @@ const routes = [
     path: '/transactions',
     name: 'Transactions',
     component: TransactionView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/recharge',
+    name: 'Recharge',
+    component: RechargeView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/payment/success',
+    name: 'PaymentSuccess',
+    component: PaymentResultView
+  },
+  {
+    path: '/payment/failed',
+    name: 'PaymentFailed',
+    component: PaymentResultView
+  },
+  {
+    path: '/payment/history',
+    name: 'PaymentHistory',
+    component: PaymentHistoryView,
+    meta: { requiresAuth: true }
+  },
+
+  {
+    path: '/server-install-progress/:serverId',
+    name: 'ServerInstallProgress',
+    component: () => import('../views/ServerInstallProgressView.vue'),
     meta: { requiresAuth: true }
   },
   {

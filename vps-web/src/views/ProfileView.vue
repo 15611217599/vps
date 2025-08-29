@@ -20,7 +20,10 @@
           </v-card>
 
           <!-- 钱包卡片 -->
-          <WalletCard class="mb-6" />
+          <WalletCard ref="walletCard" class="mb-6" />
+
+          <!-- 充值卡片 -->
+          <RechargeCard class="mb-6" @recharge-success="handleRechargeSuccess" />
 
           <!-- 个人资料编辑卡片 -->
           <v-card elevation="3" rounded="lg">
@@ -214,6 +217,7 @@ import { useThemeStore } from '@/stores/theme'
 import { TEXTS } from '@/constants/texts'
 import PageLayout from '@/components/PageLayout.vue'
 import WalletCard from '@/components/WalletCard.vue'
+import RechargeCard from '@/components/RechargeCard.vue'
 
 // 移除国际化
 const authStore = useAuthStore()
@@ -226,6 +230,7 @@ const showSnackbar = (message: string, type: 'success' | 'error') => {
 }
 
 const profileForm = ref()
+const walletCard = ref()
 const loading = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
@@ -329,6 +334,15 @@ const handleUpdateProfile = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// 处理充值成功事件
+const handleRechargeSuccess = () => {
+  // 刷新钱包余额
+  if (walletCard.value?.loadWallet) {
+    walletCard.value.loadWallet()
+  }
+  showSnackbar('充值成功，余额已更新', 'success')
 }
 
 onMounted(async () => {

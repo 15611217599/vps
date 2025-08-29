@@ -21,7 +21,7 @@
       <!-- 价格组列表 -->
     <v-card>
       <v-card-title class="d-flex align-center">
-        <v-icon class="me-2">mdi-currency-usd</v-icon>
+        <v-icon class="me-2">mdi-currency-cny</v-icon>
         {{ TEXTS.priceGroup.list }}
         <v-spacer />
         <v-text-field
@@ -212,7 +212,7 @@
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
               variant="outlined"
-              prepend-inner-icon="mdi-currency-usd"
+              prepend-inner-icon="mdi-currency-cny"
               color="primary"
               density="comfortable"
               class="mb-2"
@@ -228,7 +228,7 @@
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
               variant="outlined"
-              prepend-inner-icon="mdi-currency-usd"
+              prepend-inner-icon="mdi-currency-cny"
               color="primary"
               density="comfortable"
               class="mb-2"
@@ -247,7 +247,7 @@
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
               variant="outlined"
-              prepend-inner-icon="mdi-currency-usd"
+              prepend-inner-icon="mdi-currency-cny"
               color="primary"
               density="comfortable"
               class="mb-2"
@@ -263,7 +263,7 @@
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
               variant="outlined"
-              prepend-inner-icon="mdi-currency-usd"
+              prepend-inner-icon="mdi-currency-cny"
               color="primary"
               density="comfortable"
               class="mb-2"
@@ -282,7 +282,7 @@
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
               variant="outlined"
-              prepend-inner-icon="mdi-currency-usd"
+              prepend-inner-icon="mdi-currency-cny"
               color="primary"
               density="comfortable"
               class="mb-2"
@@ -298,7 +298,7 @@
               step="0.01"
               :rules="[rules.required, rules.positiveNumber]"
               variant="outlined"
-              prepend-inner-icon="mdi-currency-usd"
+              prepend-inner-icon="mdi-currency-cny"
               color="primary"
               density="comfortable"
               class="mb-2"

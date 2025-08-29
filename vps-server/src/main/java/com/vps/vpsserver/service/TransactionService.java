@@ -1,13 +1,13 @@
 package com.vps.vpsserver.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.vps.vpsserver.dto.CreateRechargeRequest;
 import com.vps.vpsserver.dto.TransactionDTO;
 import com.vps.vpsserver.entity.Transaction;
 import com.vps.vpsserver.entity.User;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 public interface TransactionService {
     
@@ -74,4 +74,9 @@ public interface TransactionService {
      * 根据订单获取交易记录
      */
     List<TransactionDTO> getTransactionsByOrder(Long orderId);
+    
+    /**
+     * 创建交易记录
+     */
+    TransactionDTO createTransaction(Transaction transaction);
 }

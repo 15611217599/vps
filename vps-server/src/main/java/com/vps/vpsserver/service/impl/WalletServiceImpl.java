@@ -1,16 +1,18 @@
 package com.vps.vpsserver.service.impl;
 
+import java.math.BigDecimal;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.vps.vpsserver.dto.WalletDTO;
 import com.vps.vpsserver.entity.User;
 import com.vps.vpsserver.entity.Wallet;
 import com.vps.vpsserver.repository.UserRepository;
 import com.vps.vpsserver.repository.WalletRepository;
 import com.vps.vpsserver.service.WalletService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -52,15 +54,7 @@ public class WalletServiceImpl implements WalletService {
         return convertToDTO(wallet);
     }
 
-    @Override
-    public WalletDTO updateCurrency(Long userId, String currency) {
-        Wallet wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found for user: " + userId));
-        
-        wallet.setCurrency(currency);
-        wallet = walletRepository.save(wallet);
-        return convertToDTO(wallet);
-    }
+
 
     private Wallet createWalletEntity(Long userId) {
         User user = userRepository.findById(userId)
@@ -69,7 +63,7 @@ public class WalletServiceImpl implements WalletService {
         Wallet wallet = new Wallet();
         wallet.setUser(user);
         wallet.setBalance(BigDecimal.ZERO);
-        wallet.setCurrency("USD");
+        wallet.setCurrency("CNY");
         
         return walletRepository.save(wallet);
     }

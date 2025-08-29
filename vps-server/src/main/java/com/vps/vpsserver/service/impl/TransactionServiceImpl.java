@@ -1,19 +1,21 @@
 package com.vps.vpsserver.service.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.vps.vpsserver.dto.CreateRechargeRequest;
 import com.vps.vpsserver.dto.TransactionDTO;
 import com.vps.vpsserver.entity.Transaction;
 import com.vps.vpsserver.entity.User;
 import com.vps.vpsserver.repository.TransactionRepository;
 import com.vps.vpsserver.service.TransactionService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -166,6 +168,13 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionDTO> getTransactionsByOrder(Long orderId) {
         List<Transaction> transactions = transactionRepository.findByOrderId(orderId);
         return transactions.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public TransactionDTO createTransaction(Transaction transaction) {
+        transaction = transactionRepository.save(transaction);
+        return convertToDTO(transaction);
     }
 
     private TransactionDTO convertToDTO(Transaction transaction) {

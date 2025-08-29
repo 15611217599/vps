@@ -167,6 +167,7 @@
                 color="info"
                 @click="manageServer(item)"
               />
+
               <v-btn
                 v-if="item.status === 'PENDING'"
                 icon="mdi-credit-card"
@@ -196,6 +197,13 @@
           </template>
         </v-data-table-server>
       </v-card>
+
+      <!-- 通知组件 -->
+      <NotificationSnackbar
+        v-model="notificationState.show"
+        :message="notificationState.message"
+        :type="notificationState.type"
+      />
 
       <!-- 订单详情对话框 -->
       <UnifiedDialog
@@ -338,6 +346,7 @@ import { orderApi } from '@/api/order'
 import { useNotification } from '@/composables/useNotification'
 import PageLayout from '@/components/PageLayout.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
+import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
 import { TEXTS } from '@/constants/texts'
 
 // 简单的防抖函数实现
@@ -351,7 +360,7 @@ const debounce = (func: Function, delay: number) => {
 
 // 移除国际化
 const router = useRouter()
-const { showNotification } = useNotification()
+const { notificationState, showNotification } = useNotification()
 
 // 定义订单类型
 interface Order {
@@ -551,6 +560,8 @@ const getExpirationClass = (expiresAt: string) => {
 const manageServer = (order: any) => {
   router.push(`/server-manage/${order.id}`)
 }
+
+
 
 // 切换自动续费
 const toggleAutoRenewal = async (order: any, autoRenewal: boolean) => {

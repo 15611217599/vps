@@ -155,6 +155,17 @@
                 </v-btn>
                 
                 <v-btn
+                  v-if="item.status === 'ACTIVE' && item.server"
+                  size="small"
+                  variant="text"
+                  :color="getInstallButtonColor(item.server)"
+                  @click="handleServerAction(item)"
+                  :title="getInstallButtonTitle(item.server)"
+                >
+                  <v-icon>{{ getInstallButtonIcon(item.server) }}</v-icon>
+                </v-btn>
+                
+                <v-btn
                   size="small"
                   variant="text"
                   :color="themeStore.currentColors.info"
@@ -264,6 +275,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- 安装系统对话框 -->
+    <ServerInstallDialog
+      v-model="installDialog"
+      :server-id="selectedServerId"
+      @installed="onInstallComplete"
+    />
   </PageLayout>
 </template>
 
@@ -272,6 +290,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 import PageLayout from '@/components/PageLayout.vue'
+import ServerInstallDialog from '@/components/ServerInstallDialog.vue'
 import { orderApi, type OrderDTO } from '@/api/order'
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -283,6 +302,8 @@ const statusFilter = ref('')
 const servers = ref<OrderDTO[]>([])
 const detailDialog = ref(false)
 const selectedServer = ref<OrderDTO | null>(null)
+const installDialog = ref(false)
+const selectedServerId = ref<number>(0)
 
 // 状态选项
 const statusOptions = computed(() => [
@@ -438,6 +459,61 @@ const connectToServer = (server: OrderDTO) => {
 // 管理服务器
 const manageServer = (server: OrderDTO) => {
   router.push(`/server-manage/${server.id}`)
+}
+
+// 处理服务器操作（安装或查看进度）
+const handleServerAction = (server: OrderDTO) => {
+  if (!server.server) return
+  
+  if (server.server.installStatus === 'INSTALLING') {
+    // 如果正在安装，跳转到进度页面
+    router.push(`/server-install-progress/${server.server.id}`)
+  } else {
+    // 否则打开安装对话框
+    selectedServerId.value = server.server.id
+    installDialog.value = true
+  }
+}
+
+// 获取安装按钮颜色
+const getInstallButtonColor = (server: any) => {
+  if (!server) return 'grey'
+  
+  switch (server.installStatus) {
+    case 'INSTALLING': return 'warning'
+    case 'COMPLETED': return 'success'
+    case 'FAILED': return 'error'
+    default: return 'primary'
+  }
+}
+
+// 获取安装按钮图标
+const getInstallButtonIcon = (server: any) => {
+  if (!server) return 'mdi-cog-sync'
+  
+  switch (server.installStatus) {
+    case 'INSTALLING': return 'mdi-progress-clock'
+    case 'COMPLETED': return 'mdi-check-circle'
+    case 'FAILED': return 'mdi-alert-circle'
+    default: return 'mdi-cog-sync'
+  }
+}
+
+// 获取安装按钮标题
+const getInstallButtonTitle = (server: any) => {
+  if (!server) return '安装系统'
+  
+  switch (server.installStatus) {
+    case 'INSTALLING': return '查看安装进度'
+    case 'COMPLETED': return '重新安装系统'
+    case 'FAILED': return '重新安装系统'
+    default: return '安装系统'
+  }
+}
+
+// 安装完成回调
+const onInstallComplete = () => {
+  refreshServers()
 }
 
 // 获取状态文本

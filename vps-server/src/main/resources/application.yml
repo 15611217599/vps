@@ -50,3 +50,17 @@ server:
 logging:
   level:
     com.vps: DEBUG
+
+# 应用配置
+app:
+  base-url: "http://localhost:8080"
+
+# 支付配置
+payment:
+  ezpay:
+    pid: "1001"
+    key: "89unJUB8HZ54Hj7x4nUj56HN4nUzUJ8i"
+    submit-url: "https://ezfp.cn/submit.php"
+    api-url: "https://ezfp.cn/mapi.php"
+    notify-url: "http://localhost:8080/api/payment/notify"
+    return-url: "http://localhost:3000/payment/return"
