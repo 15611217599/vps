@@ -54,9 +54,6 @@ public class ServerInstallController {
             @RequestHeader("Authorization") String token) {
         
         try {
-            String jwt = token.replace("Bearer ", "");
-            Long userId = jwtUtil.extractUserId(jwt);
-            
             Server server = installService.getServerInstallStatus(serverId);
             
             return ResponseEntity.ok(ApiResponse.success(server));

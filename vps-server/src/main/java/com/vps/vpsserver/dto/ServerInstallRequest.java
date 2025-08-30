@@ -28,9 +28,9 @@ public class ServerInstallRequest {
         
         switch (installType.toUpperCase()) {
             case "REINSTALL":
-                cmd.append("bash reinstall.sh ").append(osName);
+                cmd.append("bash reinstall.sh ").append(shQuote(osName));
                 if (osVersion != null && !osVersion.isEmpty()) {
-                    cmd.append(" ").append(osVersion);
+                    cmd.append(" ").append(shQuote(osVersion));
                 }
                 if (minimal != null && minimal) {
                     cmd.append(" --minimal");
@@ -40,7 +40,7 @@ public class ServerInstallRequest {
             case "DD":
                 cmd.append("bash reinstall.sh dd");
                 if (customImageUrl != null && !customImageUrl.isEmpty()) {
-                    cmd.append(" --img \"").append(customImageUrl).append("\"");
+                    cmd.append(" --img ").append(shQuote(customImageUrl));
                 }
                 break;
                 
@@ -51,11 +51,11 @@ public class ServerInstallRequest {
         
         // 添加通用参数
         if (rootPassword != null && !rootPassword.isEmpty()) {
-            cmd.append(" --password ").append(rootPassword);
+            cmd.append(" --password ").append(shQuote(rootPassword));
         }
         
         if (sshKey != null && !sshKey.isEmpty()) {
-            cmd.append(" --ssh-key \"").append(sshKey).append("\"");
+            cmd.append(" --ssh-key ").append(shQuote(sshKey));
         }
         
         if (sshPort != null && !sshPort.equals(22)) {
@@ -67,5 +67,12 @@ public class ServerInstallRequest {
         }
         
         return cmd.toString();
+    }
+
+    // 使用单引号安全包装shell参数，同时转义内部的单引号
+    private String shQuote(String raw) {
+        // 将 ' 替换为 '\'' 的标准POSIX写法
+        String escaped = raw.replace("'", "'\"'\"'");
+        return "'" + escaped + "'";
     }
 }

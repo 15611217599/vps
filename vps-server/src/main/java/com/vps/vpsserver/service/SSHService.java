@@ -13,8 +13,6 @@ import java.util.concurrent.CompletableFuture;
 public class SSHService {
     
     private static final int CONNECTION_TIMEOUT = 30000; // 30秒
-    private static final int COMMAND_TIMEOUT = 300000;   // 5分钟
-    
     /**
      * 执行SSH命令
      */

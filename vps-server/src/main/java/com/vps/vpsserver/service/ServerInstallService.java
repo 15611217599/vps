@@ -39,12 +39,7 @@ public class ServerInstallService {
         if (server.getInstallStatus() == InstallStatus.INSTALLING) {
             throw new RuntimeException("服务器正在安装中，请勿重复操作");
         }
-        
-        // 更新服务器信息
-        server.setOperatingSystem(request.getOsName() + 
-            (request.getOsVersion() != null ? " " + request.getOsVersion() : ""));
-        server.setPassword(request.getRootPassword());
-        server.setPort(request.getSshPort());
+        // 注意：此处不更新操作系统/端口/密码等最终字段，待安装成功后再更新
         
         // 设置安装状态
         server.setInstallStatus(InstallStatus.INSTALLING);
@@ -57,14 +52,17 @@ public class ServerInstallService {
         serverRepository.save(server);
         
         // 异步执行安装
-        CompletableFuture.runAsync(() -> executeInstall(server, request));
+        CompletableFuture.runAsync(() -> executeInstall(server.getId(), request));
     }
     
     /**
      * 执行安装
      */
-    private void executeInstall(Server server, ServerInstallRequest request) {
+    private void executeInstall(Long serverId, ServerInstallRequest request) {
         try {
+            // 获取最新的服务器信息，避免跨线程持久化实体问题
+            Server server = serverRepository.findById(serverId)
+                .orElseThrow(() -> new RuntimeException("服务器不存在"));
             String installCommand = request.buildInstallCommand();
             log.info("执行安装命令: {}", installCommand);
             
@@ -76,6 +74,16 @@ public class ServerInstallService {
                 throw new RuntimeException("无法连接到服务器");
             }
             
+            // 更新进度：安装依赖
+            updateInstallProgress(server.getId(), 15, "安装必要依赖...");
+            String prereqCmd = buildPrerequisitesCommand();
+            SSHService.SSHResult prereqResult = sshService.executeCommand(
+                server.getIp(), server.getPort(), server.getUsername(), server.getPassword(), prereqCmd
+            ).get();
+            if (!prereqResult.isSuccess()) {
+                throw new RuntimeException("安装依赖失败: " + prereqResult.getError());
+            }
+
             // 更新进度：下载脚本
             updateInstallProgress(server.getId(), 20, "下载安装脚本...");
             
@@ -100,17 +108,59 @@ public class ServerInstallService {
             updateInstallLog(server.getId(), installResult.getOutput());
             
             if (installResult.isSuccess()) {
-                // 安装成功
-                updateInstallComplete(server.getId(), true, null);
+                // 安装成功：尝试触发重启
+                updateInstallProgress(server.getId(), 80, "安装完成，准备重启...");
+                String rebootCmd = "nohup sh -c '(sleep 2; /sbin/reboot -f || reboot || shutdown -r now)' >/dev/null 2>&1 & echo REBOOT_SCHEDULED";
+                try {
+                    SSHService.SSHResult rebootResult = sshService.executeCommand(
+                        server.getIp(), server.getPort(), server.getUsername(), server.getPassword(), rebootCmd
+                    ).get();
+                    // 即使返回非0也可能因连接关闭导致，尽量以输出标识判断
+                    if (!rebootResult.isSuccess()) {
+                        log.warn("触发重启命令返回非成功状态，可能是SSH断开所致: {}", rebootResult.getError());
+                    }
+                } catch (Exception re) {
+                    log.warn("触发重启时发生异常（可能是预期的连接中断）: {}", re.getMessage());
+                }
+                updateInstallProgress(server.getId(), 90, "已触发重启，等待服务器重启...");
+                // 安装成功：最终更新服务器字段（操作系统/密码/端口等）
+                updateInstallComplete(server.getId(), true, null, request);
             } else {
-                // 安装失败
-                updateInstallComplete(server.getId(), false, installResult.getError());
+                // 安装失败：仅更新安装状态，不覆盖最终字段
+                updateInstallComplete(server.getId(), false, installResult.getError(), request);
             }
             
         } catch (Exception e) {
             log.error("安装系统时发生异常: {}", e.getMessage(), e);
-            updateInstallComplete(server.getId(), false, e.getMessage());
+            updateInstallComplete(serverId, false, e.getMessage(), request);
         }
+    }
+
+    /**
+     * 构建安装必要依赖的通用命令，覆盖常见发行版包管理器
+     */
+    private String buildPrerequisitesCommand() {
+        // 尽量做到幂等：已经存在则跳过安装
+        StringBuilder sb = new StringBuilder();
+        sb.append("set -e; ");
+        sb.append("missing=''; ");
+        sb.append("for c in curl wget bash; do command -v $c >/dev/null 2>&1 || missing=\"$missing $c\"; done; ");
+        // ca-certificates在部分系统里不是命令，因此仅尝试安装
+        sb.append("if [ -z \"$missing\" ]; then echo 'dependencies already satisfied'; exit 0; fi; ");
+        sb.append("if command -v apt-get >/dev/null 2>&1; then ");
+        sb.append("export DEBIAN_FRONTEND=noninteractive; apt-get update -y && apt-get install -y curl wget bash ca-certificates && update-ca-certificates || true; ");
+        sb.append("elif command -v dnf >/dev/null 2>&1; then ");
+        sb.append("dnf install -y curl wget bash ca-certificates; ");
+        sb.append("elif command -v yum >/dev/null 2>&1; then ");
+        sb.append("yum install -y curl wget bash ca-certificates; ");
+        sb.append("elif command -v zypper >/dev/null 2>&1; then ");
+        sb.append("zypper --non-interactive install -y curl wget bash ca-certificates; ");
+        sb.append("elif command -v pacman >/dev/null 2>&1; then ");
+        sb.append("pacman -Sy --noconfirm curl wget bash ca-certificates; ");
+        sb.append("elif command -v apk >/dev/null 2>&1; then ");
+        sb.append("apk add --no-cache curl wget bash ca-certificates; ");
+        sb.append("else echo 'unsupported package manager'; exit 1; fi");
+        return sb.toString();
     }
     
     /**
@@ -147,12 +197,21 @@ public class ServerInstallService {
      * 完成安装
      */
     @Transactional
-    public void updateInstallComplete(Long serverId, boolean success, String errorMessage) {
+    public void updateInstallComplete(Long serverId, boolean success, String errorMessage, ServerInstallRequest request) {
         Optional<Server> serverOpt = serverRepository.findById(serverId);
         if (serverOpt.isPresent()) {
             Server server = serverOpt.get();
             
             if (success) {
+                // 安装成功后，才更新这些最终字段
+                server.setOperatingSystem(request.getOsName() +
+                    (request.getOsVersion() != null ? " " + request.getOsVersion() : ""));
+                if (request.getRootPassword() != null) {
+                    server.setPassword(request.getRootPassword());
+                }
+                if (request.getSshPort() != null) {
+                    server.setPort(request.getSshPort());
+                }
                 server.setInstallStatus(InstallStatus.COMPLETED);
                 server.setInstallProgress(100);
                 server.setInstallStep("安装完成");

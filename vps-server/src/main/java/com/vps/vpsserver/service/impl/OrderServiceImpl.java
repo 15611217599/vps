@@ -1,25 +1,36 @@
 package com.vps.vpsserver.service.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.vps.vpsserver.dto.ServerInstallRequest;
+import com.vps.vpsserver.service.ServerInstallService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.vps.vpsserver.dto.CreateOrderRequest;
 import com.vps.vpsserver.dto.OrderDTO;
-import com.vps.vpsserver.entity.*;
+import com.vps.vpsserver.entity.Order;
+import com.vps.vpsserver.entity.PriceGroup;
+import com.vps.vpsserver.entity.Server;
+import com.vps.vpsserver.entity.ServerGroup;
+import com.vps.vpsserver.entity.User;
+import com.vps.vpsserver.entity.Wallet;
 import com.vps.vpsserver.repository.OrderRepository;
 import com.vps.vpsserver.repository.PriceGroupRepository;
 import com.vps.vpsserver.repository.ServerRepository;
 import com.vps.vpsserver.repository.WalletRepository;
 import com.vps.vpsserver.service.OrderService;
 import com.vps.vpsserver.service.TransactionService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -27,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final ServerRepository serverRepository;
     private final WalletRepository walletRepository;
     private final TransactionService transactionService;
+    private final ServerInstallService serverInstallService;
     
 
     @Override
@@ -98,6 +110,30 @@ public class OrderServiceImpl implements OrderService {
         if (assignedServer != null) {
             assignedServer.setIsSold(true);
             serverRepository.save(assignedServer);
+            
+            // 自动触发操作系统安装
+            try {
+                log.info("订单创建成功，开始自动安装操作系统。订单号: {}, 服务器ID: {}", order.getOrderNumber(), assignedServer.getId());
+                
+                ServerInstallRequest installRequest = new ServerInstallRequest();
+                installRequest.setServerId(assignedServer.getId());
+                installRequest.setOsName(request.getOsName() != null ? request.getOsName() : "ubuntu");
+                installRequest.setOsVersion(request.getOsVersion() != null ? request.getOsVersion() : "22.04");
+                installRequest.setRootPassword(request.getInitialPassword() != null ? request.getInitialPassword() : "123@@@");
+                installRequest.setSshPort(request.getSshPort() != null ? request.getSshPort() : 22);
+                installRequest.setInstallType("REINSTALL");
+                installRequest.setMinimal(false);
+                
+                // 异步启动安装过程
+                serverInstallService.startInstall(installRequest);
+                
+                log.info("操作系统安装任务已启动。订单号: {}, 服务器ID: {}", order.getOrderNumber(), assignedServer.getId());
+                
+            } catch (Exception e) {
+                log.error("自动安装操作系统失败。订单号: {}, 服务器ID: {}, 错误: {}", 
+                    order.getOrderNumber(), assignedServer.getId(), e.getMessage(), e);
+                // 不抛出异常，避免影响订单创建流程
+            }
         }
 
         return convertToDTO(order);

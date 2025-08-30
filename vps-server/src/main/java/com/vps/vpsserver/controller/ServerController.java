@@ -35,11 +35,10 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/servers")
 @CrossOrigin(origins = "*")
 public class ServerController {
-    
+
     @Autowired
     private ServerService serverService;
-    
-    
+
     /**
      * 获取所有服务器
      */
@@ -52,12 +51,12 @@ public class ServerController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Long groupId) {
-        
+
         try {
-            Sort sort = sortDir.equalsIgnoreCase("desc") ? 
-                Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+            Sort sort = sortDir.equalsIgnoreCase("desc")
+                    ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
             Pageable pageable = PageRequest.of(page, size, sort);
-            
+
             Page<ServerResponseDTO> serverPage;
             if (search != null && !search.trim().isEmpty()) {
                 serverPage = serverService.searchServers(search.trim(), pageable);
@@ -66,7 +65,7 @@ public class ServerController {
             } else {
                 serverPage = serverService.getServersPage(pageable);
             }
-            
+
             Map<String, Object> pageData = new HashMap<>();
             pageData.put("content", serverPage.getContent());
             pageData.put("totalElements", serverPage.getTotalElements());
@@ -75,11 +74,11 @@ public class ServerController {
             pageData.put("number", serverPage.getNumber());
             pageData.put("hasNext", serverPage.hasNext());
             pageData.put("hasPrevious", serverPage.hasPrevious());
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("data", pageData);
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -88,7 +87,7 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 获取服务器统计信息
      */
@@ -107,7 +106,7 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 根据ID获取服务器
      */
@@ -131,7 +130,7 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 创建服务器
      */
@@ -156,13 +155,13 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 更新服务器
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateServer(@PathVariable Long id, 
-                                                           @Valid @RequestBody ServerRequestDTO serverRequestDTO) {
+    public ResponseEntity<Map<String, Object>> updateServer(@PathVariable Long id,
+            @Valid @RequestBody ServerRequestDTO serverRequestDTO) {
         try {
             ServerResponseDTO updatedServer = serverService.updateServer(id, serverRequestDTO);
             Map<String, Object> response = new HashMap<>();
@@ -182,7 +181,7 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 删除服务器
      */
@@ -206,7 +205,7 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 根据状态获取服务器
      */
@@ -225,7 +224,7 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 根据分组获取服务器
      */
@@ -244,13 +243,13 @@ public class ServerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    
+
     /**
      * 检查IP是否存在
      */
     @GetMapping("/check-ip")
     public ResponseEntity<Map<String, Object>> checkIpExists(@RequestParam String ip,
-                                                            @RequestParam(required = false) Long excludeId) {
+            @RequestParam(required = false) Long excludeId) {
         try {
             boolean exists;
             if (excludeId != null) {
@@ -258,7 +257,7 @@ public class ServerController {
             } else {
                 exists = serverService.isIpExists(ip);
             }
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("exists", exists);
@@ -278,7 +277,7 @@ public class ServerController {
     public ResponseEntity<Map<String, Object>> getGroupedServers() {
         try {
             List<ServerGroupWithServersDTO> groupedServers = serverService.getGroupedServers();
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("data", groupedServers);
@@ -299,13 +298,13 @@ public class ServerController {
         try {
             // 创建带默认值的服务器请求DTO
             ServerRequestDTO serverRequestDTO = new ServerRequestDTO();
-            
+
             // 必填字段
             serverRequestDTO.setIp((String) requestData.get("ip"));
             serverRequestDTO.setPort((Integer) requestData.get("port"));
             serverRequestDTO.setUsername((String) requestData.get("username"));
             serverRequestDTO.setPassword((String) requestData.get("password"));
-            
+
             // 设置默认值
             serverRequestDTO.setStatus("OFFLINE");
             serverRequestDTO.setOperatingSystem("CentOS - 7.9.2111 - x64");
@@ -314,12 +313,12 @@ public class ServerController {
             serverRequestDTO.setDiskSpace("200G SSD");
             serverRequestDTO.setDiskType("FR - SSD");
             serverRequestDTO.setNetworkSpeed("25M");
-            
+
             // 如果提供了分组ID，设置分组
             if (requestData.containsKey("groupId")) {
                 serverRequestDTO.setGroupId(((Number) requestData.get("groupId")).longValue());
             }
-            
+
             ServerResponseDTO createdServer = serverService.createServer(serverRequestDTO);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -346,7 +345,7 @@ public class ServerController {
     public ResponseEntity<Map<String, Object>> getAllGroups() {
         try {
             List<ServerGroupWithServersDTO> groups = serverService.getGroupedServers();
-            
+
             // 转换为简单的选项格式
             List<Map<String, Object>> groupOptions = groups.stream()
                     .map(group -> {
@@ -357,7 +356,7 @@ public class ServerController {
                         return option;
                     })
                     .collect(Collectors.toList());
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("data", groupOptions);

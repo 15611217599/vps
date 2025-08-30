@@ -2,7 +2,6 @@ package com.vps.vpsserver.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,10 +47,10 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(getSigningKey())
+                .verifyWith(getSigningKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -84,11 +83,11 @@ public class JwtUtil {
             new Date(now.getTime() + expiration);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(expirationDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .claims().add(claims).and()
+                .subject(subject)
+                .issuedAt(now)
+                .expiration(expirationDate)
+                .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
