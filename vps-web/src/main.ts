@@ -7,6 +7,7 @@ import './styles/theme.css'
 import './styles/layout.css'
 import './styles/unified-components.css'
 import './styles/popup-fixes.css'
+import './styles/brand.css'
 
 const app = createApp(App)
 const pinia = createPinia()

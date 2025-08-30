@@ -1,0 +1,139 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 标题 -->
+  <text x="400" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#333">
+    RabbitVPS Logo Variants
+  </text>
+  
+  <!-- 主Logo - 完整版 -->
+  <g transform="translate(50, 80)">
+    <text x="0" y="-10" font-family="Arial, sans-serif" font-size="14" fill="#666">Main Logo</text>
+    <rect x="0" y="0" width="200" height="80" fill="url(#primaryGradient)" rx="8"/>
+    
+    <!-- 兔子图标 -->
+    <ellipse cx="25" cy="25" rx="3" ry="8" fill="white" opacity="0.9"/>
+    <ellipse cx="35" cy="25" rx="3" ry="8" fill="white" opacity="0.9"/>
+    <circle cx="30" cy="40" r="10" fill="white"/>
+    <circle cx="26" cy="36" r="2" fill="#333"/>
+    <circle cx="34" cy="36" r="2" fill="#333"/>
+    <ellipse cx="30" cy="42" rx="1.5" ry="0.8" fill="#FF6B9D"/>
+    <path d="M26 46 Q30 48 34 46" stroke="#333" stroke-width="1.5" fill="none"/>
+    
+    <!-- 文字 -->
+    <text x="55" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">Rabbit</text>
+    <text x="110" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#E0F7FF">VPS</text>
+    <text x="55" y="50" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.8)">MANAGER</text>
+  </g>
+  
+  <!-- 仅图标版本 -->
+  <g transform="translate(300, 80)">
+    <text x="0" y="-10" font-family="Arial, sans-serif" font-size="14" fill="#666">Icon Only</text>
+    <circle cx="40" cy="40" r="40" fill="url(#primaryGradient)"/>
+    
+    <!-- 兔子图标 -->
+    <ellipse cx="30" cy="25" rx="4" ry="10" fill="white" opacity="0.9"/>
+    <ellipse cx="50" cy="25" rx="4" ry="10" fill="white" opacity="0.9"/>
+    <circle cx="40" cy="40" r="12" fill="white"/>
+    <circle cx="35" cy="36" r="2.5" fill="#333"/>
+    <circle cx="45" cy="36" r="2.5" fill="#333"/>
+    <ellipse cx="40" cy="42" rx="2" ry="1" fill="#FF6B9D"/>
+    <path d="M35 48 Q40 50 45 48" stroke="#333" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- 水平版本 -->
+  <g transform="translate(450, 80)">
+    <text x="0" y="-10" font-family="Arial, sans-serif" font-size="14" fill="#666">Horizontal</text>
+    <rect x="0" y="0" width="280" height="60" fill="url(#secondaryGradient)" rx="8"/>
+    
+    <!-- 兔子图标 -->
+    <ellipse cx="20" cy="20" rx="2.5" ry="6" fill="white" opacity="0.9"/>
+    <ellipse cx="30" cy="20" rx="2.5" ry="6" fill="white" opacity="0.9"/>
+    <circle cx="25" cy="30" r="8" fill="white"/>
+    <circle cx="22" cy="27" r="1.5" fill="#333"/>
+    <circle cx="28" cy="27" r="1.5" fill="#333"/>
+    <ellipse cx="25" cy="32" rx="1" ry="0.5" fill="#FF6B9D"/>
+    
+    <!-- 文字 -->
+    <text x="45" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">RabbitVPS</text>
+    <text x="45" y="40" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.8)">MANAGER</text>
+  </g>
+  
+  <!-- 单色版本 -->
+  <g transform="translate(50, 200)">
+    <text x="0" y="-10" font-family="Arial, sans-serif" font-size="14" fill="#666">Monochrome</text>
+    <rect x="0" y="0" width="200" height="80" fill="#333" rx="8"/>
+    
+    <!-- 兔子图标 -->
+    <ellipse cx="25" cy="25" rx="3" ry="8" fill="white" opacity="0.9"/>
+    <ellipse cx="35" cy="25" rx="3" ry="8" fill="white" opacity="0.9"/>
+    <circle cx="30" cy="40" r="10" fill="white"/>
+    <circle cx="26" cy="36" r="2" fill="#333"/>
+    <circle cx="34" cy="36" r="2" fill="#333"/>
+    <ellipse cx="30" cy="42" rx="1.5" ry="0.8" fill="#333"/>
+    
+    <!-- 文字 -->
+    <text x="55" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">RabbitVPS</text>
+    <text x="55" y="50" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.8)">MANAGER</text>
+  </g>
+  
+  <!-- 反色版本 -->
+  <g transform="translate(300, 200)">
+    <text x="0" y="-10" font-family="Arial, sans-serif" font-size="14" fill="#666">Inverted</text>
+    <rect x="0" y="0" width="200" height="80" fill="white" stroke="#ddd" stroke-width="1" rx="8"/>
+    
+    <!-- 兔子图标 -->
+    <ellipse cx="25" cy="25" rx="3" ry="8" fill="#00E5FF" opacity="0.9"/>
+    <ellipse cx="35" cy="25" rx="3" ry="8" fill="#00E5FF" opacity="0.9"/>
+    <circle cx="30" cy="40" r="10" fill="#00E5FF"/>
+    <circle cx="26" cy="36" r="2" fill="white"/>
+    <circle cx="34" cy="36" r="2" fill="white"/>
+    <ellipse cx="30" cy="42" rx="1.5" ry="0.8" fill="white"/>
+    
+    <!-- 文字 -->
+    <text x="55" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#333">RabbitVPS</text>
+    <text x="55" y="50" font-family="Arial, sans-serif" font-size="10" fill="#666">MANAGER</text>
+  </g>
+  
+  <!-- 小尺寸版本 -->
+  <g transform="translate(550, 200)">
+    <text x="0" y="-10" font-family="Arial, sans-serif" font-size="14" fill="#666">Small Size</text>
+    <rect x="0" y="0" width="120" height="50" fill="url(#primaryGradient)" rx="6"/>
+    
+    <!-- 简化的兔子图标 -->
+    <circle cx="20" cy="25" r="6" fill="white"/>
+    <circle cx="17" cy="22" r="1" fill="#333"/>
+    <circle cx="23" cy="22" r="1" fill="#333"/>
+    <ellipse cx="20" cy="26" rx="0.8" ry="0.4" fill="#FF6B9D"/>
+    
+    <!-- 文字 -->
+    <text x="32" y="22" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">Rabbit</text>
+    <text x="65" y="22" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#E0F7FF">VPS</text>
+    <text x="32" y="32" font-family="Arial, sans-serif" font-size="6" fill="rgba(255,255,255,0.8)">MANAGER</text>
+  </g>
+  
+  <!-- 使用指南 -->
+  <g transform="translate(50, 320)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Usage Guidelines</text>
+    
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="12" fill="#666">✓ Use main logo for headers and primary branding</text>
+    <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">✓ Use icon only for compact spaces and favicons</text>
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="12" fill="#666">✓ Use horizontal version for wide layouts</text>
+    <text x="0" y="90" font-family="Arial, sans-serif" font-size="12" fill="#666">✓ Use monochrome for single-color applications</text>
+    <text x="0" y="110" font-family="Arial, sans-serif" font-size="12" fill="#666">✓ Use inverted version on dark backgrounds</text>
+    
+    <text x="0" y="140" font-family="Arial, sans-serif" font-size="12" fill="#d32f2f">✗ Don't stretch or distort the logo</text>
+    <text x="0" y="160" font-family="Arial, sans-serif" font-size="12" fill="#d32f2f">✗ Don't use non-brand colors</text>
+    <text x="0" y="180" font-family="Arial, sans-serif" font-size="12" fill="#d32f2f">✗ Don't place on busy backgrounds</text>
+  </g>
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00E5FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="secondaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#87CEEB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

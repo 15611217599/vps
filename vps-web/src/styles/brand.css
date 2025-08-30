@@ -1,0 +1,177 @@
+/* RabbitVPS 品牌样式 */
+:root {
+  /* 品牌主色 */
+  --brand-primary: #00E5FF;
+  --brand-primary-dark: #3F51B5;
+  
+  /* 兔子主题色 */
+  --brand-rabbit-light: #FFE4E1;
+  --brand-rabbit-main: #FFB6C1;
+  --brand-rabbit-dark: #FF6B9D;
+  
+  /* VPS科技色 */
+  --brand-vps-light: #E0F7FF;
+  --brand-vps-main: #87CEEB;
+  --brand-vps-dark: #4682B4;
+  
+  /* 渐变色 */
+  --brand-gradient-primary: linear-gradient(135deg, #00E5FF 0%, #3F51B5 100%);
+  --brand-gradient-secondary: linear-gradient(135deg, #FFB6C1 0%, #87CEEB 100%);
+  --brand-gradient-accent: linear-gradient(135deg, #FF6B9D 0%, #4682B4 100%);
+  
+  /* 品牌字体 */
+  --brand-font-family: "Roboto", "Noto Sans SC", sans-serif;
+  
+  /* 品牌圆角 */
+  --brand-border-radius: 8px;
+  --brand-border-radius-lg: 12px;
+  
+  /* 品牌阴影 */
+  --brand-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --brand-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* 深色主题下的品牌色调整 */
+.v-theme--dark {
+  --brand-rabbit-light: #FFB6C1;
+  --brand-rabbit-main: #FF91A4;
+  --brand-vps-light: #87CEEB;
+  --brand-vps-main: #5F9EA0;
+}
+
+/* 品牌渐变背景类 */
+.brand-gradient-primary {
+  background: var(--brand-gradient-primary);
+}
+
+.brand-gradient-secondary {
+  background: var(--brand-gradient-secondary);
+}
+
+.brand-gradient-accent {
+  background: var(--brand-gradient-accent);
+}
+
+/* 品牌文字颜色类 */
+.brand-text-primary {
+  color: var(--brand-primary) !important;
+}
+
+.brand-text-rabbit {
+  color: var(--brand-rabbit-main) !important;
+}
+
+.brand-text-vps {
+  color: var(--brand-vps-main) !important;
+}
+
+/* 品牌按钮样式 */
+.brand-btn-primary {
+  background: var(--brand-gradient-primary) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--brand-border-radius) !important;
+  box-shadow: var(--brand-shadow) !important;
+  transition: all 0.3s ease !important;
+}
+
+.brand-btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--brand-shadow-lg) !important;
+}
+
+/* 品牌卡片样式 */
+.brand-card {
+  border-radius: var(--brand-border-radius-lg) !important;
+  box-shadow: var(--brand-shadow) !important;
+  transition: all 0.3s ease !important;
+}
+
+.brand-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: var(--brand-shadow-lg) !important;
+}
+
+/* 品牌输入框样式 */
+.brand-input {
+  border-radius: var(--brand-border-radius) !important;
+}
+
+.brand-input:focus {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2) !important;
+}
+
+/* 品牌动画 */
+@keyframes brand-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 229, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0);
+  }
+}
+
+.brand-pulse {
+  animation: brand-pulse 2s infinite;
+}
+
+/* 品牌加载动画 */
+@keyframes brand-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.brand-spin {
+  animation: brand-spin 1s linear infinite;
+}
+
+/* 品牌渐入动画 */
+@keyframes brand-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brand-fade-in {
+  animation: brand-fade-in 0.6s ease-out;
+}
+
+/* 响应式品牌样式 */
+@media (max-width: 768px) {
+  :root {
+    --brand-border-radius: 6px;
+    --brand-border-radius-lg: 10px;
+  }
+}
+
+/* 品牌滚动条样式 */
+.brand-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.brand-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: var(--brand-border-radius);
+}
+
+.brand-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--brand-gradient-primary);
+  border-radius: var(--brand-border-radius);
+}
+
+.brand-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary-dark);
+}

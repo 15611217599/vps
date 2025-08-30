@@ -22,8 +22,7 @@
           <v-icon>mdi-menu</v-icon>
         </v-btn>
         
-        <v-icon color="white" size="24" class="me-2">mdi-server</v-icon>
-        <span class="text-h6 font-weight-bold text-white me-4">RabbitVPS Manager</span>
+        <BrandLogo :show-subtitle="!isGuest" class="me-4" />
         
         <!-- 只在非访客模式下显示分隔线和页面标题 -->
         <template v-if="!isGuest && title">
@@ -75,6 +74,7 @@ import { useRouter } from 'vue-router'
 import { TEXTS } from '@/constants/texts'
 
 import ThemeSwitcher from './ThemeSwitcher.vue'
+import BrandLogo from './BrandLogo.vue'
 
 interface Props {
   title?: string

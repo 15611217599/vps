@@ -125,7 +125,7 @@ const routes = [
     name: 'ForgotPassword',
     component: ForgotPasswordView,
     meta: { requiresGuest: true }
-  }
+  },
 ]
 
 const router = createRouter({
