@@ -72,7 +72,7 @@
               <!-- 默认欢迎页面 -->
               <div v-if="!selectedGroup" class="welcome-section">
                 <div class="text-center mb-8">
-                  <h1 class="text-h3 font-weight-light mb-4">欢迎来到VPS服务</h1>
+                  <h1 class="text-h3 font-weight-light mb-4">欢迎来到RabbitVPS服务</h1>
                   <p class="text-h6 text-medium-emphasis mb-6">高性能云服务器，助力您的业务发展</p>
                 </div>
 
@@ -195,64 +195,8 @@
       </v-container>
     </div>
 
-    <!-- 联系我们对话框 -->
-    <v-dialog v-model="showContactDialog" max-width="500px">
-      <v-card>
-        <v-card-title class="d-flex align-center pa-6">
-          <v-icon class="me-3" color="primary" size="28">mdi-phone</v-icon>
-          <span class="text-h5">联系我们</span>
-        </v-card-title>
-        
-        <v-card-text class="pa-6">
-          <div class="text-center">
-            <h3 class="text-h6 mb-4">联系我们</h3>
-            <p class="text-body-1 text-medium-emphasis mb-6">
-              我们提供7x24小时技术支持，随时为您服务
-            </p>
-            
-            <!-- 联系方式 -->
-            <div class="contact-info">
-              <div class="contact-item mb-3">
-                <v-icon class="me-2" color="primary">mdi-qqchat</v-icon>
-                <span>QQ群: 736757426</span>
-              </div>
-              <div class="contact-item mb-3">
-                <v-icon class="me-2" color="primary">mdi-email</v-icon>
-                <span>邮箱: rabbitvps@163.com</span>
-              </div>
-              <div class="contact-item">
-                <v-icon class="me-2" color="primary">mdi-wechat</v-icon>
-                <span>微信: rabbitvps</span>
-              </div>
-            </div>
-          </div>
-        </v-card-text>
-        
-        <v-card-actions class="pa-6">
-          <v-spacer />
-          <v-btn
-            variant="outlined"
-            @click="showContactDialog = false"
-          >
-            {{ '关闭' }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            variant="flat"
-            @click="copyContact"
-          >
-            复制联系方式
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- 通知组件 -->
-    <NotificationSnackbar
-      v-model="notificationState.show"
-      :message="notificationState.message"
-      :type="notificationState.type"
-    />
+    <!-- 联系我们弹窗 -->
+    <ContactDialog v-model="showContactDialog" />
   </PageLayout>
 </template>
 
@@ -265,20 +209,17 @@ import { priceGroupApi } from '@/api/priceGroup'
 import { getServersByGroupId } from '@/api/server'
 import PageLayout from '@/components/PageLayout.vue'
 import ServerDetailsCard from '@/components/sales/ServerDetailsCard.vue'
-import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
-
-import { useNotification } from '@/composables/useNotification'
+import ContactDialog from '@/components/ContactDialog.vue'
 
 export default {
   name: 'SalesView',
   components: {
     PageLayout,
     ServerDetailsCard,
-    NotificationSnackbar
+    ContactDialog
   },
   setup() {
     // 移除国际化
-    const { notificationState, showNotification } = useNotification()
 
     // 响应式数据
     const loading = ref(false)
@@ -419,16 +360,7 @@ export default {
       showContactDialog.value = true
     }
 
-    // 复制联系方式
-    const copyContact = () => {
-      const contactInfo = `QQ群: 736757426\n邮箱: rabbitvps@163.com\n微信: rabbitvps`
-      navigator.clipboard.writeText(contactInfo).then(() => {
-        showNotification('联系方式已复制', 'success')
-        showContactDialog.value = false
-      }).catch(() => {
-        showNotification('复制失败', 'error')
-      })
-    }
+
 
     // 组件挂载时获取数据
     onMounted(async () => {
@@ -494,11 +426,7 @@ export default {
       toggleCategory,
       selectServerGroup,
       contactForPurchase,
-      contactUs,
-      copyContact,
-
-      notificationState,
-      showNotification
+      contactUs
     }
   }
 }

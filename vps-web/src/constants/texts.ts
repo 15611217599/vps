@@ -162,8 +162,8 @@ export const TEXTS = {
 
   // 页脚
   footer: {
-    company: 'VPS 管理系统',
-    poweredBy: '由 Vuetify 提供支持',
+    company: 'RabbitVPS 管理系统',
+    poweredBy: '由 RabbitVPS 提供技术支持',
     privacy: '隐私政策',
     terms: '服务条款',
     support: '技术支持'

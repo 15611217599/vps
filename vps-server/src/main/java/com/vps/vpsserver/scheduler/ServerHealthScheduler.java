@@ -26,7 +26,7 @@ public class ServerHealthScheduler {
     private final SSHService sshService;
 
     // 每分钟执行一次
-    @Scheduled(fixedRate = 60_000)
+    //@Scheduled(fixedRate = 60_000)
     public void collectMetricsTask() {
         List<Server> servers = serverRepository.findAll();
         for (Server server : servers) {

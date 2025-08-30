@@ -7,11 +7,11 @@
         <version>4.0.0-M1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.vps</groupId>
-    <artifactId>vps-server</artifactId>
+    <groupId>com.rabbitvps</groupId>
+    <artifactId>rabbitvps-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>vps-server</name>
-    <description>vps-server</description>
+    <name>rabbitvps-server</name>
+    <description>rabbitvps-server</description>
     <url/>
     <licenses>
         <license/>

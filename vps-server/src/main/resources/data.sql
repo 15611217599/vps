@@ -1,7 +1,7 @@
 
 -- 插入管理员用户
 INSERT INTO users (username, email, password, created_at, updated_at) VALUES
-('admin', 'admin@vps.com', '$2a$10$BiRbd1FXyd9fMufi6bM9Su8XYGxGY3lnRGCiPt9bM4P3HmkQDL7TS', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('admin', 'admin@rabbitvps.com', '$2a$10$BiRbd1FXyd9fMufi6bM9Su8XYGxGY3lnRGCiPt9bM4P3HmkQDL7TS', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 初始化管理员用户的空钱包
 INSERT INTO wallets (user_id, balance, currency, created_at, updated_at) VALUES
@@ -9,11 +9,11 @@ INSERT INTO wallets (user_id, balance, currency, created_at, updated_at) VALUES
 
 -- 插入服务器类别数据
 INSERT INTO server_categories (name, description, sort_order, is_active, create_time, update_time) VALUES
-('VPS服务器', '专用服务器，适用于大型应用', 1, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('RabbitVPS服务器', '专用服务器，适用于大型应用', 1, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 插入服务器分组数据
 INSERT INTO server_groups (name, description, region, country, city, sort_order, is_active, category_id, create_time, update_time) VALUES
--- VPS服务器分组
+-- RabbitVPS服务器分组
 ('欧洲(德国) 1', '德国法兰克福数据中心', '欧洲', '德国', '法兰克福', 1, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('新加坡2', '新加坡数据中心', '亚洲', '新加坡', '新加坡', 2, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('中国香港3', '香港数据中心', '亚洲', '中国', '香港', 3, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

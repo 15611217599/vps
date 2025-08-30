@@ -27,7 +27,7 @@
               variant="outlined"
               class="me-2"
             >
-              v1.0.0
+              RabbitVPS v1.0.0
             </v-chip>
             <span class="text-caption text-white">
               {{ TEXTS.footer.poweredBy }}
@@ -76,28 +76,40 @@
       </v-row>
     </v-container>
   </v-footer>
+
+  <!-- 联系我们弹窗 -->
+  <ContactDialog v-model="showContactDialog" />
+  
+  <!-- 隐私政策弹窗 -->
+  <PrivacyPolicyDialog v-model="showPrivacyDialog" />
+  
+  <!-- 服务条款弹窗 -->
+  <TermsOfServiceDialog v-model="showTermsDialog" />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 import { TEXTS } from '@/constants/texts'
+import ContactDialog from './ContactDialog.vue'
+import PrivacyPolicyDialog from './PrivacyPolicyDialog.vue'
+import TermsOfServiceDialog from './TermsOfServiceDialog.vue'
 
 const themeStore = useThemeStore()
+const showContactDialog = ref(false)
+const showPrivacyDialog = ref(false)
+const showTermsDialog = ref(false)
 
 const openLink = (type: string) => {
-  // 这里可以根据需要打开相应的链接
   switch (type) {
     case 'privacy':
-      // 打开隐私政策页面
-      window.open('/privacy', '_blank')
+      showPrivacyDialog.value = true
       break
     case 'terms':
-      // 打开服务条款页面
-      window.open('/terms', '_blank')
+      showTermsDialog.value = true
       break
     case 'support':
-      // 打开技术支持邮箱
-      window.open('mailto:support@vpsmanager.com')
+      showContactDialog.value = true
       break
   }
 }

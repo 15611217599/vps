@@ -23,7 +23,7 @@
         </v-btn>
         
         <v-icon color="white" size="24" class="me-2">mdi-server</v-icon>
-        <span class="text-h6 font-weight-bold text-white me-4">VPS Manager</span>
+        <span class="text-h6 font-weight-bold text-white me-4">RabbitVPS Manager</span>
         
         <!-- 只在非访客模式下显示分隔线和页面标题 -->
         <template v-if="!isGuest && title">

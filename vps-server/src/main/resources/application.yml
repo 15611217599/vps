@@ -1,8 +1,8 @@
 spring:
   application:
-    name: vps-server
+    name: rabbitvps-server
   datasource:
-    url: jdbc:h2:mem:vpsdb
+    url: jdbc:h2:mem:rabbitvpsdb
     driver-class-name: org.h2.Driver
     username: sa
     password: 
@@ -49,7 +49,7 @@ server:
 
 logging:
   level:
-    com.vps: DEBUG
+    com.rabbitvps: DEBUG
 
 # 应用配置
 app:
