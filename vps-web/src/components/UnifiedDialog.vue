@@ -253,12 +253,19 @@ const headerIcon = computed(() => {
 /* 简化样式 - 保留必要的功能 */
 .dialog-card {
   min-width: 320px;
+  width: 100%;
 }
 
 /* 自动宽度模式 */
 .dialog-container.auto-width .dialog-card {
   width: fit-content;
   max-width: 90vw;
+}
+
+/* 非自动宽度模式 - 确保对话框能够使用设定的宽度 */
+.dialog-container:not(.auto-width) .dialog-card {
+  width: 100%;
+  min-width: 400px;
 }
 
 .dialog-content {
