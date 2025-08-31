@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="TEXTS.nav.profile">
+  <PageLayout>
     <v-container class="py-6">
       <v-row justify="center">
         <v-col cols="12" md="10" lg="8" xl="6">

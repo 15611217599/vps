@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="TEXTS.serverCategory.title">
+  <PageLayout>
     <v-container class="py-6">
       <!-- 类别列表 -->
       <v-card>

@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="TEXTS.transaction.title">
+  <PageLayout>
     <v-container fluid>
       <!-- 搜索和筛选 -->
       <v-row class="mb-4">

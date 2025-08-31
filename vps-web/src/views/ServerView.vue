@@ -1,5 +1,5 @@
 <template>
-  <PageLayout title="服务器管理">
+  <PageLayout>
     <v-container class="py-6">
       <!-- 服务器列表 -->
       <v-card>

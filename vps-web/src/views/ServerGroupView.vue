@@ -1,5 +1,5 @@
 <template>
-    <PageLayout :title="TEXTS.groups.title">
+    <PageLayout>
       <v-container class="py-6">
         <!-- 分组列表 -->
         <v-card>

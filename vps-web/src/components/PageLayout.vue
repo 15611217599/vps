@@ -1,8 +1,8 @@
 <template>
   <v-app :theme="themeStore.currentTheme">
     <!-- 统一顶部栏 -->
-    <UnifiedTopBar :title="title" :is-guest="false" @toggle-drawer="drawer = !drawer" />
-    
+    <UnifiedTopBar :title="currentTitle" :is-guest="false" @toggle-drawer="drawer = !drawer" />
+
     <!-- 侧边导航栏 -->
     <v-navigation-drawer
       v-model="drawer"
@@ -12,24 +12,49 @@
       width="280"
       class="navigation-drawer"
     >
+
       <v-list nav class="pa-2">
-        <v-list-item
-          v-for="item in navigationItems"
-          :key="item.title"
-          :to="item.to"
-          :prepend-icon="item.icon"
-          :title="item.title"
-          :active="route.path === item.to"
-          class="nav-item"
-          rounded="lg"
-        />
+        <template v-for="item in navigationItems" :key="item.title">
+          <!-- Regular Nav Item -->
+          <v-list-item
+            v-if="!item.items"
+            :to="item.to"
+            :prepend-icon="item.icon"
+            :title="item.title"
+            :active="route.path === item.to"
+            class="nav-item"
+            rounded="lg"
+          />
+
+          <!-- Nav Group -->
+          <v-list-group v-else :value="item.title">
+            <template v-slot:activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                :prepend-icon="item.icon"
+                :title="item.title"
+                class="nav-group-title"
+              ></v-list-item>
+            </template>
+
+            <v-list-item
+              v-for="subItem in item.items"
+              :key="subItem.title"
+              :to="subItem.to"
+              :title="subItem.title"
+              :active="route.path === subItem.to"
+              class="nav-sub-item"
+              rounded="lg"
+            />
+          </v-list-group>
+        </template>
       </v-list>
     </v-navigation-drawer>
-    
+
     <v-main class="main-content">
       <slot />
     </v-main>
-    
+
     <!-- 固定底部栏 -->
     <FixedFooter />
   </v-app>
@@ -59,6 +84,24 @@ const route = useRoute()
 // 侧边栏状态
 const drawer = ref(true)
 
+// 根据当前路由自动获取页面标题
+const currentTitle = computed(() => {
+  const findTitleByPath = (items: any[], path: string): string | null => {
+    for (const item of items) {
+      if (item.to === path) {
+        return item.title
+      }
+      if (item.items) {
+        const subTitle = findTitleByPath(item.items, path)
+        if (subTitle) return subTitle
+      }
+    }
+    return null
+  }
+  
+  return findTitleByPath(navigationItems.value, route.path) || '页面'
+})
+
 // 导航菜单项
 const navigationItems = computed(() => [
   {
@@ -67,45 +110,49 @@ const navigationItems = computed(() => [
     to: '/dashboard'
   },
   {
-    title: '服务器分类',
-    icon: 'mdi-folder-multiple',
-    to: '/categories'
-  },
-  {
-    title: '服务器组',
-    icon: 'mdi-folder-network',
-    to: '/groups'
-  },
-  {
-    title: '服务器',
-    icon: 'mdi-server',
-    to: '/servers'
-  },
-  {
-    title: '价格组',
-    icon: 'mdi-currency-cny',
-    to: '/price-groups'
-  },
-  {
-    title: '订单管理',
-    icon: 'mdi-receipt',
-    to: '/orders'
-  },
-  {
-    title: '交易流水',
-    icon: 'mdi-bank-transfer',
-    to: '/transactions'
-  },
-  {
-    title: '支付记录',
-    icon: 'mdi-history',
-    to: '/payment/history'
-  },
-
-  {
-    title: '销售页面',
-    icon: 'mdi-storefront',
+    title: '购买服务器',
+    icon: 'mdi-cart-outline',
     to: '/sales'
+  },
+  {
+    title: '服务器管理',
+    icon: 'mdi-server-network',
+    items: [
+      {
+        title: '服务器分类',
+        to: '/categories'
+      },
+      {
+        title: '服务器组',
+        to: '/groups'
+      },
+      {
+        title: '服务器',
+        to: '/servers'
+      },
+      {
+        title: '价格组',
+        to: '/price-groups'
+      }
+    ]
+  },
+  {
+    title: '财务管理',
+    icon: 'mdi-finance',
+    items: [
+      {
+        title: '订单管理',
+        to: '/orders'
+      },
+      {
+        title: '交易流水',
+        to: '/transactions'
+      },
+      {
+        title: '支付记录',
+        to: '/payment/history'
+      }
+    ]
   },
   {
     title: '个人资料',
@@ -156,18 +203,13 @@ onMounted(() => {
   border-right: 1px solid rgba(var(--v-theme-on-surface), 0.08);
 }
 
-.nav-item {
+.nav-item, .nav-group-title {
   margin-bottom: 4px;
   transition: all 0.2s ease;
-  font-size: 18px !important;
   font-weight: 500;
 }
 
-.nav-item :deep(.v-list-item__content) {
-  font-size: 18px !important;
-}
-
-.nav-item:hover {
+.nav-item:hover, .v-list-group:hover .nav-group-title {
   background-color: rgba(var(--v-theme-primary), 0.08);
 }
 
@@ -178,5 +220,21 @@ onMounted(() => {
 
 .nav-item.v-list-item--active :deep(.v-icon) {
   color: rgb(var(--v-theme-primary));
+}
+
+.nav-sub-item {
+  margin: 0 8px 4px 8px;
+  padding-left: 32px !important; /* Indent sub-items */
+  font-size: 0.875rem;
+}
+
+.nav-sub-item:hover {
+  background-color: rgba(var(--v-theme-on-surface), 0.04);
+}
+
+.nav-sub-item.v-list-item--active {
+  background-color: transparent;
+  color: rgb(var(--v-theme-primary));
+  font-weight: bold;
 }
 </style>

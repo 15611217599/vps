@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="TEXTS.priceGroup.title">
+  <PageLayout>
     <v-container class="py-6">
       <!-- 价格组列表 -->
     <v-card>

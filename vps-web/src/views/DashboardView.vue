@@ -1,5 +1,5 @@
 <template>
-  <PageLayout title="我的服务器">
+  <PageLayout>
     <v-container class="py-8">
       <!-- 统计概览 -->
       <v-row class="mb-6">

@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :title="TEXTS.order.title">
+  <PageLayout>
     <v-container fluid>
       <!-- 搜索和筛选 -->
 

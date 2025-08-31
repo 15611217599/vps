@@ -1,5 +1,5 @@
 <template>
-  <PageLayout title="销售页面">
+  <PageLayout>
     <div class="sales-page">
       <v-container fluid class="pa-0">
         <v-row no-gutters>
