@@ -91,11 +91,42 @@ INSERT INTO servers (ip, port, status, cpu_cores, memory, disk_space, disk_type,
 ('107.148.151.208', 16088, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '50M CN2', 'ubuntu24.0.2', 'root', 'mEgIrM9Ww6x28P', false, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.148.151.218', 28859, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '50M CN2', 'ubuntu24.0.2', 'root', 'mEgIrM9Ww6x28P', false, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- 插入价格组数据
-INSERT INTO price_groups (name, description, hourly_price, daily_price, monthly_price, quarterly_price, semi_annual_price, annual_price, sort_order, is_active, server_group_id, sales_page_html, create_time, last_update) VALUES
-    ('高级套餐',
-     '适合初创公司，大型应用',
+-- 插入价格组数据（简化后的折扣功能）
+INSERT INTO price_groups (
+    name, description, 
+    hourly_price, daily_price, monthly_price, quarterly_price, semi_annual_price, annual_price, 
+    sort_order, is_active, server_group_id, sales_page_html, 
+    has_discount, discount_percentage, discount_start_time, discount_end_time,
+    create_time, last_update
+) VALUES
+    ('标准套餐',
+     '适合个人用户和小型项目的标准价格套餐',
      1.00, 10.00, 200.00, 500.00, 900.00, 1500.00,
      1, true, 2,
      '{"cpu_cores":32,"memory":32,"disk_space":200,"network_speed":25,"ip_count":1,"operating_system":[{"name":"ubuntu","versions":["16.04","18.04","20.04","22.04","24.04","25.04"]},{"name":"centos","versions":["9","10"]},{"name":"debian","versions":["9","10","11","12","13"]}]}',
+     false, null, null, null,
+     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    
+    ('高级套餐',
+     '适合中小企业和成长型项目',
+     2.00, 20.00, 400.00, 1000.00, 1800.00, 3000.00,
+     2, true, 3,
+     '{"cpu_cores":64,"memory":64,"disk_space":500,"network_speed":50,"ip_count":2,"operating_system":[{"name":"ubuntu","versions":["16.04","18.04","20.04","22.04","24.04","25.04"]},{"name":"centos","versions":["9","10"]},{"name":"debian","versions":["9","10","11","12","13"]}]}',
+     false, null, null, null,
+     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+     
+    ('企业套餐',
+     '适合大型企业和高性能应用',
+     5.00, 50.00, 1000.00, 2500.00, 4500.00, 7500.00,
+     3, true, 5,
+     '{"cpu_cores":128,"memory":128,"disk_space":1000,"network_speed":100,"ip_count":5,"operating_system":[{"name":"ubuntu","versions":["16.04","18.04","20.04","22.04","24.04","25.04"]},{"name":"centos","versions":["9","10"]},{"name":"debian","versions":["9","10","11","12","13"]}]}',
+     false, null, null, null,
+     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+
+    ('促销套餐',
+     '限时促销价格套餐，享受8折优惠',
+     0.80, 8.00, 160.00, 400.00, 720.00, 1200.00,
+     4, true, 1,
+     '{"cpu_cores":32,"memory":32,"disk_space":200,"network_speed":25,"ip_count":1,"operating_system":[{"name":"ubuntu","versions":["16.04","18.04","20.04","22.04","24.04","25.04"]},{"name":"centos","versions":["9","10"]},{"name":"debian","versions":["9","10","11","12","13"]}]}',
+     true, 20.00, '2024-01-01 00:00:00', '2024-12-31 23:59:59',
      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

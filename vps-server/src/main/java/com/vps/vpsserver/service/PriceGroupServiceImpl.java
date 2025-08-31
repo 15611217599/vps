@@ -97,6 +97,20 @@ public class PriceGroupServiceImpl implements PriceGroupService {
             existingPriceGroup.setSalesPageHtml(priceGroupDTO.getSalesPageHtml());
         }
         
+        // 更新折扣相关字段
+        if (priceGroupDTO.getHasDiscount() != null) {
+            existingPriceGroup.setHasDiscount(priceGroupDTO.getHasDiscount());
+        }
+        if (priceGroupDTO.getDiscountPercentage() != null) {
+            existingPriceGroup.setDiscountPercentage(priceGroupDTO.getDiscountPercentage());
+        }
+        if (priceGroupDTO.getDiscountStartTime() != null) {
+            existingPriceGroup.setDiscountStartTime(priceGroupDTO.getDiscountStartTime());
+        }
+        if (priceGroupDTO.getDiscountEndTime() != null) {
+            existingPriceGroup.setDiscountEndTime(priceGroupDTO.getDiscountEndTime());
+        }
+        
         PriceGroup savedPriceGroup = priceGroupRepository.save(existingPriceGroup);
         return PriceGroupDTO.fromEntity(savedPriceGroup);
     }
@@ -158,5 +172,43 @@ public class PriceGroupServiceImpl implements PriceGroupService {
     public Page<PriceGroupDTO> getPriceGroupsByActive(Boolean isActive, Pageable pageable) {
         Page<PriceGroup> priceGroups = priceGroupRepository.findByIsActiveOrderBySortOrderAsc(isActive, pageable);
         return priceGroups.map(PriceGroupDTO::fromEntity);
+    }
+    
+    @Override
+    public PriceGroupDTO applyDiscount(Long id, Double discountPercentage, 
+                                      String startTime, String endTime) {
+        PriceGroup priceGroup = priceGroupRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("未找到价格组: " + id));
+        
+        // 解析时间字符串
+        java.time.LocalDateTime startDateTime = null;
+        java.time.LocalDateTime endDateTime = null;
+        
+        if (startTime != null && !startTime.isEmpty()) {
+            startDateTime = java.time.LocalDateTime.parse(startTime);
+        }
+        
+        if (endTime != null && !endTime.isEmpty()) {
+            endDateTime = java.time.LocalDateTime.parse(endTime);
+        }
+        
+        // 应用折扣
+        priceGroup.applyDiscount(java.math.BigDecimal.valueOf(discountPercentage), 
+                               startDateTime, endDateTime);
+        
+        PriceGroup savedPriceGroup = priceGroupRepository.save(priceGroup);
+        return PriceGroupDTO.fromEntity(savedPriceGroup);
+    }
+    
+    @Override
+    public PriceGroupDTO restoreOriginalPrices(Long id) {
+        PriceGroup priceGroup = priceGroupRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("未找到价格组: " + id));
+        
+        // 恢复原价
+        priceGroup.restoreOriginalPrices();
+        
+        PriceGroup savedPriceGroup = priceGroupRepository.save(priceGroup);
+        return PriceGroupDTO.fromEntity(savedPriceGroup);
     }
 }

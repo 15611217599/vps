@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 import com.vps.vpsserver.entity.PriceGroup;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 价格组DTO
@@ -51,6 +51,14 @@ public class PriceGroupDTO {
     private LocalDateTime createTime;
     private LocalDateTime lastUpdate;
     
+    // 折扣相关字段
+    private Boolean hasDiscount;
+    private BigDecimal discountPercentage;
+    private LocalDateTime discountStartTime;
+    private LocalDateTime discountEndTime;
+    
+
+    
     // 构造函数
     public PriceGroupDTO() {}
     
@@ -85,6 +93,14 @@ public class PriceGroupDTO {
         dto.setCreateTime(entity.getCreateTime());
         dto.setLastUpdate(entity.getLastUpdate());
         
+        // 折扣相关字段
+        dto.setHasDiscount(entity.getHasDiscount());
+        dto.setDiscountPercentage(entity.getDiscountPercentage());
+        dto.setDiscountStartTime(entity.getDiscountStartTime());
+        dto.setDiscountEndTime(entity.getDiscountEndTime());
+        
+
+        
         return dto;
     }
     
@@ -104,6 +120,14 @@ public class PriceGroupDTO {
         entity.setSortOrder(this.sortOrder);
         entity.setServerGroupId(this.serverGroupId);
         entity.setSalesPageHtml(this.salesPageHtml);
+        
+        // 折扣相关字段
+        entity.setHasDiscount(this.hasDiscount);
+        entity.setDiscountPercentage(this.discountPercentage);
+        entity.setDiscountStartTime(this.discountStartTime);
+        entity.setDiscountEndTime(this.discountEndTime);
+        
+
         
         return entity;
     }
@@ -228,4 +252,39 @@ public class PriceGroupDTO {
     public void setSalesPageHtml(String salesPageHtml) {
         this.salesPageHtml = salesPageHtml;
     }
+    
+    // 折扣相关字段的getter和setter
+    public Boolean getHasDiscount() {
+        return hasDiscount;
+    }
+    
+    public void setHasDiscount(Boolean hasDiscount) {
+        this.hasDiscount = hasDiscount;
+    }
+    
+    public BigDecimal getDiscountPercentage() {
+        return discountPercentage;
+    }
+    
+    public void setDiscountPercentage(BigDecimal discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+    
+    public LocalDateTime getDiscountStartTime() {
+        return discountStartTime;
+    }
+    
+    public void setDiscountStartTime(LocalDateTime discountStartTime) {
+        this.discountStartTime = discountStartTime;
+    }
+    
+    public LocalDateTime getDiscountEndTime() {
+        return discountEndTime;
+    }
+    
+    public void setDiscountEndTime(LocalDateTime discountEndTime) {
+        this.discountEndTime = discountEndTime;
+    }
+    
+
 }

@@ -52,30 +52,69 @@
 
         <!-- 价格列 -->
         <template #item.prices="{ item }">
-          <div class="price-display">
-            <!-- 第一行：短期价格 -->
-            <div class="price-row mb-1">
-              <v-chip size="x-small" variant="flat" color="blue-lighten-4" class="price-chip price-chip-short">
-                时 ¥{{ item.hourlyPrice }}
-              </v-chip>
-              <v-chip size="x-small" variant="flat" color="green-lighten-4" class="price-chip price-chip-short">
-                日 ¥{{ item.dailyPrice }}
-              </v-chip>
-              <v-chip size="x-small" variant="flat" color="cyan-lighten-4" class="price-chip price-chip-short">
-                月 ¥{{ item.monthlyPrice }}
-              </v-chip>
-            </div>
-            <!-- 第二行：长期价格 -->
-            <div class="price-row">
-              <v-chip size="x-small" variant="flat" color="amber-lighten-4" class="price-chip price-chip-long">
-                季 ¥{{ item.quarterlyPrice }}
-              </v-chip>
-              <v-chip size="x-small" variant="flat" color="orange-lighten-4" class="price-chip price-chip-long">
-                半年 ¥{{ item.semiAnnualPrice }}
-              </v-chip>
-              <v-chip size="x-small" variant="flat" color="purple-lighten-4" class="price-chip price-chip-long">
-                年 ¥{{ item.annualPrice }}
-              </v-chip>
+          <div class="price-display-grid">
+            <div class="price-grid">
+              <!-- 第一行：短期价格 -->
+              <div class="price-item" :class="{ 'has-discount': item.hasDiscount }">
+                <div class="price-label">时</div>
+                <div class="price-value">
+                  <span class="current-price">¥{{ item.hasDiscount && item.discountPercentage ? calculateDiscountedPrice(item.hourlyPrice, item.discountPercentage) : item.hourlyPrice }}</span>
+                  <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
+                    ¥{{ item.hourlyPrice }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="price-item" :class="{ 'has-discount': item.hasDiscount }">
+                <div class="price-label">日</div>
+                <div class="price-value">
+                  <span class="current-price">¥{{ item.hasDiscount && item.discountPercentage ? calculateDiscountedPrice(item.dailyPrice, item.discountPercentage) : item.dailyPrice }}</span>
+                  <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
+                    ¥{{ item.dailyPrice }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="price-item" :class="{ 'has-discount': item.hasDiscount }">
+                <div class="price-label">月</div>
+                <div class="price-value">
+                  <span class="current-price">¥{{ item.hasDiscount && item.discountPercentage ? calculateDiscountedPrice(item.monthlyPrice, item.discountPercentage) : item.monthlyPrice }}</span>
+                  <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
+                    ¥{{ item.monthlyPrice }}
+                  </span>
+                </div>
+              </div>
+              
+              <!-- 第二行：长期价格 -->
+              <div class="price-item" :class="{ 'has-discount': item.hasDiscount }">
+                <div class="price-label">季</div>
+                <div class="price-value">
+                  <span class="current-price">¥{{ item.hasDiscount && item.discountPercentage ? calculateDiscountedPrice(item.quarterlyPrice, item.discountPercentage) : item.quarterlyPrice }}</span>
+                  <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
+                    ¥{{ item.quarterlyPrice }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="price-item" :class="{ 'has-discount': item.hasDiscount }">
+                <div class="price-label">半年</div>
+                <div class="price-value">
+                  <span class="current-price">¥{{ item.hasDiscount && item.discountPercentage ? calculateDiscountedPrice(item.semiAnnualPrice, item.discountPercentage) : item.semiAnnualPrice }}</span>
+                  <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
+                    ¥{{ item.semiAnnualPrice }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="price-item" :class="{ 'has-discount': item.hasDiscount }">
+                <div class="price-label">年</div>
+                <div class="price-value">
+                  <span class="current-price">¥{{ item.hasDiscount && item.discountPercentage ? calculateDiscountedPrice(item.annualPrice, item.discountPercentage) : item.annualPrice }}</span>
+                  <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
+                    ¥{{ item.annualPrice }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </template>
@@ -123,19 +162,22 @@
 
         <!-- 操作列 -->
         <template #item.actions="{ item }">
-          <v-btn
-            icon="mdi-pencil"
-            size="small"
-            variant="text"
-            @click="editPriceGroup(item)"
-          />
-          <v-btn
-            icon="mdi-delete"
-            size="small"
-            variant="text"
-            color="error"
-            @click="deletePriceGroup(item)"
-          />
+          <div class="d-flex align-center ga-1">
+            <v-btn
+              icon="mdi-pencil"
+              size="small"
+              variant="text"
+              @click="editPriceGroup(item)"
+            />
+
+            <v-btn
+              icon="mdi-delete"
+              size="small"
+              variant="text"
+              color="error"
+              @click="deletePriceGroup(item)"
+            />
+          </div>
         </template>
       </v-data-table-server>
     </v-card>
@@ -361,6 +403,167 @@
             />
           </v-col>
         </v-row>
+
+        <!-- 折扣设置部分 -->
+        <v-divider class="my-4" />
+        <v-row>
+          <v-col cols="12">
+            <h3 class="text-h6 mb-3">
+              <v-icon class="me-2">mdi-percent</v-icon>
+              折扣设置
+            </h3>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-switch
+              v-model="formData.hasDiscount"
+              label="启用折扣"
+              color="primary"
+              class="mt-2"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row v-if="formData.hasDiscount">
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="formData.discountPercentage"
+              label="折扣百分比 (%)"
+              type="number"
+              step="0.1"
+              :rules="discountPercentageRules"
+              variant="outlined"
+              prepend-inner-icon="mdi-percent"
+              color="primary"
+              density="comfortable"
+              class="mb-2"
+              bg-color="white"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="formData.discountStartTime"
+              label="开始时间 (可选)"
+              type="datetime-local"
+              variant="outlined"
+              prepend-inner-icon="mdi-calendar-start"
+              color="primary"
+              density="comfortable"
+              class="mb-2"
+              bg-color="white"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="formData.discountEndTime"
+              label="结束时间 (可选)"
+              type="datetime-local"
+              variant="outlined"
+              prepend-inner-icon="mdi-calendar-end"
+              color="primary"
+              density="comfortable"
+              class="mb-2"
+              bg-color="white"
+            />
+          </v-col>
+        </v-row>
+
+        <!-- 折扣预览 -->
+        <v-row v-if="formData.hasDiscount && formData.discountPercentage">
+          <v-col cols="12">
+            <v-card variant="outlined" class="discount-preview-card">
+              <v-card-title class="text-h6 pb-3 bg-orange-lighten-5">
+                <v-icon class="me-2" color="orange">mdi-sale</v-icon>
+                折扣预览 ({{ formData.discountPercentage }}% 折扣)
+              </v-card-title>
+              <v-card-text class="pa-4">
+                <v-row>
+                  <!-- 短期价格 -->
+                  <v-col cols="12" md="6">
+                    <div class="preview-section">
+                      <h4 class="text-subtitle-1 mb-3 text-blue-darken-2">
+                        <v-icon size="18" class="me-1">mdi-clock-fast</v-icon>
+                        短期价格
+                      </h4>
+                      <div class="preview-item">
+                        <div class="price-label">小时价格</div>
+                        <div class="price-comparison">
+                          <span class="original-price">¥{{ formData.hourlyPrice }}</span>
+                          <v-icon size="14" class="mx-2 text-grey">mdi-arrow-right</v-icon>
+                          <span class="discounted-price">¥{{ calculateFormDiscountedPrice(formData.hourlyPrice) }}</span>
+                        </div>
+                      </div>
+                      <div class="preview-item">
+                        <div class="price-label">日价格</div>
+                        <div class="price-comparison">
+                          <span class="original-price">¥{{ formData.dailyPrice }}</span>
+                          <v-icon size="14" class="mx-2 text-grey">mdi-arrow-right</v-icon>
+                          <span class="discounted-price">¥{{ calculateFormDiscountedPrice(formData.dailyPrice) }}</span>
+                        </div>
+                      </div>
+                      <div class="preview-item">
+                        <div class="price-label">月价格</div>
+                        <div class="price-comparison">
+                          <span class="original-price">¥{{ formData.monthlyPrice }}</span>
+                          <v-icon size="14" class="mx-2 text-grey">mdi-arrow-right</v-icon>
+                          <span class="discounted-price">¥{{ calculateFormDiscountedPrice(formData.monthlyPrice) }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </v-col>
+                  
+                  <!-- 长期价格 -->
+                  <v-col cols="12" md="6">
+                    <div class="preview-section">
+                      <h4 class="text-subtitle-1 mb-3 text-green-darken-2">
+                        <v-icon size="18" class="me-1">mdi-calendar-range</v-icon>
+                        长期价格
+                      </h4>
+                      <div class="preview-item">
+                        <div class="price-label">季度价格</div>
+                        <div class="price-comparison">
+                          <span class="original-price">¥{{ formData.quarterlyPrice }}</span>
+                          <v-icon size="14" class="mx-2 text-grey">mdi-arrow-right</v-icon>
+                          <span class="discounted-price">¥{{ calculateFormDiscountedPrice(formData.quarterlyPrice) }}</span>
+                        </div>
+                      </div>
+                      <div class="preview-item">
+                        <div class="price-label">半年价格</div>
+                        <div class="price-comparison">
+                          <span class="original-price">¥{{ formData.semiAnnualPrice }}</span>
+                          <v-icon size="14" class="mx-2 text-grey">mdi-arrow-right</v-icon>
+                          <span class="discounted-price">¥{{ calculateFormDiscountedPrice(formData.semiAnnualPrice) }}</span>
+                        </div>
+                      </div>
+                      <div class="preview-item">
+                        <div class="price-label">年价格</div>
+                        <div class="price-comparison">
+                          <span class="original-price">¥{{ formData.annualPrice }}</span>
+                          <v-icon size="14" class="mx-2 text-grey">mdi-arrow-right</v-icon>
+                          <span class="discounted-price">¥{{ calculateFormDiscountedPrice(formData.annualPrice) }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+                
+                <!-- 折扣信息提示 -->
+                <v-divider class="my-3" />
+                <div class="discount-info text-center">
+                  <v-chip size="small" color="success" variant="flat" class="me-2">
+                    <v-icon start size="16">mdi-check-circle</v-icon>
+                    节省 {{ formData.discountPercentage }}%
+                  </v-chip>
+                  <span class="text-caption text-grey-darken-1">
+                    以上为折扣后的实际价格
+                  </span>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-form>
     </UnifiedDialog>
 
@@ -402,6 +605,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+
 
     <!-- 删除确认对话框 -->
     <ConfirmDeleteDialog
@@ -472,11 +677,10 @@ export default {
     // 表格头部
     const headers = [
       { title: TEXTS.priceGroup.name, key: 'name', sortable: false, width: 200 },
-      { title: TEXTS.priceGroup.prices, key: 'prices', sortable: false, width: 320 },
+      { title: TEXTS.priceGroup.prices, key: 'prices', sortable: false, width: 350 },
       { title: TEXTS.priceGroup.serverGroup, key: 'serverGroup', sortable: false, width: 120 },
       { title: '销售页面', key: 'salesPage', sortable: false, width: 100 },
       { title: '状态', key: 'isActive', sortable: false, width: 80 },
-      { title: '排序', key: 'sortOrder', sortable: false, width: 60 },
       { title: '操作', key: 'actions', sortable: false, width: 100 }
     ]
     
@@ -493,8 +697,15 @@ export default {
       sortOrder: 1,
       isActive: true,
       serverGroupId: null,
-      salesPageHtml: ''
+      salesPageHtml: '',
+      // 折扣相关字段
+      hasDiscount: false,
+      discountPercentage: '',
+      discountStartTime: '',
+      discountEndTime: ''
     })
+
+
     
     // 验证规则
     const rules = {
@@ -502,6 +713,16 @@ export default {
       positiveNumber: value => (value > 0) || TEXTS.priceGroup.positiveNumber,
       nonNegativeNumber: value => (value >= 0) || TEXTS.priceGroup.nonNegativeNumber
     }
+
+    // 折扣验证规则（只有启用折扣时才验证）
+    const discountPercentageRules = computed(() => {
+      if (!formData.hasDiscount) return []
+      return [
+        value => (value !== null && value !== undefined && value !== '') || '折扣百分比不能为空',
+        value => (value > 0) || '折扣百分比必须大于0',
+        value => (value <= 100) || '折扣百分比不能超过100%'
+      ]
+    })
     
     // 获取价格组列表
     const fetchPriceGroups = async () => {
@@ -601,7 +822,12 @@ export default {
         sortOrder: 1,
         isActive: true,
         serverGroupId: null,
-        salesPageHtml: ''
+        salesPageHtml: '',
+        // 重置折扣字段
+        hasDiscount: false,
+        discountPercentage: '',
+        discountStartTime: '',
+        discountEndTime: ''
       })
       editingItem.value = null
     }
@@ -621,7 +847,12 @@ export default {
         sortOrder: item.sortOrder,
         isActive: item.isActive,
         serverGroupId: item.serverGroupId || null,
-        salesPageHtml: item.salesPageHtml || ''
+        salesPageHtml: item.salesPageHtml || '',
+        // 填充折扣数据
+        hasDiscount: item.hasDiscount || false,
+        discountPercentage: item.discountPercentage || '',
+        discountStartTime: item.discountStartTime ? item.discountStartTime.slice(0, 16) : '',
+        discountEndTime: item.discountEndTime ? item.discountEndTime.slice(0, 16) : ''
       })
       showAddDialog.value = true
     }
@@ -643,7 +874,12 @@ export default {
           sortOrder: parseInt(formData.sortOrder),
           isActive: formData.isActive,
           serverGroupId: formData.serverGroupId,
-          salesPageHtml: formData.salesPageHtml
+          salesPageHtml: formData.salesPageHtml,
+          // 折扣相关数据
+          hasDiscount: formData.hasDiscount,
+          discountPercentage: formData.hasDiscount && formData.discountPercentage ? parseFloat(formData.discountPercentage) : null,
+          discountStartTime: formData.hasDiscount && formData.discountStartTime ? new Date(formData.discountStartTime).toISOString() : null,
+          discountEndTime: formData.hasDiscount && formData.discountEndTime ? new Date(formData.discountEndTime).toISOString() : null
         }
         
         let response
@@ -719,6 +955,27 @@ export default {
       previewContent.value = item.salesPageHtml
       showPreviewDialog.value = true
     }
+
+
+
+    // 计算折扣后价格（配置的是原价）
+    const calculateDiscountedPrice = (originalPrice, discountPercentage) => {
+      if (!originalPrice || !discountPercentage) return originalPrice
+      
+      const discountRate = parseFloat(discountPercentage) / 100
+      const discountedPrice = originalPrice * (1 - discountRate)
+      return discountedPrice.toFixed(2)
+    }
+
+    // 计算表单中的折扣价格（用于预览）
+    const calculateFormDiscountedPrice = (originalPrice) => {
+      if (!formData.discountPercentage || !originalPrice) return originalPrice
+      
+      const discountPercentage = parseFloat(formData.discountPercentage)
+      return (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
+    }
+
+
     
     
     // 组件挂载时获取数据
@@ -762,6 +1019,11 @@ export default {
       previewContent,
       getServerGroupName,
       previewSalesPage,
+
+      // 折扣管理相关
+      discountPercentageRules,
+      calculateDiscountedPrice,
+      calculateFormDiscountedPrice,
       
       // 添加文本常量
       TEXTS
@@ -771,34 +1033,180 @@ export default {
 </script>
 
 <style scoped>
-.price-display {
-  min-width: 300px;
+.price-display-grid {
+  min-width: 320px;
   max-width: 320px;
 }
 
-.price-row {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.price-chip {
-  min-width: 65px;
+.price-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 4px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  min-height: 45px;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.price-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #1976d2;
+}
+
+.price-item:nth-child(1) { border-left: 3px solid #2196f3; }
+.price-item:nth-child(2) { border-left: 3px solid #4caf50; }
+.price-item:nth-child(3) { border-left: 3px solid #ff9800; }
+.price-item:nth-child(4) { border-left: 3px solid #9c27b0; }
+.price-item:nth-child(5) { border-left: 3px solid #00bcd4; }
+.price-item:nth-child(6) { border-left: 3px solid #f44336; }
+
+.price-label {
   font-size: 0.7rem;
   font-weight: 600;
-  height: 22px;
+  color: #666;
+  margin-bottom: 2px;
   text-align: center;
-  border-radius: 12px;
-  color: #333 !important;
+  min-height: 12px;
 }
 
-.price-chip-short {
-  border-left: 3px solid #1976d2;
+.price-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.price-chip-long {
-  border-left: 3px solid #f57c00;
+.current-price {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1976d2;
+  line-height: 1.2;
+}
+
+.original-price-small {
+  font-size: 0.6rem;
+  color: #999;
+  text-decoration: line-through;
+  margin-top: 1px;
+  line-height: 1;
+}
+
+/* 有折扣时的价格样式 */
+.price-item.has-discount {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+  border-color: #ff9800;
+}
+
+.price-item.has-discount .current-price {
+  color: #d32f2f;
+  font-weight: 800;
+}
+
+.price-item.has-discount::after {
+  content: '折';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #ff5722;
+  color: white;
+  font-size: 0.5rem;
+  font-weight: bold;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* 折扣相关样式已移除，保持简洁 */
+
+
+
+.original-price {
+  font-size: 0.5rem;
+  color: #666;
+  text-decoration: line-through;
+  margin-left: 4px;
+}
+
+/* 折扣预览样式 */
+.discount-preview-card {
+  border: 2px solid #ff9800 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.discount-preview-card :deep(.v-card-title) {
+  border-bottom: 1px solid rgba(255, 152, 0, 0.2);
+  font-weight: 600;
+}
+
+.preview-section {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.preview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.preview-item:last-child {
+  border-bottom: none;
+}
+
+.price-label {
+  font-weight: 500;
+  color: #424242;
+  min-width: 80px;
+}
+
+.price-comparison {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.original-price {
+  color: #757575;
+  text-decoration: line-through;
+  font-size: 0.9rem;
+}
+
+.discounted-price {
+  color: #d32f2f;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.discount-info {
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
 }
 
 /* 确保价格列有足够的宽度和垂直对齐 */
@@ -809,13 +1217,14 @@ export default {
 
 /* 价格列特殊处理 */
 :deep(.v-data-table__td:nth-child(2)) {
-  min-width: 320px;
-  max-width: 320px;
+  min-width: 350px;
+  max-width: 350px;
+  padding: 12px 8px;
 }
 
 /* 名称列处理 */
 :deep(.v-data-table__td:nth-child(1)) {
-  min-width: 180px;
+  min-width: 200px;
   max-width: 200px;
 }
 
@@ -844,47 +1253,102 @@ export default {
 
 /* 响应式设计 */
 @media (max-width: 1200px) {
-  .price-display {
-    min-width: 280px;
-    max-width: 280px;
+  .price-display-grid {
+    min-width: 300px;
+    max-width: 300px;
   }
   
-  .price-chip {
-    min-width: 60px;
-    font-size: 0.65rem;
+  .price-grid {
+    gap: 6px;
+    padding: 6px;
+  }
+  
+  .price-item {
+    min-height: 42px;
+    padding: 5px 3px;
+  }
+  
+  .current-price {
+    font-size: 0.7rem;
   }
   
   :deep(.v-data-table__td:nth-child(2)) {
-    min-width: 280px;
-    max-width: 280px;
+    min-width: 300px;
+    max-width: 300px;
   }
 }
 
 @media (max-width: 768px) {
-  .price-display {
-    min-width: 240px;
-    max-width: 240px;
+  .price-display-grid {
+    min-width: 280px;
+    max-width: 280px;
   }
   
-  .price-row {
-    gap: 2px;
+  .price-grid {
+    gap: 6px;
+    padding: 6px;
   }
   
-  .price-chip {
-    min-width: 50px;
-    font-size: 0.6rem;
-    height: 20px;
-    font-weight: 600;
+  .price-item {
+    padding: 4px 2px;
+    min-height: 40px;
+  }
+  
+  .price-label {
+    font-size: 0.65rem;
+  }
+  
+  .current-price {
+    font-size: 0.7rem;
+  }
+  
+  .original-price-small {
+    font-size: 0.55rem;
   }
   
   :deep(.v-data-table__td:nth-child(2)) {
-    min-width: 240px;
-    max-width: 240px;
+    min-width: 280px;
+    max-width: 280px;
   }
   
   :deep(.v-data-table__td:nth-child(1)) {
     min-width: 150px;
     max-width: 150px;
+  }
+  
+  /* 折扣预览移动端样式 */
+  .preview-section {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .preview-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px 0;
+  }
+  
+  .price-comparison {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .price-label {
+    font-size: 0.9rem;
+    min-width: auto;
+  }
+  
+  .original-price {
+    font-size: 0.8rem;
+  }
+  
+  .discounted-price {
+    font-size: 0.95rem;
+  }
+  
+  .discount-info {
+    padding: 8px;
   }
 }
 </style>

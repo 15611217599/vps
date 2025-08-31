@@ -61,4 +61,15 @@ public interface PriceGroupService {
      * 根据激活状态分页获取价格组
      */
     Page<PriceGroupDTO> getPriceGroupsByActive(Boolean isActive, Pageable pageable);
+    
+    /**
+     * 应用折扣
+     */
+    PriceGroupDTO applyDiscount(Long id, Double discountPercentage, 
+                               String startTime, String endTime);
+    
+    /**
+     * 恢复原价
+     */
+    PriceGroupDTO restoreOriginalPrices(Long id);
 }

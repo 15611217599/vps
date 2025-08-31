@@ -213,4 +213,55 @@ public class PriceGroupController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    /**
+     * 应用折扣
+     */
+    @PostMapping("/{id}/apply-discount")
+    public ResponseEntity<Map<String, Object>> applyDiscount(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> discountData) {
+        try {
+            Double discountPercentage = ((Number) discountData.get("discountPercentage")).doubleValue();
+            String startTimeStr = (String) discountData.get("startTime");
+            String endTimeStr = (String) discountData.get("endTime");
+            
+            PriceGroupDTO updatedPriceGroup = priceGroupService.applyDiscount(
+                id, discountPercentage, startTimeStr, endTimeStr);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", updatedPriceGroup);
+            response.put("message", "折扣应用成功");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "应用折扣失败: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
+     * 恢复原价
+     */
+    @PostMapping("/{id}/restore-original-prices")
+    public ResponseEntity<Map<String, Object>> restoreOriginalPrices(@PathVariable Long id) {
+        try {
+            PriceGroupDTO updatedPriceGroup = priceGroupService.restoreOriginalPrices(id);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", updatedPriceGroup);
+            response.put("message", "原价恢复成功");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "恢复原价失败: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 }

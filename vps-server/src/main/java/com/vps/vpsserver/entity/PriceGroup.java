@@ -15,9 +15,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.DecimalMin;
 
 @Entity
 @Table(name = "price_groups")
@@ -79,6 +79,21 @@ public class PriceGroup {
 
     @Column(name = "sales_page_html", columnDefinition = "TEXT")
     private String salesPageHtml;
+
+    // 折扣相关字段
+    @Column(name = "has_discount", nullable = false)
+    private Boolean hasDiscount = false;
+
+    @Column(name = "discount_percentage", precision = 5, scale = 2)
+    private BigDecimal discountPercentage;
+
+    @Column(name = "discount_start_time")
+    private LocalDateTime discountStartTime;
+
+    @Column(name = "discount_end_time")
+    private LocalDateTime discountEndTime;
+
+
 
     @CreationTimestamp
     @Column(name = "create_time", nullable = false, updatable = false)
@@ -230,6 +245,149 @@ public class PriceGroup {
 
     public void setServerGroup(ServerGroup serverGroup) {
         this.serverGroup = serverGroup;
+    }
+
+    // 折扣相关的getter和setter
+    public Boolean getHasDiscount() {
+        return hasDiscount;
+    }
+
+    public void setHasDiscount(Boolean hasDiscount) {
+        this.hasDiscount = hasDiscount;
+    }
+
+    public BigDecimal getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(BigDecimal discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public LocalDateTime getDiscountStartTime() {
+        return discountStartTime;
+    }
+
+    public void setDiscountStartTime(LocalDateTime discountStartTime) {
+        this.discountStartTime = discountStartTime;
+    }
+
+    public LocalDateTime getDiscountEndTime() {
+        return discountEndTime;
+    }
+
+    public void setDiscountEndTime(LocalDateTime discountEndTime) {
+        this.discountEndTime = discountEndTime;
+    }
+
+
+
+    // 便利方法：应用折扣
+    public void applyDiscount(BigDecimal discountPercentage, LocalDateTime startTime, LocalDateTime endTime) {
+        // 如果已经有折扣，先恢复原价再应用新折扣
+        if (this.hasDiscount) {
+            restoreOriginalPrices();
+        }
+
+        // 设置折扣信息
+        this.hasDiscount = true;
+        this.discountPercentage = discountPercentage;
+        this.discountStartTime = startTime;
+        this.discountEndTime = endTime;
+
+        // 计算折扣价格
+        this.hourlyPrice = calculateDiscountedPrice(this.hourlyPrice, discountPercentage);
+        this.dailyPrice = calculateDiscountedPrice(this.dailyPrice, discountPercentage);
+        this.monthlyPrice = calculateDiscountedPrice(this.monthlyPrice, discountPercentage);
+        this.quarterlyPrice = calculateDiscountedPrice(this.quarterlyPrice, discountPercentage);
+        this.semiAnnualPrice = calculateDiscountedPrice(this.semiAnnualPrice, discountPercentage);
+        this.annualPrice = calculateDiscountedPrice(this.annualPrice, discountPercentage);
+    }
+
+    // 便利方法：恢复原价
+    public void restoreOriginalPrices() {
+        if (this.hasDiscount && this.discountPercentage != null) {
+            // 通过折扣比例反推原价
+            this.hourlyPrice = calculateOriginalPrice(this.hourlyPrice, this.discountPercentage);
+            this.dailyPrice = calculateOriginalPrice(this.dailyPrice, this.discountPercentage);
+            this.monthlyPrice = calculateOriginalPrice(this.monthlyPrice, this.discountPercentage);
+            this.quarterlyPrice = calculateOriginalPrice(this.quarterlyPrice, this.discountPercentage);
+            this.semiAnnualPrice = calculateOriginalPrice(this.semiAnnualPrice, this.discountPercentage);
+            this.annualPrice = calculateOriginalPrice(this.annualPrice, this.discountPercentage);
+
+            // 清除折扣信息
+            this.hasDiscount = false;
+            this.discountPercentage = null;
+            this.discountStartTime = null;
+            this.discountEndTime = null;
+        }
+    }
+
+    // 计算折扣价格的私有方法
+    private BigDecimal calculateDiscountedPrice(BigDecimal originalPrice, BigDecimal discountPercentage) {
+        if (originalPrice == null || discountPercentage == null) {
+            return originalPrice;
+        }
+
+        // 百分比折扣
+        BigDecimal discountAmount = originalPrice.multiply(discountPercentage).divide(BigDecimal.valueOf(100));
+        return originalPrice.subtract(discountAmount);
+    }
+
+    // 通过折扣价格反推原价的私有方法
+    private BigDecimal calculateOriginalPrice(BigDecimal discountedPrice, BigDecimal discountPercentage) {
+        if (discountedPrice == null || discountPercentage == null) {
+            return discountedPrice;
+        }
+
+        // 原价 = 折扣价 / (1 - 折扣比例/100)
+        BigDecimal discountRate = discountPercentage.divide(BigDecimal.valueOf(100));
+        BigDecimal multiplier = BigDecimal.ONE.subtract(discountRate);
+        return discountedPrice.divide(multiplier, 2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    // 检查折扣是否有效（在时间范围内）
+    public boolean isDiscountActive() {
+        if (!hasDiscount || discountPercentage == null) {
+            return false;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        
+        if (discountStartTime != null && now.isBefore(discountStartTime)) {
+            return false;
+        }
+        
+        if (discountEndTime != null && now.isAfter(discountEndTime)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    // 获取原价的便利方法
+    public BigDecimal getOriginalHourlyPrice() {
+        return hasDiscount ? calculateOriginalPrice(hourlyPrice, discountPercentage) : hourlyPrice;
+    }
+
+    public BigDecimal getOriginalDailyPrice() {
+        return hasDiscount ? calculateOriginalPrice(dailyPrice, discountPercentage) : dailyPrice;
+    }
+
+    public BigDecimal getOriginalMonthlyPrice() {
+        return hasDiscount ? calculateOriginalPrice(monthlyPrice, discountPercentage) : monthlyPrice;
+    }
+
+    public BigDecimal getOriginalQuarterlyPrice() {
+        return hasDiscount ? calculateOriginalPrice(quarterlyPrice, discountPercentage) : quarterlyPrice;
+    }
+
+    public BigDecimal getOriginalSemiAnnualPrice() {
+        return hasDiscount ? calculateOriginalPrice(semiAnnualPrice, discountPercentage) : semiAnnualPrice;
+    }
+
+    public BigDecimal getOriginalAnnualPrice() {
+        return hasDiscount ? calculateOriginalPrice(annualPrice, discountPercentage) : annualPrice;
     }
 
     @Override

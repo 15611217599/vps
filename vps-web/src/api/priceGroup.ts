@@ -14,6 +14,11 @@ export interface PriceGroup {
   isActive: boolean
   createTime: string
   lastUpdate: string
+  // 折扣相关字段
+  hasDiscount?: boolean
+  discountPercentage?: number
+  discountStartTime?: string
+  discountEndTime?: string
 }
 
 export interface ApiResponse<T> {
@@ -98,6 +103,31 @@ export const checkNameExists = async (name: string, excludeId?: number): Promise
   return response.data.data.exists
 }
 
+/**
+ * 应用折扣
+ */
+export const applyDiscount = async (
+  id: number, 
+  discountPercentage: number,
+  startTime?: string,
+  endTime?: string
+): Promise<ApiResponse<PriceGroup>> => {
+  const response = await apiClient.post<ApiResponse<PriceGroup>>(`/price-groups/${id}/apply-discount`, {
+    discountPercentage,
+    startTime,
+    endTime
+  })
+  return response.data
+}
+
+/**
+ * 恢复原价
+ */
+export const restoreOriginalPrices = async (id: number): Promise<ApiResponse<PriceGroup>> => {
+  const response = await apiClient.post<ApiResponse<PriceGroup>>(`/price-groups/${id}/restore-original-prices`)
+  return response.data
+}
+
 // 导出所有API方法
 export const priceGroupApi = {
   getActivePriceGroups,
@@ -106,5 +136,7 @@ export const priceGroupApi = {
   createPriceGroup,
   updatePriceGroup,
   deletePriceGroup,
-  checkNameExists
+  checkNameExists,
+  applyDiscount,
+  restoreOriginalPrices
 }
