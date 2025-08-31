@@ -486,7 +486,9 @@ const loadGroupOptions = async () => {
     // 使用与新增服务器表单相同的API
     const response = await groupAPI.getGroupOptions()
     console.log('分组选项API响应:', response) // 调试日志
-    if (response && response.length > 0) {
+    console.log('响应数据类型:', typeof response, '是否为数组:', Array.isArray(response)) // 调试日志
+    
+    if (response && Array.isArray(response) && response.length > 0) {
       // 直接使用response，因为getGroupOptions已经返回了data数组
       groupOptions.value = response.map((group: any) => ({
         title: group.title,
@@ -494,6 +496,11 @@ const loadGroupOptions = async () => {
         originalName: group.title
       }))
       console.log('处理后的分组选项:', groupOptions.value) // 调试日志
+      console.log('分组选项数量:', groupOptions.value.length) // 调试日志
+    } else {
+      // 如果response为空，尝试清空选项
+      console.warn('分组选项为空或格式不正确:', response)
+      groupOptions.value = []
     }
   } catch (error) {
     console.error('加载分组选项失败:', error)

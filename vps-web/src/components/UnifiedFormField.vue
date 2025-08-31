@@ -74,7 +74,12 @@
       class="form-field"
       :class="fieldClass"
       bg-color="surface"
-      :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
+      :menu-props="{ 
+        maxHeight: '400px', 
+        zIndex: 9999, 
+        closeOnContentClick: false,
+        contentClass: 'select-menu-content'
+      }"
       @update:model-value="$emit('update:modelValue', $event)"
     >
       <!-- 传递选择项插槽 -->
@@ -290,5 +295,18 @@ defineEmits<Emits>()
   .form-field :deep(.v-field__input) {
     font-size: 16px; /* 防止iOS缩放 */
   }
+}
+</style>
+
+<style>
+/* 全局样式 - 确保下拉菜单正确显示 */
+.select-menu-content {
+  overflow: visible !important;
+}
+
+.select-menu-content .v-list {
+  overflow: visible !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
 }
 </style>

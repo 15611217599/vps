@@ -9,13 +9,17 @@
 
 .v-menu > .v-overlay__content {
   border-radius: 16px !important;
+  /* 移除 overflow: hidden，避免截断下拉菜单 */
+}
+
+.v-menu > .v-overlay__content > .v-card {
+  border-radius: 16px !important;
   overflow: hidden !important;
 }
 
-.v-menu > .v-overlay__content > .v-card,
 .v-menu > .v-overlay__content > .v-list {
   border-radius: 16px !important;
-  overflow: hidden !important;
+  /* 移除 overflow: hidden，避免截断下拉菜单选项 */
 }
 
 /* Vuetify Dialog 弹出框修复 */
@@ -82,4 +86,15 @@
 
 .v-snackbar .v-overlay {
   z-index: 2400;
+}
+
+/* 专门针对 select 下拉菜单的修复 */
+.v-select .v-menu > .v-overlay__content {
+  overflow: visible !important;
+}
+
+.v-select .v-menu > .v-overlay__content > .v-list {
+  overflow: visible !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
 }
