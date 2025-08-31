@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import HomeView from '../views/HomeView.vue'
 import AuthView from '../views/AuthView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import ProfileView from '../views/ProfileView.vue'
@@ -17,12 +18,11 @@ import PaymentResultView from '../views/PaymentResultView.vue'
 import PaymentHistoryView from '../views/PaymentHistoryView.vue'
 
 
-
-
 const routes = [
   {
     path: '/',
-    redirect: '/sales'
+    name: 'Home',
+    component: HomeView
   },
   {
     path: '/auth',

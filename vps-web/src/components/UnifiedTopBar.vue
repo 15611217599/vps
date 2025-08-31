@@ -35,7 +35,36 @@
       
       <!-- 右侧控制区域 -->
       <div class="d-flex align-center">
-
+        <!-- 访客模式导航菜单 -->
+        <div v-if="isGuest" class="guest-nav me-4">
+          <v-btn
+            variant="text"
+            color="white"
+            class="me-2"
+            @click="navigateToHome"
+          >
+            <v-icon start>mdi-home</v-icon>
+            首页
+          </v-btn>
+          <v-btn
+            variant="text"
+            color="white"
+            class="me-2"
+            @click="navigateToSales"
+          >
+            <v-icon start>mdi-server</v-icon>
+            产品
+          </v-btn>
+          <v-btn
+            variant="outlined"
+            color="white"
+            class="me-2"
+            @click="navigateToAuth"
+          >
+            <v-icon start>mdi-login</v-icon>
+            登录
+          </v-btn>
+        </div>
         
         <!-- 主题切换器 -->
         <ThemeSwitcher class="me-2" />
@@ -99,6 +128,18 @@ const handleProfile = () => {
 
 const handleLogout = () => {
   authStore.logout()
+  router.push('/auth')
+}
+
+const navigateToHome = () => {
+  router.push('/')
+}
+
+const navigateToSales = () => {
+  router.push('/sales')
+}
+
+const navigateToAuth = () => {
   router.push('/auth')
 }
 </script>
