@@ -1,35 +1,32 @@
 <template>
-    <PageLayout>
+    <PageLayout :title="TEXTS.groups.title">
       <v-container class="py-6">
-        <!-- 页面标题和添加按钮 -->
-        <div class="d-flex justify-space-between align-center mb-6">
-          <h1 class="text-h4 font-weight-bold">{{ TEXTS.groups.title }}</h1>
-          <v-btn
-            color="primary"
-            prepend-icon="mdi-plus"
-            @click="showAddDialog = true"
-          >
-            {{ '添加' }}
-          </v-btn>
-        </div>
-  
         <!-- 分组列表 -->
         <v-card>
           <v-card-title class="d-flex align-center">
             <v-icon class="me-2">mdi-folder-network</v-icon>
-            {{ TEXTS.groups.title }}
+            分组列表
             <v-spacer />
-            <v-text-field
-              v-model="searchQuery"
-              :placeholder="'搜索'"
-              prepend-inner-icon="mdi-magnify"
-              variant="outlined"
-              density="compact"
-              hide-details
-              clearable
-              style="max-width: 300px"
-              @input="debouncedSearch"
-            />
+            <div class="d-flex align-center ga-3">
+              <v-text-field
+                v-model="searchQuery"
+                :placeholder="'搜索'"
+                prepend-inner-icon="mdi-magnify"
+                variant="outlined"
+                density="compact"
+                hide-details
+                clearable
+                style="min-width: 250px; max-width: 400px"
+                @input="debouncedSearch"
+              />
+              <v-btn
+                color="primary"
+                prepend-icon="mdi-plus"
+                @click="showAddDialog = true"
+              >
+                {{ '添加' }}
+              </v-btn>
+            </div>
           </v-card-title>
   
           <v-data-table-server
@@ -120,8 +117,9 @@
     :is-edit="!!editingGroup"
     :loading="saving"
     :disabled="!formValid"
-    max-width="800px"
-    width="80vw"
+    max-width="1200px"
+    width="95vw"
+    :auto-width="false"
     @save="saveGroup"
     @cancel="closeDialog"
   >  

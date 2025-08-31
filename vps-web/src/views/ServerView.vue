@@ -1,35 +1,47 @@
 <template>
-  <PageLayout>
+  <PageLayout title="服务器管理">
     <v-container class="py-6">
-      <!-- 页面标题和添加按钮 -->
-      <div class="d-flex justify-space-between align-center mb-6">
-        <h1 class="text-h4 font-weight-bold">服务器列表</h1>
-        <v-btn
-          color="primary"
-          prepend-icon="mdi-plus"
-          @click="showAddDialog = true"
-        >
-          添加
-        </v-btn>
-      </div>
-
       <!-- 服务器列表 -->
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="me-2">mdi-server-network</v-icon>
           服务器列表
           <v-spacer />
-          <v-text-field
-            v-model="searchQuery"
-            placeholder="搜索"
-            prepend-inner-icon="mdi-magnify"
-            variant="outlined"
-            density="compact"
-            hide-details
-            clearable
-            style="max-width: 300px"
-            @input="debouncedSearch"
-          />
+          <div class="d-flex align-center ga-3">
+            <v-select
+              v-model="selectedGroupFilter"
+              :items="groupFilterOptions"
+              item-title="title"
+              item-value="value"
+              placeholder="按分组过滤"
+              prepend-inner-icon="mdi-filter"
+              variant="outlined"
+              density="compact"
+              hide-details
+              clearable
+              style="min-width: 200px"
+              :menu-props="{ maxHeight: 400 }"
+              @update:model-value="handleGroupFilter"
+            />
+            <v-text-field
+              v-model="searchQuery"
+              placeholder="搜索"
+              prepend-inner-icon="mdi-magnify"
+              variant="outlined"
+              density="compact"
+              hide-details
+              clearable
+              style="min-width: 250px; max-width: 400px"
+              @input="debouncedSearch"
+            />
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-plus"
+              @click="showAddDialog = true"
+            >
+              添加
+            </v-btn>
+          </div>
         </v-card-title>
 
         <v-data-table-server
@@ -140,7 +152,9 @@
       v-model="showAddDialog"
       :title="editingServer ? '编辑服务器' : '添加服务器'"
       :loading="saving"
-      max-width="800px"
+      max-width="1200px"
+      width="95vw"
+      :auto-width="false"
       @save="saveServer"
       @cancel="closeDialog"
   >
@@ -348,11 +362,22 @@ const showDeleteDialog = ref(false)
 const deletingServer = ref<Server | null>(null)
 const formValid = ref(false)
 const searchQuery = ref('')
+const selectedGroupFilter = ref<number | null>(null)
 const currentPage = ref(1)
 const pageSize = ref(10)
 const totalItems = ref(0)
 const editingServer = ref<Server | null>(null)
 const groupOptions = ref<{title: string, value: number}[]>([])
+
+// 计算过滤器选项，基于groupOptions
+const groupFilterOptions = computed(() => {
+  const options = [
+    { title: '全部分组', value: null },
+    ...groupOptions.value
+  ]
+  console.log('过滤器选项:', options)
+  return options
+})
 
 // 表单数据
 const serverForm = reactive({
@@ -417,7 +442,8 @@ const loadServers = async () => {
     const params = {
       page: currentPage.value - 1, // 后端使用0基索引
       size: pageSize.value,
-      ...(searchQuery.value && { search: searchQuery.value })
+      ...(searchQuery.value && { search: searchQuery.value }),
+      ...(selectedGroupFilter.value !== null && { groupId: selectedGroupFilter.value })
     }
 
     const response = await getServers(params)
@@ -457,18 +483,20 @@ const loadServers = async () => {
 // 加载分组选项
 const loadGroupOptions = async () => {
   try {
-    // 使用正确的分组API获取分组选项
+    // 使用与新增服务器表单相同的API
     const response = await groupAPI.getGroupOptions()
-    if (response) {
+    console.log('分组选项API响应:', response) // 调试日志
+    if (response && response.length > 0) {
+      // 直接使用response，因为getGroupOptions已经返回了data数组
       groupOptions.value = response.map((group: any) => ({
-        title: group.name || group.title,
-        value: group.id || group.value,
-        originalName: group.name || group.title
+        title: group.title,
+        value: group.value,
+        originalName: group.title
       }))
+      console.log('处理后的分组选项:', groupOptions.value) // 调试日志
     }
   } catch (error) {
     console.error('加载分组选项失败:', error)
-    // 尝试备用API
     groupOptions.value = []
   }
 }
@@ -487,6 +515,12 @@ const debouncedSearch = () => {
   searchTimeout = setTimeout(() => {
     handleSearch()
   }, 300)
+}
+
+// 处理分组过滤
+const handleGroupFilter = () => {
+  currentPage.value = 1 // 过滤时重置到第一页
+  loadServers()
 }
 
 

@@ -54,12 +54,12 @@ export const paymentApi = {
 
   // 支付方式列表
   getPaymentMethods: () => [
-    { code: 'alipay', name: '支付宝', icon: 'mdi-alipay' },
+    { code: 'alipay', name: '支付宝', icon: 'mdi-wallet' },
     { code: 'wxpay', name: '微信支付', icon: 'mdi-wechat' },
-    { code: 'qqpay', name: 'QQ钱包', icon: 'mdi-qqchat' },
+    { code: 'qqpay', name: 'QQ钱包', icon: 'mdi-bell' },
     { code: 'bank', name: '网银支付', icon: 'mdi-bank' },
     { code: 'jdpay', name: '京东支付', icon: 'mdi-shopping' },
-    { code: 'paypal', name: 'PayPal', icon: 'mdi-paypal' },
+    { code: 'paypal', name: 'PayPal', icon: 'mdi-credit-card' },
     { code: 'usdt', name: '泰达币', icon: 'mdi-bitcoin' }
   ]
 }

@@ -1,40 +1,35 @@
 <template>
-  <PageLayout>
+  <PageLayout :title="TEXTS.priceGroup.title">
     <v-container class="py-6">
-      <!-- 页面标题和添加按钮 -->
-      <div class="d-flex justify-space-between align-center mb-6">
-        <div>
-          <h1 class="text-h4 font-weight-bold">{{ TEXTS.priceGroup.title }}</h1>
-          <p class="text-subtitle-1 text-medium-emphasis mt-1">
-            {{ TEXTS.priceGroup.subtitle }}
-          </p>
-        </div>
-        <v-btn
-          color="primary"
-          prepend-icon="mdi-plus"
-          @click="showAddDialog = true"
-        >
-          {{ TEXTS.priceGroup.add }}
-        </v-btn>
-      </div>
-
       <!-- 价格组列表 -->
     <v-card>
       <v-card-title class="d-flex align-center">
         <v-icon class="me-2">mdi-currency-cny</v-icon>
         {{ TEXTS.priceGroup.list }}
         <v-spacer />
-        <v-text-field
-          v-model="searchQuery"
-          :placeholder="TEXTS.priceGroup.searchPlaceholder"
-          prepend-inner-icon="mdi-magnify"
-          variant="outlined"
-          density="compact"
-          hide-details
-          clearable
-          style="max-width: 300px"
-          @input="debouncedSearch"
-        />
+        <div class="d-flex align-center ga-3">
+          <div class="text-subtitle-2 text-medium-emphasis me-3">
+            {{ TEXTS.priceGroup.subtitle }}
+          </div>
+          <v-text-field
+            v-model="searchQuery"
+            :placeholder="TEXTS.priceGroup.searchPlaceholder"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            density="compact"
+            hide-details
+            clearable
+            style="min-width: 250px; max-width: 400px"
+            @input="debouncedSearch"
+          />
+          <v-btn
+            color="primary"
+            prepend-icon="mdi-plus"
+            @click="showAddDialog = true"
+          >
+            {{ TEXTS.priceGroup.add }}
+          </v-btn>
+        </div>
       </v-card-title>
 
       <v-data-table-server
@@ -148,8 +143,9 @@
       :is-edit="!!editingItem"
       :loading="saving"
       :disabled="!formValid"
-      max-width="650px"
+      max-width="1200px"
       width="95vw"
+      :auto-width="false"
       @save="savePriceGroup"
       @cancel="closeDialog"
     >
