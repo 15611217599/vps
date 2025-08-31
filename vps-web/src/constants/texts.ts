@@ -273,7 +273,6 @@ export const TEXTS = {
   // 价格组管理
   priceGroup: {
     title: '价格组管理',
-    subtitle: '管理服务器价格配置和销售页面',
     add: '添加价格组',
     list: '价格组列表',
     searchPlaceholder: '搜索价格组...',

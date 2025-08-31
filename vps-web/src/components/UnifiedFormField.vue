@@ -74,6 +74,7 @@
       class="form-field"
       :class="fieldClass"
       bg-color="surface"
+      :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
       @update:model-value="$emit('update:modelValue', $event)"
     >
       <!-- 传递选择项插槽 -->

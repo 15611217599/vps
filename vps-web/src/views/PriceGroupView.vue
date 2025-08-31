@@ -4,13 +4,10 @@
       <!-- 价格组列表 -->
     <v-card>
       <v-card-title class="d-flex align-center">
-        <v-icon class="me-2">mdi-currency-cny</v-icon>
+        <v-icon class="me-2">mdi-format-list-bulleted</v-icon>
         {{ TEXTS.priceGroup.list }}
         <v-spacer />
         <div class="d-flex align-center ga-3">
-          <div class="text-subtitle-2 text-medium-emphasis me-3">
-            {{ TEXTS.priceGroup.subtitle }}
-          </div>
           <v-text-field
             v-model="searchQuery"
             :placeholder="TEXTS.priceGroup.searchPlaceholder"
@@ -319,6 +316,7 @@
               class="mb-2"
               bg-color="white"
               clearable
+              :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
             >
               <template #item="{ props, item }">
                 <v-list-item v-bind="props" :title="item.raw.originalName || item.raw.name">

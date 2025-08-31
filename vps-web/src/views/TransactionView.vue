@@ -22,6 +22,7 @@
             variant="outlined"
             density="compact"
             clearable
+            :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
             @update:model-value="loadTransactions"
           />
         </v-col>
@@ -33,6 +34,7 @@
             variant="outlined"
             density="compact"
             clearable
+            :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
             @update:model-value="loadTransactions"
           />
         </v-col>

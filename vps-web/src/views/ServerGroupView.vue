@@ -139,6 +139,7 @@
             density="comfortable"
             class="mb-2"
             bg-color="white"
+            :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
           />
         </div>
 
