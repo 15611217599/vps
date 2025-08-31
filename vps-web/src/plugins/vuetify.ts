@@ -2,6 +2,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { zhHans } from 'vuetify/locale'
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/lib/styles/main.css'
 
@@ -19,6 +20,10 @@ const defaultColors = {
 export default createVuetify({
   components,
   directives,
+  locale: {
+    locale: 'zhHans',
+    messages: { zhHans },
+  },
   icons: {
     defaultSet: 'mdi',
     aliases,

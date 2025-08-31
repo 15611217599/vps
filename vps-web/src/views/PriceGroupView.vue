@@ -62,6 +62,7 @@
                   <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
                     ¥{{ item.hourlyPrice }}
                   </span>
+                  <span v-else class="original-price-small original-price-placeholder">0</span>
                 </div>
               </div>
               
@@ -72,6 +73,7 @@
                   <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
                     ¥{{ item.dailyPrice }}
                   </span>
+                  <span v-else class="original-price-small original-price-placeholder">0</span>
                 </div>
               </div>
               
@@ -82,6 +84,7 @@
                   <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
                     ¥{{ item.monthlyPrice }}
                   </span>
+                  <span v-else class="original-price-small original-price-placeholder">0</span>
                 </div>
               </div>
               
@@ -93,6 +96,7 @@
                   <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
                     ¥{{ item.quarterlyPrice }}
                   </span>
+                  <span v-else class="original-price-small original-price-placeholder">0</span>
                 </div>
               </div>
               
@@ -103,6 +107,7 @@
                   <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
                     ¥{{ item.semiAnnualPrice }}
                   </span>
+                  <span v-else class="original-price-small original-price-placeholder">0</span>
                 </div>
               </div>
               
@@ -113,6 +118,7 @@
                   <span v-if="item.hasDiscount && item.discountPercentage" class="original-price-small">
                     ¥{{ item.annualPrice }}
                   </span>
+                  <span v-else class="original-price-small original-price-placeholder">0</span>
                 </div>
               </div>
             </div>
@@ -443,30 +449,58 @@
             />
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field
-              v-model="formData.discountStartTime"
-              label="开始时间 (可选)"
-              type="datetime-local"
-              variant="outlined"
-              prepend-inner-icon="mdi-calendar-start"
-              color="primary"
-              density="comfortable"
-              class="mb-2"
-              bg-color="white"
-            />
+            <v-menu v-model="startMenu" :close-on-content-click="false" transition="scale-transition" location="bottom">
+              <template #activator="{ props }">
+                <v-text-field
+                  v-bind="props"
+                  :model-value="startDateDisplay"
+                  :rules="[rules.startAfterToday]"
+                  label="开始日期 (可选)"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-calendar-start"
+                  color="primary"
+                  density="comfortable"
+                  class="mb-2"
+                  bg-color="white"
+                  readonly
+                  @click="startMenu = true"
+                />
+              </template>
+              <v-date-picker
+                v-model="formData.discountStartTime"
+                color="primary"
+                title="选择开始日期"
+                :min="tomorrowStr()"
+                @update:model-value="onStartDateSelected"
+              />
+            </v-menu>
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field
-              v-model="formData.discountEndTime"
-              label="结束时间 (可选)"
-              type="datetime-local"
-              variant="outlined"
-              prepend-inner-icon="mdi-calendar-end"
-              color="primary"
-              density="comfortable"
-              class="mb-2"
-              bg-color="white"
-            />
+            <v-menu v-model="endMenu" :close-on-content-click="false" transition="scale-transition" location="bottom">
+              <template #activator="{ props }">
+                <v-text-field
+                  v-bind="props"
+                  :model-value="endDateDisplay"
+                  :rules="[rules.endAfterStart, rules.endAfterToday]"
+                  label="结束日期 (可选)"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-calendar-end"
+                  color="primary"
+                  density="comfortable"
+                  class="mb-2"
+                  bg-color="white"
+                  readonly
+                  @click="endMenu = true"
+                />
+              </template>
+              <v-date-picker
+                v-model="formData.discountEndTime"
+                color="primary"
+                title="选择结束日期"
+                :min="tomorrowStr()"
+                @update:model-value="onEndDateSelected"
+              />
+            </v-menu>
           </v-col>
         </v-row>
 
@@ -723,6 +757,107 @@ export default {
         value => (value <= 100) || '折扣百分比不能超过100%'
       ]
     })
+
+    // 日期选择相关（仅日期，自动关闭）
+    const startMenu = ref(false)
+    const endMenu = ref(false)
+
+    // 日期选择事件处理
+    const onStartDateSelected = (value) => {
+      if (value) {
+        // 确保值是 YYYY-MM-DD 格式的字符串
+        if (value instanceof Date) {
+          const y = value.getFullYear()
+          const m = String(value.getMonth() + 1).padStart(2, '0')
+          const d = String(value.getDate()).padStart(2, '0')
+          formData.discountStartTime = `${y}-${m}-${d}`
+        }
+        startMenu.value = false
+      }
+    }
+
+    const onEndDateSelected = (value) => {
+      if (value) {
+        // 确保值是 YYYY-MM-DD 格式的字符串
+        if (value instanceof Date) {
+          const y = value.getFullYear()
+          const m = String(value.getMonth() + 1).padStart(2, '0')
+          const d = String(value.getDate()).padStart(2, '0')
+          formData.discountEndTime = `${y}-${m}-${d}`
+        }
+        endMenu.value = false
+      }
+    }
+
+    // 结束日期不能早于开始日期（允许同一天）
+    rules.endAfterStart = () => {
+      if (!formData.hasDiscount) return true
+      const startVal = formData.discountStartTime
+      const endVal = formData.discountEndTime
+      if (!startVal || !endVal) return true
+      
+      // 直接比较 YYYY-MM-DD 字符串（字典序比较即可）
+      return endVal >= startVal || '结束日期不能早于开始日期'
+    }
+
+    // 将日期转为中文显示 YYYY年MM月DD日
+    const toChineseDate = (dateValue) => {
+      if (!dateValue) return ''
+      
+      let dateStr = ''
+      if (dateValue instanceof Date) {
+        const y = dateValue.getFullYear()
+        const m = String(dateValue.getMonth() + 1).padStart(2, '0')
+        const d = String(dateValue.getDate()).padStart(2, '0')
+        dateStr = `${y}-${m}-${d}`
+      } else if (typeof dateValue === 'string') {
+        dateStr = dateValue
+      } else {
+        return ''
+      }
+      
+      const [y, m, d] = dateStr.split('-')
+      if (!y || !m || !d) return dateStr
+      return `${y}年${m}月${d}日`
+    }
+
+    // 计算"今天"和"明天"的 YYYY-MM-DD 字符串（本地时区）
+    const todayStr = () => {
+      const now = new Date()
+      const y = now.getFullYear()
+      const m = String(now.getMonth() + 1).padStart(2, '0')
+      const d = String(now.getDate()).padStart(2, '0')
+      return `${y}-${m}-${d}`
+    }
+
+    const tomorrowStr = () => {
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      const y = tomorrow.getFullYear()
+      const m = String(tomorrow.getMonth() + 1).padStart(2, '0')
+      const d = String(tomorrow.getDate()).padStart(2, '0')
+      return `${y}-${m}-${d}`
+    }
+
+    // 比较 YYYY-MM-DD 的辅助函数（按字典序即可比较先后）
+    const gtDate = (a, b) => {
+      if (!a || !b) return false
+      return a > b
+    }
+
+    // 开始/结束日期必须晚于今天（严格大于）
+    rules.startAfterToday = (val) => {
+      if (!formData.hasDiscount || !val) return true
+      return gtDate(val, todayStr()) || '开始日期必须晚于今天'
+    }
+    rules.endAfterToday = (val) => {
+      if (!formData.hasDiscount || !val) return true
+      return gtDate(val, todayStr()) || '结束日期必须晚于今天'
+    }
+
+    // 中文显示值
+    const startDateDisplay = computed(() => toChineseDate(formData.discountStartTime))
+    const endDateDisplay = computed(() => toChineseDate(formData.discountEndTime))
     
     // 获取价格组列表
     const fetchPriceGroups = async () => {
@@ -851,8 +986,8 @@ export default {
         // 填充折扣数据
         hasDiscount: item.hasDiscount || false,
         discountPercentage: item.discountPercentage || '',
-        discountStartTime: item.discountStartTime ? item.discountStartTime.slice(0, 16) : '',
-        discountEndTime: item.discountEndTime ? item.discountEndTime.slice(0, 16) : ''
+        discountStartTime: item.discountStartTime ? item.discountStartTime.slice(0, 10) : '',
+        discountEndTime: item.discountEndTime ? item.discountEndTime.slice(0, 10) : ''
       })
       showAddDialog.value = true
     }
@@ -1024,6 +1159,15 @@ export default {
       discountPercentageRules,
       calculateDiscountedPrice,
       calculateFormDiscountedPrice,
+      // 日期菜单开关
+      startMenu,
+      endMenu,
+      startDateDisplay,
+      endDateDisplay,
+      todayStr,
+      tomorrowStr,
+      onStartDateSelected,
+      onEndDateSelected,
       
       // 添加文本常量
       TEXTS
@@ -1105,6 +1249,12 @@ export default {
   text-decoration: line-through;
   margin-top: 1px;
   line-height: 1;
+}
+
+/* 用于在无折扣时占位，保持卡片等高 */
+.original-price-placeholder {
+  visibility: hidden;
+  text-decoration: none !important;
 }
 
 /* 有折扣时的价格样式 */
@@ -1211,7 +1361,7 @@ export default {
 
 /* 确保价格列有足够的宽度和垂直对齐 */
 :deep(.v-data-table__td) {
-  vertical-align: top;
+  vertical-align: middle;
   padding: 8px 12px;
 }
 
