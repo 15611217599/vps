@@ -93,8 +93,8 @@ INSERT INTO servers (ip, port, status, cpu_cores, memory, disk_space, disk_type,
 
 -- 插入价格组数据
 INSERT INTO price_groups (name, description, hourly_price, daily_price, monthly_price, quarterly_price, semi_annual_price, annual_price, sort_order, is_active, server_group_id, sales_page_html, create_time, last_update) VALUES
-    ('标准套餐',
-     '适合个人用户和小型项目的标准价格套餐',
+    ('高级套餐',
+     '适合初创公司，大型应用',
      1.00, 10.00, 200.00, 500.00, 900.00, 1500.00,
      1, true, 2,
      '{"cpu_cores":32,"memory":32,"disk_space":200,"network_speed":25,"ip_count":1,"operating_system":[{"name":"ubuntu","versions":["16.04","18.04","20.04","22.04","24.04","25.04"]},{"name":"centos","versions":["9","10"]},{"name":"debian","versions":["9","10","11","12","13"]}]}',

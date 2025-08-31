@@ -37,6 +37,7 @@
         :items-per-page="pageSize"
         :items-per-page-options="[5, 10, 20, 50]"
         :items-per-page-text="TEXTS.common.itemsPerPage"
+        class="price-group-table"
         @update:options="handleOptionsUpdate"
       >
         <!-- 名称列 -->
@@ -51,25 +52,31 @@
 
         <!-- 价格列 -->
         <template #item.prices="{ item }">
-          <div class="text-body-2 d-flex flex-wrap ga-2">
-            <v-chip size="small" variant="outlined" color="primary">
-              {{ TEXTS.priceGroup.hour }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.hourlyPrice }}
-            </v-chip>
-            <v-chip size="small" variant="outlined" color="success">
-              {{ TEXTS.priceGroup.day }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.dailyPrice }}
-            </v-chip>
-            <v-chip size="small" variant="outlined" color="info">
-              {{ TEXTS.priceGroup.month }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.monthlyPrice }}
-            </v-chip>
-            <v-chip size="small" variant="outlined" color="warning">
-              {{ TEXTS.priceGroup.quarter }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.quarterlyPrice }}
-            </v-chip>
-            <v-chip size="small" variant="outlined" color="orange">
-              {{ TEXTS.priceGroup.halfYear }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.semiAnnualPrice }}
-            </v-chip>
-            <v-chip size="small" variant="outlined" color="deep-purple">
-              {{ TEXTS.priceGroup.year }}: {{ TEXTS.priceGroup.priceUnit }}{{ item.annualPrice }}
-            </v-chip>
+          <div class="price-display">
+            <!-- 第一行：短期价格 -->
+            <div class="price-row mb-1">
+              <v-chip size="x-small" variant="flat" color="blue-lighten-4" class="price-chip price-chip-short">
+                时 ¥{{ item.hourlyPrice }}
+              </v-chip>
+              <v-chip size="x-small" variant="flat" color="green-lighten-4" class="price-chip price-chip-short">
+                日 ¥{{ item.dailyPrice }}
+              </v-chip>
+              <v-chip size="x-small" variant="flat" color="cyan-lighten-4" class="price-chip price-chip-short">
+                月 ¥{{ item.monthlyPrice }}
+              </v-chip>
+            </div>
+            <!-- 第二行：长期价格 -->
+            <div class="price-row">
+              <v-chip size="x-small" variant="flat" color="amber-lighten-4" class="price-chip price-chip-long">
+                季 ¥{{ item.quarterlyPrice }}
+              </v-chip>
+              <v-chip size="x-small" variant="flat" color="orange-lighten-4" class="price-chip price-chip-long">
+                半年 ¥{{ item.semiAnnualPrice }}
+              </v-chip>
+              <v-chip size="x-small" variant="flat" color="purple-lighten-4" class="price-chip price-chip-long">
+                年 ¥{{ item.annualPrice }}
+              </v-chip>
+            </div>
           </div>
         </template>
 
@@ -464,13 +471,13 @@ export default {
     
     // 表格头部
     const headers = [
-      { title: TEXTS.priceGroup.name, key: 'name', sortable: false },
-      { title: TEXTS.priceGroup.prices, key: 'prices', sortable: false },
-      { title: TEXTS.priceGroup.serverGroup, key: 'serverGroup', sortable: false },
-      { title: '销售页面', key: 'salesPage', sortable: false },
-      { title: '状态', key: 'isActive', sortable: false },
-      { title: TEXTS.priceGroup.sortOrder, key: 'sortOrder', sortable: false },
-      { title: '操作', key: 'actions', sortable: false, width: 120 }
+      { title: TEXTS.priceGroup.name, key: 'name', sortable: false, width: 200 },
+      { title: TEXTS.priceGroup.prices, key: 'prices', sortable: false, width: 320 },
+      { title: TEXTS.priceGroup.serverGroup, key: 'serverGroup', sortable: false, width: 120 },
+      { title: '销售页面', key: 'salesPage', sortable: false, width: 100 },
+      { title: '状态', key: 'isActive', sortable: false, width: 80 },
+      { title: '排序', key: 'sortOrder', sortable: false, width: 60 },
+      { title: '操作', key: 'actions', sortable: false, width: 100 }
     ]
     
     // 表单数据
@@ -763,4 +770,121 @@ export default {
 }
 </script>
 
-<!-- 使用 Vuetify 默认背景处理 -->
+<style scoped>
+.price-display {
+  min-width: 300px;
+  max-width: 320px;
+}
+
+.price-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.price-chip {
+  min-width: 65px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  height: 22px;
+  text-align: center;
+  border-radius: 12px;
+  color: #333 !important;
+}
+
+.price-chip-short {
+  border-left: 3px solid #1976d2;
+}
+
+.price-chip-long {
+  border-left: 3px solid #f57c00;
+}
+
+/* 确保价格列有足够的宽度和垂直对齐 */
+:deep(.v-data-table__td) {
+  vertical-align: top;
+  padding: 8px 12px;
+}
+
+/* 价格列特殊处理 */
+:deep(.v-data-table__td:nth-child(2)) {
+  min-width: 320px;
+  max-width: 320px;
+}
+
+/* 名称列处理 */
+:deep(.v-data-table__td:nth-child(1)) {
+  min-width: 180px;
+  max-width: 200px;
+}
+
+/* 表格整体样式优化 */
+.price-group-table :deep(.v-data-table) {
+  font-size: 0.875rem;
+}
+
+.price-group-table :deep(.v-data-table__th) {
+  font-weight: 600;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.price-group-table :deep(.v-data-table__wrapper) {
+  overflow-x: auto;
+}
+
+.price-group-table :deep(.v-data-table__tr:hover) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.price-group-table :deep(.v-data-table__td) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .price-display {
+    min-width: 280px;
+    max-width: 280px;
+  }
+  
+  .price-chip {
+    min-width: 60px;
+    font-size: 0.65rem;
+  }
+  
+  :deep(.v-data-table__td:nth-child(2)) {
+    min-width: 280px;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .price-display {
+    min-width: 240px;
+    max-width: 240px;
+  }
+  
+  .price-row {
+    gap: 2px;
+  }
+  
+  .price-chip {
+    min-width: 50px;
+    font-size: 0.6rem;
+    height: 20px;
+    font-weight: 600;
+  }
+  
+  :deep(.v-data-table__td:nth-child(2)) {
+    min-width: 240px;
+    max-width: 240px;
+  }
+  
+  :deep(.v-data-table__td:nth-child(1)) {
+    min-width: 150px;
+    max-width: 150px;
+  }
+}
+</style>
