@@ -258,25 +258,7 @@
                   </v-text-field>
                 </div>
 
-                <!-- 自动续费开关 -->
-                <div class="config-item mb-4">
-                  <div class="d-flex align-center justify-space-between">
-                    <div class="d-flex align-center">
-                      <v-icon size="16" class="me-2" color="success">mdi-refresh-auto</v-icon>
-                      <div>
-                        <div class="text-subtitle-2 font-weight-medium">{{ TEXTS.sales.autoRenewal }}</div>
-                        <div class="text-caption text-medium-emphasis">{{ TEXTS.sales.autoRenewalDesc }}</div>
-                      </div>
-                    </div>
-                    <v-switch
-                      :model-value="getSelectedConfig(priceGroup).autoRenewal || false"
-                      color="success"
-                      density="compact"
-                      hide-details
-                      @update:model-value="(value) => updateConfigBoolean(priceGroup, 'autoRenewal', value || false)"
-                    ></v-switch>
-                  </div>
-                </div>
+
 
                 <!-- 配置摘要 -->
                 <v-card class="config-summary mb-4" variant="outlined" elevation="3">
@@ -389,40 +371,99 @@
                   </v-card-text>
                 </v-card>
 
-                <!-- 价格选择器 -->
+                <!-- 价格选择器 - 重新设计 -->
                 <v-card class="price-selector mb-4" variant="outlined" elevation="2">
-                  <v-card-title class="d-flex align-center pa-4 pb-2">
-                    <v-icon size="20" class="me-2" color="success">mdi-currency-cny</v-icon>
-                    <span class="text-h6 font-weight-bold">{{ TEXTS.sales.pricingPlans }}</span>
+                  <v-card-title class="d-flex align-center pa-4 pb-2 bg-gradient-primary">
+                    <v-icon size="20" class="me-2" color="white">mdi-currency-cny</v-icon>
+                    <span class="text-h6 font-weight-bold text-white">{{ TEXTS.sales.pricingPlans }}</span>
+                    <!-- 折扣活动提示 -->
+                    <v-spacer />
+                    <div v-if="isDiscountActive(priceGroup)" class="discount-activity-badge">
+                      <v-chip size="small" color="error" variant="flat" class="text-white">
+                        <v-icon start size="14">mdi-fire</v-icon>
+                        限时{{ priceGroup.discountPercentage }}%折扣
+                      </v-chip>
+                    </div>
                   </v-card-title>
                   <v-card-text class="pa-4 pt-2">
                     <div v-if="getPriceOptions(priceGroup).length > 0">
-                      <div class="price-options-row">
+                      <div class="price-options-grid">
                         <div 
                           v-for="priceOption in getPriceOptions(priceGroup)" 
                           :key="priceOption.period"
-                          class="price-option-compact"
+                          class="price-option-card"
                           :class="{ 'price-selected': getSelectedPricePeriod(priceGroup) === priceOption.period }"
                           @click="selectPricePeriod(priceGroup, priceOption.period)"
                         >
-                          <div class="price-period">{{ priceOption.label }}</div>
-                          <div class="price-amount">¥{{ priceOption.price }}</div>
-                          <div class="price-unit">{{ priceOption.unit }}</div>
-                          <v-chip 
-                            v-if="priceOption.discount && priceOption.discount > 0"
-                            size="x-small" 
-                            color="success" 
-                            variant="flat"
-                            class="price-discount"
-                          >
-                            {{ TEXTS.sales.save }}{{ priceOption.discount }}%
-                          </v-chip>
+                          <!-- 折扣标签 -->
+                          <div v-if="priceOption.discount && priceOption.discount > 0" class="discount-badge">
+                            <v-chip 
+                              size="small" 
+                              color="error" 
+                              variant="flat"
+                              class="discount-chip"
+                            >
+                              <v-icon start size="14">mdi-fire</v-icon>
+                              {{ TEXTS.sales.save }}{{ priceOption.discount }}%
+                            </v-chip>
+                          </div>
+                          
+                          <div class="price-content">
+                            <div class="price-period">{{ priceOption.label }}</div>
+                            
+                            <!-- 价格显示区域 -->
+                            <div class="price-display">
+                              <div v-if="priceOption.originalPrice && priceOption.originalPrice > priceOption.price" class="price-comparison">
+                                <div class="original-price">¥{{ priceOption.originalPrice }}</div>
+                                <div class="current-price">¥{{ priceOption.price }}</div>
+                              </div>
+                              <div v-else class="current-price-only">¥{{ priceOption.price }}</div>
+                              <div class="price-unit">{{ priceOption.unit }}</div>
+                            </div>
+                            
+                            <!-- 推荐标签 -->
+                            <div v-if="priceOption.recommended" class="recommended-badge">
+                              <v-chip size="x-small" color="success" variant="flat">
+                                <v-icon start size="12">mdi-star</v-icon>
+                                推荐
+                              </v-chip>
+                            </div>
+                          </div>
+                          
+                          <!-- 选中指示器 -->
+                          <div v-if="getSelectedPricePeriod(priceGroup) === priceOption.period" class="selected-indicator">
+                            <v-icon color="primary" size="20">mdi-check-circle</v-icon>
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div v-else class="text-center py-4">
                       <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-currency-cny-off</v-icon>
                       <div class="text-body-1 text-medium-emphasis">{{ TEXTS.sales.noPriceInfo }}</div>
+                    </div>
+                  </v-card-text>
+                </v-card>
+
+                <!-- 自动续费开关 - 移动到底部 -->
+                <v-card class="auto-renewal-card mb-4" variant="outlined" elevation="1">
+                  <v-card-text class="pa-4">
+                    <div class="d-flex align-center justify-space-between">
+                      <div class="d-flex align-center">
+                        <v-avatar size="32" color="success" class="me-3">
+                          <v-icon size="16" color="white">mdi-refresh-auto</v-icon>
+                        </v-avatar>
+                        <div>
+                          <div class="text-subtitle-1 font-weight-medium">{{ TEXTS.sales.autoRenewal }}</div>
+                          <div class="text-caption text-medium-emphasis">{{ TEXTS.sales.autoRenewalDesc }}</div>
+                        </div>
+                      </div>
+                      <v-switch
+                        :model-value="getSelectedConfig(priceGroup).autoRenewal !== false"
+                        color="success"
+                        density="compact"
+                        hide-details
+                        @update:model-value="(value) => updateConfigBoolean(priceGroup, 'autoRenewal', value)"
+                      ></v-switch>
                     </div>
                   </v-card-text>
                 </v-card>
@@ -631,7 +672,7 @@ const initPriceGroupSelection = (priceGroupId: number, priceGroup?: any) => {
       password: generateRandomPasswordString(),
       port: generateRandomPortNumber(),
       selectedPricePeriod: null,
-      autoRenewal: false
+      autoRenewal: true
     }
     
     // 设置默认操作系统
@@ -695,74 +736,141 @@ const togglePasswordVisibility = (priceGroup: any) => {
   passwordVisibility.value[priceGroup.id] = !passwordVisibility.value[priceGroup.id]
 }
 
-// 获取价格选项
+// 检查折扣是否有效
+const isDiscountActive = (priceGroup: any) => {
+  if (!priceGroup.hasDiscount || !priceGroup.discountPercentage) {
+    return false
+  }
+  
+  const now = new Date()
+  const today = now.toISOString().split('T')[0] // YYYY-MM-DD格式
+  
+  // 检查开始时间
+  if (priceGroup.discountStartTime && priceGroup.discountStartTime > today) {
+    return false
+  }
+  
+  // 检查结束时间
+  if (priceGroup.discountEndTime && priceGroup.discountEndTime < today) {
+    return false
+  }
+  
+  return true
+}
+
+// 计算折扣后价格
+const calculateDiscountedPrice = (originalPrice: number, discountPercentage: number) => {
+  return (originalPrice * (1 - discountPercentage / 100)).toFixed(2)
+}
+
+// 获取价格选项 - 支持价格组折扣
 const getPriceOptions = (priceGroup: any) => {
-  // 移除国际化
   const options = []
+  const hasActiveDiscount = isDiscountActive(priceGroup)
+  const discountPercentage = hasActiveDiscount ? priceGroup.discountPercentage : 0
   
   if (priceGroup.hourlyPrice && priceGroup.hourlyPrice > 0) {
+    const originalPrice = priceGroup.hourlyPrice
+    const currentPrice = hasActiveDiscount ? calculateDiscountedPrice(originalPrice, discountPercentage) : originalPrice
+    
     options.push({
       period: 'hourly',
       label: TEXTS.sales.hourly,
-      price: priceGroup.hourlyPrice,
+      price: currentPrice,
+      originalPrice: hasActiveDiscount ? originalPrice : null,
       unit: TEXTS.sales.perHour,
-      discount: 0
+      discount: discountPercentage,
+      recommended: false
     })
   }
   
   if (priceGroup.dailyPrice && priceGroup.dailyPrice > 0) {
+    const originalPrice = priceGroup.dailyPrice
+    const currentPrice = hasActiveDiscount ? calculateDiscountedPrice(originalPrice, discountPercentage) : originalPrice
+    
     options.push({
       period: 'daily',
       label: TEXTS.sales.daily,
-      price: priceGroup.dailyPrice,
+      price: currentPrice,
+      originalPrice: hasActiveDiscount ? originalPrice : null,
       unit: TEXTS.sales.perDay,
-      discount: 0
+      discount: discountPercentage,
+      recommended: false
     })
   }
   
   if (priceGroup.monthlyPrice && priceGroup.monthlyPrice > 0) {
+    const originalPrice = priceGroup.monthlyPrice
+    const currentPrice = hasActiveDiscount ? calculateDiscountedPrice(originalPrice, discountPercentage) : originalPrice
+    
     options.push({
       period: 'monthly',
       label: TEXTS.sales.monthly,
-      price: priceGroup.monthlyPrice,
+      price: currentPrice,
+      originalPrice: hasActiveDiscount ? originalPrice : null,
       unit: TEXTS.sales.perMonth,
-      discount: 0
+      discount: discountPercentage,
+      recommended: true // 月付设为推荐
     })
   }
   
   if (priceGroup.quarterlyPrice && priceGroup.quarterlyPrice > 0) {
+    const originalPrice = priceGroup.quarterlyPrice
+    const currentPrice = hasActiveDiscount ? calculateDiscountedPrice(originalPrice, discountPercentage) : originalPrice
+    
+    // 计算相对于月付的额外折扣
     const monthlyEquivalent = priceGroup.monthlyPrice ? priceGroup.monthlyPrice * 3 : 0
-    const discount = monthlyEquivalent > 0 ? Math.round((1 - priceGroup.quarterlyPrice / monthlyEquivalent) * 100) : 0
+    const additionalDiscount = monthlyEquivalent > 0 ? Math.round((1 - originalPrice / monthlyEquivalent) * 100) : 0
+    const totalDiscount = Math.max(discountPercentage, additionalDiscount)
+    
     options.push({
       period: 'quarterly',
       label: TEXTS.sales.quarterly,
-      price: priceGroup.quarterlyPrice,
+      price: currentPrice,
+      originalPrice: hasActiveDiscount ? originalPrice : (monthlyEquivalent > 0 ? monthlyEquivalent : null),
       unit: TEXTS.sales.perQuarter,
-      discount: discount > 0 ? discount : 0
+      discount: totalDiscount,
+      recommended: false
     })
   }
   
   if (priceGroup.semiAnnualPrice && priceGroup.semiAnnualPrice > 0) {
+    const originalPrice = priceGroup.semiAnnualPrice
+    const currentPrice = hasActiveDiscount ? calculateDiscountedPrice(originalPrice, discountPercentage) : originalPrice
+    
+    // 计算相对于月付的额外折扣
     const monthlyEquivalent = priceGroup.monthlyPrice ? priceGroup.monthlyPrice * 6 : 0
-    const discount = monthlyEquivalent > 0 ? Math.round((1 - priceGroup.semiAnnualPrice / monthlyEquivalent) * 100) : 0
+    const additionalDiscount = monthlyEquivalent > 0 ? Math.round((1 - originalPrice / monthlyEquivalent) * 100) : 0
+    const totalDiscount = Math.max(discountPercentage, additionalDiscount)
+    
     options.push({
       period: 'semiAnnual',
       label: TEXTS.sales.semiAnnual,
-      price: priceGroup.semiAnnualPrice,
+      price: currentPrice,
+      originalPrice: hasActiveDiscount ? originalPrice : (monthlyEquivalent > 0 ? monthlyEquivalent : null),
       unit: TEXTS.sales.perSemiAnnual,
-      discount: discount > 0 ? discount : 0
+      discount: totalDiscount,
+      recommended: false
     })
   }
   
   if (priceGroup.annualPrice && priceGroup.annualPrice > 0) {
+    const originalPrice = priceGroup.annualPrice
+    const currentPrice = hasActiveDiscount ? calculateDiscountedPrice(originalPrice, discountPercentage) : originalPrice
+    
+    // 计算相对于月付的额外折扣
     const monthlyEquivalent = priceGroup.monthlyPrice ? priceGroup.monthlyPrice * 12 : 0
-    const discount = monthlyEquivalent > 0 ? Math.round((1 - priceGroup.annualPrice / monthlyEquivalent) * 100) : 0
+    const additionalDiscount = monthlyEquivalent > 0 ? Math.round((1 - originalPrice / monthlyEquivalent) * 100) : 0
+    const totalDiscount = Math.max(discountPercentage, additionalDiscount)
+    
     options.push({
       period: 'annual',
       label: TEXTS.sales.annual,
-      price: priceGroup.annualPrice,
+      price: currentPrice,
+      originalPrice: hasActiveDiscount ? originalPrice : (monthlyEquivalent > 0 ? monthlyEquivalent : null),
       unit: TEXTS.sales.perYear,
-      discount: discount > 0 ? discount : 0
+      discount: totalDiscount,
+      recommended: totalDiscount >= 20 // 总折扣大于20%时设为推荐
     })
   }
   
@@ -1011,65 +1119,157 @@ const contactUs = () => {
   text-overflow: ellipsis;
 }
 
-/* 价格选择器紧凑样式 */
-.price-options-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
+/* 价格选择器重新设计样式 */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgba(var(--v-theme-primary), 0.8) 100%);
 }
 
-.price-option-compact {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 16px;
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(var(--v-theme-surface), 1);
-  min-width: 100px;
+.price-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.price-option-card {
   position: relative;
+  padding: 20px 16px;
+  border: 2px solid rgba(var(--v-theme-on-surface), 0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(var(--v-theme-surface), 1);
+  overflow: hidden;
 }
 
-.price-option-compact:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-color: rgba(var(--v-theme-primary), 0.3);
+.price-option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: rgba(var(--v-theme-primary), 0.4);
 }
 
-.price-option-compact.price-selected {
+.price-option-card.price-selected {
   border-color: rgb(var(--v-theme-primary)) !important;
-  background-color: rgba(var(--v-theme-primary), 0.05);
-  box-shadow: 0 2px 8px rgba(var(--v-theme-primary), 0.2);
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.08) 0%, rgba(var(--v-theme-primary), 0.03) 100%);
+  box-shadow: 0 8px 25px rgba(var(--v-theme-primary), 0.25);
+}
+
+.discount-badge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  z-index: 2;
+}
+
+.discount-chip {
+  border-radius: 0 12px 0 12px !important;
+}
+
+.price-content {
+  text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .price-period {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: rgba(var(--v-theme-on-surface), 0.7);
-  margin-bottom: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(var(--v-theme-on-surface), 0.8);
+  margin-bottom: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
-.price-amount {
-  font-size: 1.125rem;
+.price-display {
+  margin-bottom: 12px;
+}
+
+.price-comparison {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.original-price {
+  font-size: 0.875rem;
+  color: rgba(var(--v-theme-on-surface), 0.5);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.current-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgb(var(--v-theme-primary));
+  line-height: 1.2;
+}
+
+.current-price-only {
+  font-size: 1.5rem;
   font-weight: 700;
   color: rgba(var(--v-theme-on-surface), 0.9);
-  margin-bottom: 2px;
+  line-height: 1.2;
 }
 
 .price-unit {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: rgba(var(--v-theme-on-surface), 0.6);
-  margin-bottom: 6px;
+  margin-top: 4px;
+  font-weight: 500;
 }
 
-.price-discount {
+.recommended-badge {
+  margin-top: 8px;
+}
+
+.selected-indicator {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+}
+
+/* 自动续费卡片样式 */
+.auto-renewal-card {
+  border: 2px solid rgba(var(--v-theme-success), 0.2);
+  background: linear-gradient(135deg, rgba(var(--v-theme-success), 0.05) 0%, rgba(var(--v-theme-success), 0.02) 100%);
+}
+
+.auto-renewal-card:hover {
+  border-color: rgba(var(--v-theme-success), 0.4);
+  box-shadow: 0 4px 12px rgba(var(--v-theme-success), 0.15);
+}
+
+/* 折扣活动提示样式 */
+.discount-activity-badge {
+  animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  from {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  to {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .price-options-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  
+  .price-option-card {
+    padding: 16px 12px;
+  }
+  
+  .current-price, .current-price-only {
+    font-size: 1.25rem;
+  }
 }
 </style>
