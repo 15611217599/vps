@@ -108,12 +108,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
 
-  {
-    path: '/server-install-progress/:serverId',
-    name: 'ServerInstallProgress',
-    component: () => import('../views/ServerInstallProgressView.vue'),
-    meta: { requiresAuth: true }
-  },
+
   {
     path: '/profile',
     name: 'Profile',

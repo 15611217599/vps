@@ -290,7 +290,6 @@ import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 import HomeLayout from '@/components/HomeLayout.vue'
-import ServerInstallDialog from '@/components/ServerInstallDialog.vue'
 import { orderApi, type OrderDTO } from '@/api/order'
 const themeStore = useThemeStore()
 const router = useRouter()

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +21,7 @@ import com.vps.vpsserver.dto.ApiResponse;
 import com.vps.vpsserver.dto.CreatePaymentRequest;
 import com.vps.vpsserver.dto.PaymentResponse;
 import com.vps.vpsserver.entity.PaymentOrder;
+import com.vps.vpsserver.entity.User;
 import com.vps.vpsserver.service.PaymentService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,12 +41,11 @@ public class PaymentController {
     public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(
             @RequestBody CreatePaymentRequest request,
             HttpServletRequest httpRequest,
-            Authentication authentication) {
+            @AuthenticationPrincipal User user) {
         
-        Long userId = getUserIdFromAuthentication(authentication);
         String clientIp = getClientIp(httpRequest);
         
-        PaymentResponse response = paymentService.createPayment(request, userId, clientIp);
+        PaymentResponse response = paymentService.createPayment(request, user.getId(), clientIp);
         
         if (response.getCode() == 1) {
             return ResponseEntity.ok(ApiResponse.success(response));
@@ -95,7 +95,7 @@ public class PaymentController {
     @GetMapping("/order/{outTradeNo}")
     public ResponseEntity<ApiResponse<PaymentOrder>> getPaymentOrder(
             @PathVariable String outTradeNo,
-            Authentication authentication) {
+            @AuthenticationPrincipal User user) {
         
         PaymentOrder paymentOrder = paymentService.getPaymentOrder(outTradeNo);
         return ResponseEntity.ok(ApiResponse.success(paymentOrder));
@@ -105,20 +105,15 @@ public class PaymentController {
     public ResponseEntity<ApiResponse<Page<PaymentOrder>>> getUserPaymentOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Authentication authentication) {
+            @AuthenticationPrincipal User user) {
         
-        Long userId = getUserIdFromAuthentication(authentication);
         Pageable pageable = PageRequest.of(page, size);
-        Page<PaymentOrder> orders = paymentService.getUserPaymentOrders(userId, pageable);
+        Page<PaymentOrder> orders = paymentService.getUserPaymentOrders(user.getId(), pageable);
         
         return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
-    private Long getUserIdFromAuthentication(Authentication authentication) {
-        // 这里需要根据你的用户认证实现来获取用户ID
-        // 暂时返回1作为示例，实际使用时需要修改
-        return 1L;
-    }
+
 
     private String getClientIp(HttpServletRequest request) {
         String xForwardedFor = request.getHeader("X-Forwarded-For");

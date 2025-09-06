@@ -50,14 +50,6 @@ public class ServerResponseDTO {
         this.username = server.getUsername();
         this.password = server.getPassword();
         this.isSold = server.getIsSold();
-        
-        // 设置安装状态信息
-        this.installStatus = server.getInstallStatus() != null ? server.getInstallStatus().name() : "NONE";
-        this.installProgress = server.getInstallProgress();
-        this.installStep = server.getInstallStep();
-        this.installError = server.getInstallError();
-        this.installStartedAt = server.getInstallStartedAt();
-        
         // 设置分组信息
         if (server.getGroup() != null) {
             this.groupId = server.getGroup().getId();

@@ -22,8 +22,8 @@ import com.vps.vpsserver.repository.PriceGroupRepository;
 import com.vps.vpsserver.repository.ServerRepository;
 import com.vps.vpsserver.repository.WalletRepository;
 import com.vps.vpsserver.service.OrderService;
-import com.vps.vpsserver.service.ServerInstallService;
 import com.vps.vpsserver.service.TransactionService;
+import com.vps.vpsserver.service.ServerInstallService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
             assignedServer.setIsSold(true);
             serverRepository.save(assignedServer);
             
-            // 自动触发操作系统安装
+            // 自动触发操作系统安装（仅触发，不记录进度）
             try {
                 log.info("订单创建成功，开始自动安装操作系统。订单号: {}, 服务器ID: {}", order.getOrderNumber(), assignedServer.getId());
                 
