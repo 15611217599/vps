@@ -1,46 +1,37 @@
 <template>
   <HomeLayout>
-    <UnifiedPageHeader 
-      title="账户充值" 
-      subtitle="为您的账户充值余额，支持多种支付方式"
-    />
+    <v-container class="py-8">
+      <!-- 页面标题 -->
+      <div class="text-center mb-8">
+        <div class="d-flex justify-center mb-4">
+          <v-avatar size="80" color="primary" variant="tonal">
+            <v-icon size="40">mdi-credit-card-plus</v-icon>
+          </v-avatar>
+        </div>
+        <h1 class="text-h3 font-weight-bold mb-2">账户充值</h1>
+        <p class="text-h6 text-medium-emphasis">为您的账户充值余额，支持多种支付方式</p>
+      </div>
 
-    <v-container>
       <v-row>
         <!-- 充值表单 -->
         <v-col cols="12" md="8">
-          <v-card>
-            <v-card-title>
-              <v-icon class="me-2">mdi-credit-card</v-icon>
-              充值信息
+          <v-card elevation="2" class="rounded-lg">
+            <v-card-title class="pa-6 pb-4">
+              <div class="d-flex align-center">
+                <v-icon class="me-3" color="primary">mdi-credit-card</v-icon>
+                <span class="text-h5">充值信息</span>
+              </div>
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="pa-6 pt-0">
               <v-form ref="form" v-model="valid">
                 <!-- 充值金额 -->
-                <v-text-field
-                  v-model="rechargeForm.money"
-                  label="充值金额"
-                  type="number"
-                  step="0.01"
-                  min="1"
-                  max="10000"
-                  prefix="¥"
-                  :rules="moneyRules"
-                  required
-                  variant="outlined"
-                  class="mb-4"
-                />
+                <v-text-field v-model="rechargeForm.money" label="充值金额" type="number" step="0.01" min="1" max="10000"
+                  prefix="¥" :rules="moneyRules" required variant="outlined" class="mb-4" />
 
                 <!-- 快捷金额 -->
                 <div class="mb-4">
                   <v-chip-group v-model="selectedAmount" @update:model-value="selectAmount">
-                    <v-chip
-                      v-for="amount in quickAmounts"
-                      :key="amount"
-                      :value="amount"
-                      variant="outlined"
-                      filter
-                    >
+                    <v-chip v-for="amount in quickAmounts" :key="amount" :value="amount" variant="outlined" filter>
                       ¥{{ amount }}
                     </v-chip>
                   </v-chip-group>
@@ -51,26 +42,13 @@
                   <v-label class="text-subtitle-2 mb-2">选择支付方式</v-label>
                   <v-radio-group v-model="rechargeForm.type" :rules="typeRules">
                     <v-row>
-                      <v-col
-                        v-for="method in paymentMethods"
-                        :key="method.code"
-                        cols="6"
-                        sm="4"
-                        md="3"
-                      >
-                        <v-card
-                          :class="{ 'border-primary': rechargeForm.type === method.code }"
-                          variant="outlined"
-                          @click="rechargeForm.type = method.code"
-                          style="cursor: pointer"
-                        >
+                      <v-col v-for="method in paymentMethods" :key="method.code" cols="6" sm="4" md="3">
+                        <v-card :class="{ 'border-primary': rechargeForm.type === method.code }" variant="outlined"
+                          @click="rechargeForm.type = method.code" style="cursor: pointer">
                           <v-card-text class="text-center pa-3">
                             <v-icon :icon="method.icon" size="32" class="mb-2" />
                             <div class="text-caption">{{ method.name }}</div>
-                            <v-radio
-                              :value="method.code"
-                              class="d-none"
-                            />
+                            <v-radio :value="method.code" class="d-none" />
                           </v-card-text>
                         </v-card>
                       </v-col>
@@ -79,24 +57,11 @@
                 </div>
 
                 <!-- 充值说明 -->
-                <v-textarea
-                  v-model="rechargeForm.name"
-                  label="充值说明（可选）"
-                  placeholder="请输入充值说明"
-                  variant="outlined"
-                  rows="2"
-                  class="mb-4"
-                />
+                <v-textarea v-model="rechargeForm.name" label="充值说明（可选）" placeholder="请输入充值说明" variant="outlined"
+                  rows="2" class="mb-4" />
 
                 <!-- 提交按钮 -->
-                <v-btn
-                  :loading="loading"
-                  :disabled="!valid"
-                  color="primary"
-                  size="large"
-                  block
-                  @click="submitRecharge"
-                >
+                <v-btn :loading="loading" :disabled="!valid" color="primary" size="large" block @click="submitRecharge">
                   <v-icon class="me-2">mdi-credit-card-plus</v-icon>
                   立即充值
                 </v-btn>
@@ -111,12 +76,14 @@
           <WalletCard class="mb-4" />
 
           <!-- 充值说明 -->
-          <v-card>
-            <v-card-title>
-              <v-icon class="me-2">mdi-information</v-icon>
-              充值说明
+          <v-card elevation="2" class="rounded-lg">
+            <v-card-title class="pa-6 pb-4">
+              <div class="d-flex align-center">
+                <v-icon class="me-3" color="info">mdi-information</v-icon>
+                <span class="text-h6">充值说明</span>
+              </div>
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="pa-6 pt-0">
               <v-list density="compact">
                 <v-list-item>
                   <v-list-item-title>
@@ -165,16 +132,10 @@
                 请使用{{ getPaymentMethodName(rechargeForm.type) }}扫描二维码完成支付
               </p>
             </div>
-            
+
             <!-- 跳转支付 -->
             <div v-else-if="paymentResponse.payUrl" class="mb-4">
-              <v-btn
-                :href="paymentResponse.payUrl"
-                target="_blank"
-                color="primary"
-                size="large"
-                block
-              >
+              <v-btn :href="paymentResponse.payUrl" target="_blank" color="primary" size="large" block>
                 <v-icon class="me-2">mdi-open-in-new</v-icon>
                 前往支付
               </v-btn>
@@ -184,7 +145,7 @@
             </div>
 
             <v-divider class="my-4" />
-            
+
             <div class="text-body-2">
               <p><strong>订单号：</strong>{{ paymentResponse.outTradeNo }}</p>
               <p><strong>支付金额：</strong>¥{{ rechargeForm.money }}</p>
@@ -206,7 +167,6 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import HomeLayout from '@/components/HomeLayout.vue'
-import UnifiedPageHeader from '@/components/UnifiedPageHeader.vue'
 import WalletCard from '@/components/WalletCard.vue'
 import { paymentApi, type CreatePaymentRequest, type PaymentResponse } from '@/api/payment'
 import { useNotification } from '@/composables/useNotification'
@@ -269,17 +229,17 @@ const submitRecharge = async () => {
   loading.value = true
   try {
     const response = await paymentApi.createPayment(rechargeForm)
-    
+
     if (response.data.code === 1) {
       paymentResponse.value = response.data
       paymentDialog.value = true
-      
+
       // 如果有二维码，生成二维码图片
       if (response.data.qrCode) {
         await nextTick()
         await generateQRCode(response.data.qrCode)
       }
-      
+
       showSuccess('支付订单创建成功，请完成支付')
     } else {
       showError(response.data.msg || '创建支付订单失败')
@@ -294,7 +254,7 @@ const submitRecharge = async () => {
 // 生成二维码
 const generateQRCode = async (text: string) => {
   if (!qrCodeContainer.value) return
-  
+
   try {
     const canvas = document.createElement('canvas')
     await QRCode.toCanvas(canvas, text, {
@@ -305,7 +265,7 @@ const generateQRCode = async (text: string) => {
         light: '#FFFFFF'
       }
     })
-    
+
     qrCodeContainer.value.innerHTML = ''
     qrCodeContainer.value.appendChild(canvas)
   } catch (error) {
@@ -316,10 +276,10 @@ const generateQRCode = async (text: string) => {
 // 检查支付状态
 const checkPaymentStatus = async () => {
   if (!paymentResponse.value) return
-  
+
   try {
     const response = await paymentApi.getPaymentOrder(paymentResponse.value.outTradeNo)
-    
+
     if (response.data.status === 'SUCCESS') {
       showSuccess('支付成功！余额已到账')
       closePaymentDialog()

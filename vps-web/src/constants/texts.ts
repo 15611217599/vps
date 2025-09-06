@@ -43,7 +43,8 @@ export const TEXTS = {
     itemsPerPage: '每页显示',
     noData: '暂无数据',
     noSearchResults: '未找到匹配的结果',
-    item: '项目'
+    item: '项目',
+    total: '总计'
   },
 
   // 导航菜单
@@ -478,6 +479,41 @@ export const TEXTS = {
     title: '订单管理',
     searchPlaceholder: '搜索订单...',
     orderDetails: '订单详情'
+  },
+
+  // 支付记录
+  payment: {
+    title: '支付记录',
+    list: '支付记录列表',
+    searchPlaceholder: '搜索支付记录...',
+    orderNumber: '订单号',
+    amount: '支付金额',
+    paymentMethod: '支付方式',
+    status: '支付状态',
+    productName: '商品名称',
+    createdAt: '创建时间',
+    completedAt: '完成时间',
+    thirdPartyOrderNo: '第三方订单号',
+    clientIp: '客户端IP',
+    device: '设备信息',
+    paymentDetails: '支付详情',
+    checkStatus: '检查状态',
+    
+    // 状态
+    statusPending: '待支付',
+    statusSuccess: '支付成功',
+    statusFailed: '支付失败',
+    statusCancelled: '已取消',
+    
+    // 统计
+    successfulPayments: '成功支付',
+    pendingPayments: '待支付',
+    failedPayments: '失败支付',
+    totalPayments: '总支付数',
+    
+    // 空状态
+    noPayments: '暂无支付记录',
+    noPaymentsDesc: '您还没有任何支付记录'
   }
 }
 

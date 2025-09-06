@@ -25,7 +25,7 @@
             density="compact"
             clearable
             :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
-            @update:model-value="loadOrders"
+            @update:model-value="filterOrders"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -37,7 +37,7 @@
             density="compact"
             clearable
             :menu-props="{ maxHeight: '300px', zIndex: 9999 }"
-            @update:model-value="loadOrders"
+            @update:model-value="filterOrders"
           />
         </v-col>
         <v-col cols="12" md="2">
@@ -56,12 +56,6 @@
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
           <span>{{ TEXTS.order.list }}</span>
-          <v-chip
-            :color="orders.length > 0 ? 'primary' : 'default'"
-            variant="tonal"
-          >
-            {{ TEXTS.common.total }}: {{ totalItems }}
-          </v-chip>
         </v-card-title>
 
         <v-data-table-server
@@ -69,12 +63,8 @@
           v-model:page="currentPage"
           :headers="headers"
           :items="orders"
-          :items-length="totalItems"
           :loading="loading"
-          :search="searchQuery"
-          class="elevation-0"
-          @update:options="loadOrders"
-        >
+          class="elevation-0">
           <!-- 订单号列 -->
           <template #item.orderNumber="{ item }">
             <v-chip
@@ -383,6 +373,7 @@ interface Order {
 
 // 响应式数据
 const orders = ref<Order[]>([])
+const allOrders = ref<Order[]>([]) // 存储所有订单数据
 const loading = ref(false)
 const searchQuery = ref('')
 const statusFilter = ref('')
@@ -430,7 +421,7 @@ const billingPeriodOptions = computed(() => [
 // 防抖搜索
 const debouncedSearch = debounce(() => {
   currentPage.value = 1
-  loadOrders()
+  filterOrders()
 }, 500)
 
 // 加载订单列表
@@ -439,8 +430,8 @@ const loadOrders = async () => {
   try {
     const response = await orderApi.getUserOrders()
     if (response.success) {
-      orders.value = response.data || []
-      totalItems.value = response.data?.length || 0
+      allOrders.value = response.data || []
+      filterOrders() // 加载完成后应用筛选
     } else {
       showNotification(response.message || '加载订单失败', 'error')
     }
@@ -452,13 +443,43 @@ const loadOrders = async () => {
   }
 }
 
+// 筛选订单
+const filterOrders = () => {
+  let filtered = [...allOrders.value]
+  
+  // 搜索筛选
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim()
+    filtered = filtered.filter(order => 
+      order.orderNumber.toLowerCase().includes(query) ||
+      (order.serverName && order.serverName.toLowerCase().includes(query)) ||
+      order.amount.toString().includes(query)
+    )
+  }
+  
+  // 状态筛选
+  if (statusFilter.value) {
+    filtered = filtered.filter(order => order.status === statusFilter.value)
+  }
+  
+  // 计费周期筛选
+  if (billingPeriodFilter.value) {
+    filtered = filtered.filter(order => order.billingPeriod === billingPeriodFilter.value)
+  }
+  
+  orders.value = filtered
+  totalItems.value = filtered.length
+}
+
+
+
 // 重置筛选条件
 const resetFilters = () => {
   searchQuery.value = ''
   statusFilter.value = ''
   billingPeriodFilter.value = ''
   currentPage.value = 1
-  loadOrders()
+  filterOrders()
 }
 
 // 查看订单详情
