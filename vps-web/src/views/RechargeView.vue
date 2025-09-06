@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <UnifiedPageHeader 
       title="账户充值" 
       subtitle="为您的账户充值余额，支持多种支付方式"
@@ -199,13 +199,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import UnifiedPageHeader from '@/components/UnifiedPageHeader.vue'
 import WalletCard from '@/components/WalletCard.vue'
 import { paymentApi, type CreatePaymentRequest, type PaymentResponse } from '@/api/payment'

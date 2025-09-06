@@ -1,5 +1,5 @@
 <template>
-  <GuestLayout>
+  <HomeLayout>
       <v-container fluid class="fill-height forgot-password-bg pa-4">
         <v-row justify="center" align="center" class="fill-height ma-0">
           <v-col cols="12" sm="8" md="6" lg="4" class="pa-2">
@@ -199,7 +199,7 @@
           </v-col>
         </v-row>
       </v-container>
-  </GuestLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
@@ -208,7 +208,7 @@ import { reactive, ref, computed, onMounted, onUnmounted } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
-import GuestLayout from '@/components/GuestLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import { TEXTS } from '@/constants/texts'
 const themeStore = useThemeStore()
 const router = useRouter()

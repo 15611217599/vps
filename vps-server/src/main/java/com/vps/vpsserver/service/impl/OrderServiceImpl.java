@@ -5,14 +5,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.vps.vpsserver.dto.ServerInstallRequest;
-import com.vps.vpsserver.service.ServerInstallService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.vps.vpsserver.dto.CreateOrderRequest;
 import com.vps.vpsserver.dto.OrderDTO;
+import com.vps.vpsserver.dto.ServerInstallRequest;
 import com.vps.vpsserver.entity.Order;
 import com.vps.vpsserver.entity.PriceGroup;
 import com.vps.vpsserver.entity.Server;
@@ -24,9 +22,11 @@ import com.vps.vpsserver.repository.PriceGroupRepository;
 import com.vps.vpsserver.repository.ServerRepository;
 import com.vps.vpsserver.repository.WalletRepository;
 import com.vps.vpsserver.service.OrderService;
+import com.vps.vpsserver.service.ServerInstallService;
 import com.vps.vpsserver.service.TransactionService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -303,6 +303,34 @@ public class OrderServiceImpl implements OrderService {
 
         // 返回第一个可用的服务器
         return availableServers.getFirst();
+    }
+
+    @Override
+    @Transactional
+    public OrderDTO updateAutoRenewal(Long orderId, Boolean autoRenewal, User user) {
+        // 查找订单
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("订单不存在"));
+        
+        // 验证订单所有者
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("无权限操作此订单");
+        }
+        
+        // 只有活跃状态的订单才能修改自动续费设置
+        if (order.getStatus() != Order.OrderStatus.ACTIVE && order.getStatus() != Order.OrderStatus.PAID) {
+            throw new RuntimeException("只有活跃状态的订单才能修改自动续费设置");
+        }
+
+        // 更新自动续费设置
+        order.setAutoRenewal(autoRenewal);
+        order.setUpdatedAt(LocalDateTime.now());
+
+        Order savedOrder = orderRepository.save(order);
+
+        log.info("订单 {} 的自动续费设置已更新为: {}", orderId, autoRenewal);
+
+        return convertToDTO(savedOrder);
     }
 
     private OrderDTO convertToDTO(Order order) {

@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <v-container class="d-flex justify-center align-center" style="min-height: 60vh;">
       <v-card max-width="500" class="text-center">
         <v-card-text class="pa-8">
@@ -57,13 +57,13 @@
         </v-card-text>
       </v-card>
     </v-container>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import { paymentApi, type PaymentOrder } from '@/api/payment'
 
 const route = useRoute()

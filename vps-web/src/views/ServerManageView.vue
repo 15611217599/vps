@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <v-container class="py-8">
       <!-- 服务器基本信息 -->
       <v-card elevation="2" class="mb-6">
@@ -367,7 +367,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
@@ -375,7 +375,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useThemeStore } from '@/stores/theme'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import { orderApi, type OrderDTO } from '@/api/order'
 
 const route = useRoute()

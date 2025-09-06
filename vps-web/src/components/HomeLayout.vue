@@ -1,12 +1,12 @@
 <template>
   <v-app :theme="themeStore.currentTheme">
-    <!-- 统一顶部栏 - 访客模式 -->
-    <UnifiedTopBar :is-guest="true" />
-    
+    <!-- 首页顶部导航 -->
+    <HomeTopNavigation />
+
     <v-main class="main-content">
       <slot />
     </v-main>
-    
+
     <!-- 固定底部栏 -->
     <FixedFooter />
   </v-app>
@@ -16,10 +16,12 @@
 import { onMounted, watch } from 'vue'
 import { useTheme } from 'vuetify'
 import { useThemeStore } from '@/stores/theme'
-import UnifiedTopBar from './UnifiedTopBar.vue'
-import FixedFooter from './FixedFooter.vue'
+import { useAuthStore } from '@/stores/auth'
+import HomeTopNavigation from '@/components/HomeTopNavigation.vue'
+import FixedFooter from '@/components/FixedFooter.vue'
 
 const themeStore = useThemeStore()
+const authStore = useAuthStore()
 const vuetifyTheme = useTheme()
 
 // 应用主题到Vuetify
@@ -46,6 +48,7 @@ watch(
 )
 
 onMounted(() => {
+  authStore.getProfile()
   applyThemeToVuetify()
 })
 </script>
@@ -53,9 +56,8 @@ onMounted(() => {
 <style scoped>
 .main-content {
   /* 为固定顶部栏和底部栏留出空间 */
-  padding-top: 56px; /* 56px (UnifiedTopBar - 访客模式) */
+  padding-top: 64px; /* 64px (HomeTopNavigation) */
   padding-bottom: 60px; /* 60px (FixedFooter) */
-  /* 移除最小高度设置，让内容自然撑开 */
   background-color: transparent !important;
 }
 </style>

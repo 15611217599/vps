@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="jdbc:h2:mem:rabbitvpsdb [DEBUG]" group="​VpsServerApplication" uuid="ad6285f7-eb5b-4ab9-9e14-a84d4af1770d">
+    <data-source source="LOCAL" name="jdbc:h2:mem:rabbitvpsdb [DEBUG]" group="​VpsServerApplication" uuid="1414f564-e5b0-40a8-ada4-6245d1077296">
+      <driver-ref>h2.unified</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>org.h2.Driver</jdbc-driver>
+      <jdbc-url>jdbc:h2:mem:rabbitvpsdb</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="jdbc:h2:mem:rabbitvpsdb [DEBUG]" group="​VpsServerApplication" uuid="5ccb9c6a-0ec1-4757-ab44-e077937739b8">
       <driver-ref>h2.unified</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

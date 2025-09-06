@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <div class="sales-page">
       <v-container fluid class="pa-0">
         <v-row no-gutters>
@@ -197,7 +197,7 @@
 
     <!-- 联系我们弹窗 -->
     <ContactDialog v-model="showContactDialog" />
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script>
@@ -207,19 +207,21 @@ import { getLocalizedActiveCategories } from '@/api/category'
 import { serverGroupApi } from '@/api/serverGroup'
 import { priceGroupApi } from '@/api/priceGroup'
 import { getServersByGroupId } from '@/api/server'
-import PageLayout from '@/components/PageLayout.vue'
+import { useNotification } from '@/composables/useNotification'
+import HomeLayout from '@/components/HomeLayout.vue'
 import ServerDetailsCard from '@/components/sales/ServerDetailsCard.vue'
 import ContactDialog from '@/components/ContactDialog.vue'
 
 export default {
   name: 'SalesView',
   components: {
-    PageLayout,
+    HomeLayout,
     ServerDetailsCard,
     ContactDialog
   },
   setup() {
-    // 移除国际化
+    // 通知功能
+    const { showNotification } = useNotification()
 
     // 响应式数据
     const loading = ref(false)
@@ -371,9 +373,19 @@ export default {
           fetchServerGroups(),
           fetchPriceGroups()
         ])
-        // 默认展开第一个分类
+        
+        // 默认展开第一个分类并选择第一个服务器分组
         if (categories.value.length > 0) {
-          expandedCategories.value.push(categories.value[0].id)
+          const firstCategory = categories.value[0]
+          expandedCategories.value.push(firstCategory.id)
+          
+          // 等待一下确保serverGroups已加载，然后选择第一个分组
+          setTimeout(() => {
+            const firstGroup = getGroupsByCategory(firstCategory.id)[0]
+            if (firstGroup) {
+              selectServerGroup(firstGroup)
+            }
+          }, 100)
         }
       } finally {
         loading.value = false

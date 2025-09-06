@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <UnifiedPageHeader 
       title="支付记录" 
       subtitle="查看您的充值和支付历史记录"
@@ -113,12 +113,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import UnifiedPageHeader from '@/components/UnifiedPageHeader.vue'
 import UnifiedDataTable from '@/components/UnifiedDataTable.vue'
 import StatusChip from '@/components/StatusChip.vue'

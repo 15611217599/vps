@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <v-container fluid>
       <!-- 搜索和筛选 -->
       <v-row class="mb-4">
@@ -302,7 +302,7 @@
         :type="notificationState.type"
       />
     </v-container>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
@@ -311,7 +311,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { transactionApi, type TransactionDTO } from '@/api/transaction'
 import { useNotification } from '@/composables/useNotification'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
 import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
 import { TEXTS } from '@/constants/texts'

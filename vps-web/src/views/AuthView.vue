@@ -1,19 +1,19 @@
 <template>
-  <GuestLayout>
+  <HomeLayout>
     <div class="auth-main">
       <transition name="form-switch" mode="out-in">
         <LoginForm v-if="mode === 'login'" key="login" @switch-mode="switchMode" />
         <RegisterForm v-else key="register" @switch-mode="switchMode" />
       </transition>
     </div>
-  </GuestLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import LoginForm from '../components/LoginForm.vue'
 import RegisterForm from '../components/RegisterForm.vue'
-import GuestLayout from '../components/GuestLayout.vue'
+import HomeLayout from '../components/HomeLayout.vue'
 
 const mode = ref<'login' | 'register'>('login')
 

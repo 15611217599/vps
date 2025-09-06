@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <v-container class="py-6">
       <!-- 价格组列表 -->
     <v-card>
@@ -660,7 +660,7 @@
       :type="notificationState.type"
     />
     </v-container>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script>
@@ -668,7 +668,7 @@ import { ref, reactive, onMounted, computed } from 'vue'
 
 import { priceGroupApi } from '@/api/priceGroup'
 import { serverGroupApi } from '@/api/serverGroup'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import UnifiedDialog from '@/components/UnifiedDialog.vue'
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
 import NotificationSnackbar from '@/components/NotificationSnackbar.vue'
@@ -679,7 +679,7 @@ import { TEXTS } from '@/constants/texts'
 export default {
   name: 'PriceGroupView',
   components: {
-    PageLayout,
+    HomeLayout,
     UnifiedDialog,
     ConfirmDeleteDialog,
     NotificationSnackbar

@@ -1,17 +1,27 @@
 package com.vps.vpsserver.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vps.vpsserver.dto.ApiResponse;
 import com.vps.vpsserver.dto.CreateOrderRequest;
 import com.vps.vpsserver.dto.OrderDTO;
-import com.vps.vpsserver.dto.ApiResponse;
 import com.vps.vpsserver.entity.Order;
 import com.vps.vpsserver.entity.User;
 import com.vps.vpsserver.service.OrderService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -102,6 +112,32 @@ public class OrderController {
             return ResponseEntity.ok(ApiResponse.success(order, "订单支付成功"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/auto-renewal")
+    public ResponseEntity<ApiResponse<OrderDTO>> updateAutoRenewal(
+            @PathVariable Long id,
+            @RequestBody UpdateAutoRenewalRequest request,
+            @AuthenticationPrincipal User user) {
+        try {
+            OrderDTO order = orderService.updateAutoRenewal(id, request.getAutoRenewal(), user);
+            return ResponseEntity.ok(ApiResponse.success(order, "自动续费设置更新成功"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    // 内部类用于接收自动续费请求
+    public static class UpdateAutoRenewalRequest {
+        private Boolean autoRenewal;
+
+        public Boolean getAutoRenewal() {
+            return autoRenewal;
+        }
+
+        public void setAutoRenewal(Boolean autoRenewal) {
+            this.autoRenewal = autoRenewal;
         }
     }
 }

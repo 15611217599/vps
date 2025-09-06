@@ -1,5 +1,5 @@
 <template>
-  <GuestLayout>
+  <HomeLayout>
     <div class="homepage">
       <!-- Hero Section -->
       <section class="hero-section">
@@ -215,13 +215,13 @@
 
     <!-- Contact Dialog -->
     <ContactDialog v-model="showContactDialog" />
-  </GuestLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import GuestLayout from '@/components/GuestLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import ContactDialog from '@/components/ContactDialog.vue'
 
 const router = useRouter()

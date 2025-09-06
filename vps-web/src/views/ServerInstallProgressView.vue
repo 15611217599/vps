@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <v-container>
       <v-row justify="center">
         <v-col cols="12" md="8">
@@ -165,7 +165,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
@@ -173,7 +173,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { installApi, type ServerInstallStatus } from '@/api/install'
 import { useNotification } from '@/composables/useNotification'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 
 const route = useRoute()
 const router = useRouter()

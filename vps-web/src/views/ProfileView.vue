@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <v-container class="py-6">
       <v-row justify="center">
         <v-col cols="12" md="10" lg="8" xl="6">
@@ -207,7 +207,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
@@ -215,7 +215,7 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useThemeStore } from '@/stores/theme'
 import { TEXTS } from '@/constants/texts'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import WalletCard from '@/components/WalletCard.vue'
 import RechargeCard from '@/components/RechargeCard.vue'
 

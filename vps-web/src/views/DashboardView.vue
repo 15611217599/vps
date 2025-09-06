@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <HomeLayout>
     <v-container class="py-8">
       <!-- 统计概览 -->
       <v-row class="mb-6">
@@ -282,14 +282,14 @@
       :server-id="selectedServerId"
       @installed="onInstallComplete"
     />
-  </PageLayout>
+  </HomeLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
-import PageLayout from '@/components/PageLayout.vue'
+import HomeLayout from '@/components/HomeLayout.vue'
 import ServerInstallDialog from '@/components/ServerInstallDialog.vue'
 import { orderApi, type OrderDTO } from '@/api/order'
 const themeStore = useThemeStore()

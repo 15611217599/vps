@@ -35,18 +35,35 @@ apiClient.interceptors.response.use(
     return response
   },
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status
+
+    if (status === 401) {
       // Token过期或无效，清除本地存储并跳转到登录页
+      console.log('401 Unauthorized: Token过期或无效，跳转到登录页')
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       window.location.href = '/auth'
+    } else if (status === 403) {
+      // 权限不足，检查是否有token
+      const token = localStorage.getItem('token')
+      /* if (token) {
+        // 有token但权限不足，可能是token过期或权限变更，清除并跳转登录
+        console.log('403 Forbidden: 权限不足，清除token并跳转到登录页')
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        window.location.href = '/auth'
+      } else {
+        // 没有token的403错误，直接跳转登录页
+        console.log('403 Forbidden: 未登录访问受保护资源，跳转到登录页')
+        window.location.href = '/auth'
+      } */
     }
-    
+
     // 提取后端错误信息
     if (error.response?.data?.message) {
       error.message = error.response.data.message
     }
-    
+
     return Promise.reject(error)
   }
 )

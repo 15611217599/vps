@@ -1,5 +1,5 @@
 <template>
-    <PageLayout>
+    <HomeLayout>
       <v-container class="py-6">
         <!-- 分组列表 -->
         <v-card>
@@ -108,7 +108,7 @@
           </v-data-table-server>
         </v-card>
       </v-container>
-    </PageLayout>
+    </HomeLayout>
   
     <!-- 添加/编辑对话框 -->
   <UnifiedDialog
@@ -253,7 +253,7 @@
   <script setup lang="ts">
   import { ref, reactive, onMounted, computed } from 'vue'
   
-  import PageLayout from '@/components/PageLayout.vue'
+  import HomeLayout from '@/components/HomeLayout.vue'
   import UnifiedDialog from '@/components/UnifiedDialog.vue'
   import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
   
