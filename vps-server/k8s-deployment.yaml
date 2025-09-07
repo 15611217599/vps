@@ -104,8 +104,8 @@ spec:
     spec:
       containers:
       - name: vps-server
-        image: vps-server:latest
-        imagePullPolicy: IfNotPresent
+        image: ghcr.io/administrator/vps-server:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
           name: http
