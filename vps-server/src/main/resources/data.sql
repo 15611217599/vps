@@ -1,7 +1,7 @@
 
 -- 插入管理员用户
-INSERT INTO users (username, email, password, created_at, updated_at) VALUES
-('admin', 'admin@rabbitvps.com', '$2a$10$BiRbd1FXyd9fMufi6bM9Su8XYGxGY3lnRGCiPt9bM4P3HmkQDL7TS', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO users (username, email, password, role, created_at, updated_at) VALUES
+('admin', 'admin@rabbitvps.com', '$2a$10$BiRbd1FXyd9fMufi6bM9Su8XYGxGY3lnRGCiPt9bM4P3HmkQDL7TS','ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 初始化管理员用户的空钱包
 INSERT INTO wallets (user_id, balance, currency, created_at, updated_at) VALUES

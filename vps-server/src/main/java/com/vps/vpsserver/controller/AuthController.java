@@ -44,7 +44,7 @@ public class AuthController {
             UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
             String token = jwtUtil.generateToken(userDetails);
 
-            return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getEmail()));
+            return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getEmail(), user.getRole().name()));
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
@@ -60,7 +60,7 @@ public class AuthController {
             String token = jwtUtil.generateToken(userDetails);
             User user = (User) userDetails;
 
-            return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getEmail()));
+            return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getEmail(), user.getRole().name()));
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
@@ -79,6 +79,7 @@ public class AuthController {
             Map<String, Object> profile = new HashMap<>();
             profile.put("username", user.getUsername());
             profile.put("email", user.getEmail());
+            profile.put("role", user.getRole().name());
             profile.put("createdAt", user.getCreatedAt());
 
             return ResponseEntity.ok(profile);
@@ -107,6 +108,7 @@ public class AuthController {
             Map<String, Object> profile = new HashMap<>();
             profile.put("username", updatedUser.getUsername());
             profile.put("email", updatedUser.getEmail());
+            profile.put("role", updatedUser.getRole().name());
             profile.put("createdAt", updatedUser.getCreatedAt());
 
             return ResponseEntity.ok(profile);

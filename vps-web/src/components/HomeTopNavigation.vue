@@ -208,28 +208,6 @@ const navigationItems = computed(() => {
       to: '/sales'
     },
     {
-      title: '服务器管理',
-      icon: 'mdi-server-network',
-      items: [
-        {
-          title: '服务器分类',
-          to: '/categories'
-        },
-        {
-          title: '服务器组',
-          to: '/groups'
-        },
-        {
-          title: '服务器',
-          to: '/servers'
-        },
-        {
-          title: '价格组',
-          to: '/price-groups'
-        }
-      ]
-    },
-    {
       title: '财务管理',
       icon: 'mdi-finance',
       items: [
@@ -253,7 +231,33 @@ const navigationItems = computed(() => {
     }
   ]
 
-  // 如果用户已登录，显示所有菜单项
+  // 仅管理员可见的服务器管理菜单
+  if (authStore.isAdmin) {
+    baseItems.splice(3, 0, {
+      title: '服务器管理',
+      icon: 'mdi-server-network',
+      items: [
+        {
+          title: '服务器分类',
+          to: '/categories'
+        },
+        {
+          title: '服务器组',
+          to: '/groups'
+        },
+        {
+          title: '服务器',
+          to: '/servers'
+        },
+        {
+          title: '价格组',
+          to: '/price-groups'
+        }
+      ]
+    })
+  }
+
+  // 如果用户已登录，显示相应菜单项
   if (authStore.isAuthenticated) {
     return baseItems
   }

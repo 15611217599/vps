@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -132,9 +133,10 @@ public class ServerController {
     }
 
     /**
-     * 创建服务器
+     * 创建服务器 - 仅限管理员
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createServer(@Valid @RequestBody ServerRequestDTO serverRequestDTO) {
         try {
             ServerResponseDTO createdServer = serverService.createServer(serverRequestDTO);
@@ -157,9 +159,10 @@ public class ServerController {
     }
 
     /**
-     * 更新服务器
+     * 更新服务器 - 仅限管理员
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateServer(@PathVariable Long id,
             @Valid @RequestBody ServerRequestDTO serverRequestDTO) {
         try {
@@ -183,9 +186,10 @@ public class ServerController {
     }
 
     /**
-     * 删除服务器
+     * 删除服务器 - 仅限管理员
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteServer(@PathVariable Long id) {
         try {
             serverService.deleteServer(id);
@@ -291,9 +295,10 @@ public class ServerController {
     }
 
     /**
-     * 创建服务器（带默认值）
+     * 创建服务器（带默认值）- 仅限管理员
      */
     @PostMapping("/with-defaults")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createServerWithDefaults(@Valid @RequestBody Map<String, Object> requestData) {
         try {
             // 创建带默认值的服务器请求DTO

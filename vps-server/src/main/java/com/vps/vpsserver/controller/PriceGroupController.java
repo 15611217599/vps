@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,9 +121,10 @@ public class PriceGroupController {
     }
 
     /**
-     * 创建价格组
+     * 创建价格组 - 仅限管理员
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createPriceGroup(@Valid @RequestBody PriceGroupDTO priceGroupDTO) {
         try {
             PriceGroupDTO createdPriceGroup = priceGroupService.createPriceGroup(priceGroupDTO);
@@ -142,9 +144,10 @@ public class PriceGroupController {
     }
 
     /**
-     * 更新价格组
+     * 更新价格组 - 仅限管理员
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updatePriceGroup(
             @PathVariable Long id, 
             @Valid @RequestBody PriceGroupDTO priceGroupDTO) {
@@ -166,9 +169,10 @@ public class PriceGroupController {
     }
 
     /**
-     * 删除价格组
+     * 删除价格组 - 仅限管理员
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deletePriceGroup(@PathVariable Long id) {
         try {
             priceGroupService.deletePriceGroup(id);
@@ -215,9 +219,10 @@ public class PriceGroupController {
     }
 
     /**
-     * 应用折扣
+     * 应用折扣 - 仅限管理员
      */
     @PostMapping("/{id}/apply-discount")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> applyDiscount(
             @PathVariable Long id,
             @RequestBody Map<String, Object> discountData) {
@@ -244,9 +249,10 @@ public class PriceGroupController {
     }
 
     /**
-     * 恢复原价
+     * 恢复原价 - 仅限管理员
      */
     @PostMapping("/{id}/restore-original-prices")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> restoreOriginalPrices(@PathVariable Long id) {
         try {
             PriceGroupDTO updatedPriceGroup = priceGroupService.restoreOriginalPrices(id);

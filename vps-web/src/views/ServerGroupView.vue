@@ -1,5 +1,11 @@
 <template>
-    <HomeLayout>
+  <div v-if="!authStore.isAdmin" class="d-flex justify-center align-center" style="height: 50vh;">
+    <v-alert type="error" variant="tonal" class="text-center">
+      <v-alert-title>访问被拒绝</v-alert-title>
+      <div>您没有权限访问此页面。只有管理员可以管理服务器分组。</div>
+    </v-alert>
+  </div>
+    <HomeLayout v-else>
       <v-container class="py-6">
         <!-- 分组列表 -->
         <v-card>
@@ -252,6 +258,7 @@
   
   <script setup lang="ts">
   import { ref, reactive, onMounted, computed } from 'vue'
+  import { useAuthStore } from '@/stores/auth'
   
   import HomeLayout from '@/components/HomeLayout.vue'
   import UnifiedDialog from '@/components/UnifiedDialog.vue'
@@ -259,6 +266,9 @@
   
   import { groupAPI, type ServerGroup } from '@/api/group'
   import { TEXTS } from '@/constants/texts'
+
+  // Auth store
+  const authStore = useAuthStore()
   
   // 响应式数据
   const groups = ref<ServerGroup[]>([])
@@ -357,7 +367,7 @@
   }
   
   // 防抖搜索
-  let searchTimeout: number
+  let searchTimeout: ReturnType<typeof setTimeout>
   const debouncedSearch = () => {
     clearTimeout(searchTimeout)
     searchTimeout = setTimeout(() => {

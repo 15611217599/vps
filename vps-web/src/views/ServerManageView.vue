@@ -1,5 +1,11 @@
 <template>
-  <HomeLayout>
+  <div v-if="!authStore.isAdmin" class="d-flex justify-center align-center" style="height: 50vh;">
+    <v-alert type="error" variant="tonal" class="text-center">
+      <v-alert-title>访问被拒绝</v-alert-title>
+      <div>您没有权限访问此页面。只有管理员可以管理服务器。</div>
+    </v-alert>
+  </div>
+  <HomeLayout v-else>
     <v-container class="py-8">
       <!-- 服务器仪表盘标题 -->
       <div class="d-flex align-center mb-6">
@@ -579,6 +585,7 @@ import { ref, computed, onMounted, defineComponent, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useThemeStore } from '@/stores/theme'
+import { useAuthStore } from '@/stores/auth'
 import HomeLayout from '@/components/HomeLayout.vue'
 import { orderApi } from '@/api/order'
 import { priceGroupApi } from '@/api/priceGroup'
@@ -599,6 +606,7 @@ interface ApiResponse<T> {
 const route = useRoute()
 const router = useRouter()
 const themeStore = useThemeStore()
+const authStore = useAuthStore()
 
 // 响应式数据
 const order = ref<any>(null)
@@ -746,7 +754,9 @@ const loadMonitoringData = async () => {
   
   try {
     const response = await serverManagementApi.getMonitoring(server.value.id)
-    monitoring.value = response.data
+    // 根据API响应结构正确提取数据
+    monitoring.value = (response as any).data?.data || (response as any).data
+    console.log('监控数据已加载:', monitoring.value)
   } catch (error) {
     console.error('加载监控数据失败:', error)
     // 设置默认监控数据

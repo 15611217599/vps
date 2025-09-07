@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,9 +121,10 @@ public class ServerCategoryController {
     }
 
     /**
-     * 创建新类别
+     * 创建新类别 - 仅限管理员
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createCategory(@Valid @RequestBody ServerCategoryDTO categoryDTO) {
         try {
             ServerCategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
@@ -142,9 +144,10 @@ public class ServerCategoryController {
     }
 
     /**
-     * 更新类别
+     * 更新类别 - 仅限管理员
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateCategory(
             @PathVariable Long id,
             @Valid @RequestBody ServerCategoryDTO categoryDTO) {
@@ -166,9 +169,10 @@ public class ServerCategoryController {
     }
 
     /**
-     * 删除类别
+     * 删除类别 - 仅限管理员
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable Long id) {
         try {
             categoryService.deleteCategory(id);

@@ -4,12 +4,15 @@ import com.vps.vpsserver.dto.*;
 import com.vps.vpsserver.entity.Order;
 import com.vps.vpsserver.entity.Server;
 import com.vps.vpsserver.entity.Server.ServerStatus;
+import com.vps.vpsserver.entity.User;
 import com.vps.vpsserver.repository.OrderRepository;
 import com.vps.vpsserver.repository.ServerRepository;
 import com.vps.vpsserver.service.ServerManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -30,10 +33,13 @@ public class ServerManagementController {
     private final OrderRepository orderRepository;
     
     /**
-     * 执行服务器操作
+     * 执行服务器操作 - 仅限管理员
      */
     @PostMapping("/action")
-    public ResponseEntity<ApiResponse<String>> executeAction(@Valid @RequestBody ServerActionRequest request) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<String>> executeAction(@Valid @RequestBody ServerActionRequest request, Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        log.info("管理员 {} 执行服务器操作: {}", currentUser.getUsername(), request.getAction());
         // 检查服务器状态，只有在ONLINE状态下才执行操作
         Optional<Server> serverOpt = serverRepository.findById(request.getServerId());
         if (serverOpt.isEmpty()) {
@@ -66,31 +72,41 @@ public class ServerManagementController {
     }
     
     /**
-     * 获取服务器监控信息
+     * 获取服务器监控信息 - 仅限管理员
      */
     @GetMapping("/{serverId}/monitoring")
-    public ResponseEntity<ApiResponse<ServerMonitoringDTO>> getMonitoring(@PathVariable Long serverId) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<ServerMonitoringDTO>> getMonitoring(@PathVariable Long serverId, Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        log.debug("管理员 {} 获取服务器监控信息: {}", currentUser.getUsername(), serverId);
         ApiResponse<ServerMonitoringDTO> response = serverManagementService.getServerMonitoring(serverId);
         return ResponseEntity.ok(response);
     }
     
     /**
-     * 获取服务器操作日志
+     * 获取服务器操作日志 - 仅限管理员
      */
     @GetMapping("/{serverId}/logs")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<ServerActionLogDTO>>> getActionLogs(
             @PathVariable Long serverId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "20") int size,
+            Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        log.debug("管理员 {} 获取服务器操作日志: {}", currentUser.getUsername(), serverId);
         ApiResponse<List<ServerActionLogDTO>> response = serverManagementService.getServerActionLogs(serverId, page, size);
         return ResponseEntity.ok(response);
     }
     
     /**
-     * 测试服务器连接
+     * 测试服务器连接 - 仅限管理员
      */
     @PostMapping("/{serverId}/test-connection")
-    public ResponseEntity<ApiResponse<Boolean>> testConnection(@PathVariable Long serverId) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Boolean>> testConnection(@PathVariable Long serverId, Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        log.debug("管理员 {} 测试服务器连接: {}", currentUser.getUsername(), serverId);
         // 检查服务器状态，只有在ONLINE状态下才测试连接
         Optional<Server> serverOpt = serverRepository.findById(serverId);
         if (serverOpt.isEmpty()) {

@@ -1,5 +1,11 @@
 <template>
-  <HomeLayout>
+  <div v-if="!authStore.isAdmin" class="d-flex justify-center align-center" style="height: 50vh;">
+    <v-alert type="error" variant="tonal" class="text-center">
+      <v-alert-title>访问被拒绝</v-alert-title>
+      <div>您没有权限访问此页面。只有管理员可以管理价格组。</div>
+    </v-alert>
+  </div>
+  <HomeLayout v-else>
     <v-container class="py-6">
       <!-- 价格组列表 -->
     <v-card>
@@ -665,6 +671,7 @@
 
 <script>
 import { ref, reactive, onMounted, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 
 import { priceGroupApi } from '@/api/priceGroup'
 import { serverGroupApi } from '@/api/serverGroup'
@@ -685,6 +692,9 @@ export default {
     NotificationSnackbar
   },
   setup() {
+    // Auth store
+    const authStore = useAuthStore()
+    
     // 移除国际化
     const { notificationState, showNotification } = useNotification()
 
@@ -1120,6 +1130,7 @@ export default {
     })
     
     return {
+      authStore,
       loading,
       saving,
       deleting,

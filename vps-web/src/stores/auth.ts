@@ -6,11 +6,12 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(
     localStorage.getItem('token') || sessionStorage.getItem('token')
   )
-  const user = ref<{ username: string; email: string } | null>(null)
+  const user = ref<{ username: string; email: string; role?: string } | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
 
   const isAuthenticated = computed(() => !!token.value)
+  const isAdmin = computed(() => user.value?.role === 'ADMIN')
 
   const login = async (credentials: LoginRequest) => {
     loading.value = true
@@ -25,10 +26,10 @@ export const useAuthStore = defineStore('auth', () => {
         username: credentials.username.trim(),
         password: credentials.password
       })
-      const { token: authToken, username, email } = response.data
+      const { token: authToken, username, email, role } = response.data
       
       token.value = authToken
-      user.value = { username, email }
+      user.value = { username, email, role }
       
       // 默认使用localStorage存储（记住用户）
       localStorage.setItem('token', authToken)
@@ -56,10 +57,10 @@ export const useAuthStore = defineStore('auth', () => {
         email: userData.email.trim(),
         password: userData.password
       })
-      const { token: authToken, username, email } = response.data
+      const { token: authToken, username, email, role } = response.data
       
       token.value = authToken
-      user.value = { username, email }
+      user.value = { username, email, role }
       localStorage.setItem('token', authToken)
       
       return true
@@ -115,6 +116,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading,
     error,
     isAuthenticated,
+    isAdmin,
     login,
     register,
     logout,

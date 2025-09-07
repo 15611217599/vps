@@ -9,7 +9,7 @@
       <jdbc-url>jdbc:h2:mem:rabbitvpsdb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:h2:mem:rabbitvpsdb [DEBUG]" group="​VpsServerApplication" uuid="cd4aecb7-c4e6-474c-9d8f-91e20ef6f463">
+    <data-source source="LOCAL" name="jdbc:h2:mem:rabbitvpsdb [DEBUG]" group="​VpsServerApplication" uuid="1d912df0-f024-4b12-882f-c958b76c10e2">
       <driver-ref>h2.unified</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

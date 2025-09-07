@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -118,9 +119,10 @@ public class ServerGroupController {
     }
     
     /**
-     * 创建新分组
+     * 创建新分组 - 仅限管理员
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createGroup(@Valid @RequestBody ServerGroupDTO groupDTO) {
         try {
             ServerGroupDTO createdGroup = groupService.createGroup(groupDTO);
@@ -140,9 +142,10 @@ public class ServerGroupController {
     }
     
     /**
-     * 更新分组
+     * 更新分组 - 仅限管理员
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateGroup(
             @PathVariable Long id, 
             @Valid @RequestBody ServerGroupDTO groupDTO) {
@@ -164,9 +167,10 @@ public class ServerGroupController {
     }
     
     /**
-     * 删除分组
+     * 删除分组 - 仅限管理员
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteGroup(@PathVariable Long id) {
         try {
             groupService.deleteGroup(id);
