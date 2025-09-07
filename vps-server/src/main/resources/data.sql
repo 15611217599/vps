@@ -24,8 +24,8 @@ INSERT INTO server_groups (name, description, region, country, city, sort_order,
 -- 插入服务器数据（按照新的字段结构：ip, port, status, cpu_cores, memory, disk_space, disk_type, network_speed, operating_system, username, password, is_sold, group_id, create_time, last_update）
 INSERT INTO servers (ip, port, status, cpu_cores, memory, disk_space, disk_type, network_speed, operating_system, username, password, is_sold, group_id, create_time, last_update) VALUES
 -- 欧洲德国服务器 (group_id: 1)
-('107.149.202.18', 48463, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '25M CN2', 'ubuntu24.0.2', 'root', 'Ld4MBRw578Shbn', false, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('107.149.202.20', 19251, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '25M CN2', 'ubuntu24.0.2', 'root', 'Ld4MBRw578Shbn', false, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('107.149.202.18', 53296, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '25M CN2', 'ubuntu24.0.2', 'root', '$HxM5c8P4V$9', false, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+/*('107.149.202.20', 19251, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '25M CN2', 'ubuntu24.0.2', 'root', 'Ld4MBRw578Shbn', false, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.149.202.21', 31429, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '25M CN2', 'ubuntu24.0.2', 'root', 'Ld4MBRw578Shbn', false, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.149.202.23', 15577, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '25M CN2', 'ubuntu24.0.2', 'root', 'hADMhsG1NfMb', false, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.149.202.24', 25961, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '25M CN2', 'ubuntu24.0.2', 'root', 'Ld4MBRw578Shbn', false, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -90,7 +90,7 @@ INSERT INTO servers (ip, port, status, cpu_cores, memory, disk_space, disk_type,
 ('107.148.151.212', 2726, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '50M CN2', 'ubuntu24.0.2', 'root', 'AhxNkf40Md56', false, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.148.151.208', 16088, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '50M CN2', 'ubuntu24.0.2', 'root', 'mEgIrM9Ww6x28P', false, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('107.148.151.218', 28859, 'ONLINE', '32 Core', '32G', '200G SSD', 'SSD', '50M CN2', 'ubuntu24.0.2', 'root', 'mEgIrM9Ww6x28P', false, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
+*/
 INSERT INTO price_groups (
     name, description,
     hourly_price, daily_price, monthly_price, quarterly_price, semi_annual_price, annual_price,

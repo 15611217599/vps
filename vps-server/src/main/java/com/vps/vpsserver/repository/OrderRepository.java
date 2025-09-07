@@ -24,4 +24,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     
     @Query("SELECT COUNT(o) FROM Order o WHERE o.user.id = :userId AND o.status = :status")
     long countByUserIdAndStatus(@Param("userId") Long userId, @Param("status") Order.OrderStatus status);
+    
+    /**
+     * 通过服务器ID查询活跃订单
+     */
+    @Query("SELECT o FROM Order o WHERE o.server.id = :serverId AND (o.status = 'ACTIVE' OR o.status = 'PAID')")
+    Optional<Order> findActiveOrderByServerId(@Param("serverId") Long serverId);
 }

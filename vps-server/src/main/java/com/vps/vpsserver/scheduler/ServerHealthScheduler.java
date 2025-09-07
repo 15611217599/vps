@@ -2,18 +2,19 @@ package com.vps.vpsserver.scheduler;
 
 import com.vps.vpsserver.entity.Server;
 import com.vps.vpsserver.entity.Server.ServerStatus;
-import com.vps.vpsserver.entity.ServerMetrics;
-import com.vps.vpsserver.repository.ServerMetricsRepository;
 import com.vps.vpsserver.repository.ServerRepository;
 import com.vps.vpsserver.service.SSHService;
 import com.vps.vpsserver.service.SSHService.SSHResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -21,11 +22,13 @@ import java.util.List;
 public class ServerHealthScheduler {
 
     private final ServerRepository serverRepository;
-    private final ServerMetricsRepository metricsRepository;
     private final SSHService sshService;
+    
+    // 记录每个服务器连续成功健康检查的次数
+    private final Map<Long, Integer> successiveHealthyChecks = new HashMap<>();
 
     // 每分钟执行一次
-    //@Scheduled(fixedRate = 60_000)
+    @Scheduled(fixedRate = 60_000)
     public void collectMetricsTask() {
         List<Server> servers = serverRepository.findAll();
         for (Server server : servers) {
@@ -65,6 +68,24 @@ public class ServerHealthScheduler {
             return;
         }
 
+        // 如果存在 /reinstall.log，表示正在重装系统，视为离线状态
+        try {
+            SSHResult reinstallCheck = sshService
+                    .executeCommand(host, port, username, password, "[ -f /reinstall.log ] && echo YES || echo NO")
+                    .get(10, java.util.concurrent.TimeUnit.SECONDS);
+            if (reinstallCheck.isSuccess()) {
+                String flag = reinstallCheck.getOutput() != null ? reinstallCheck.getOutput().trim() : "";
+                if ("YES".equalsIgnoreCase(flag)) {
+                    markOffline(server, "系统重装中(reinstall.log)");
+                    return;
+                }
+            } else {
+                log.debug("重装状态检查失败: {}", reinstallCheck.getError());
+            }
+        } catch (Exception ex) {
+            log.debug("重装状态检查异常: {}", ex.getMessage());
+        }
+
         String out = result.getOutput().trim();
         // 期望格式: cpu|mem|disk|rx|tx (保留两位小数)
         String[] parts = out.split("\\|");
@@ -79,56 +100,41 @@ public class ServerHealthScheduler {
         double rx = parseDouble(parts[3]);
         double tx = parseDouble(parts[4]);
 
-        // 保存指标
-        ServerMetrics m = new ServerMetrics();
-        m.setServer(server);
-        m.setCpuUsage(clamp(cpu));
-        m.setMemoryUsage(clamp(mem));
-        m.setDiskUsage(clamp(disk));
-        m.setNetInKbps(nonNegative(rx));
-        m.setNetOutKbps(nonNegative(tx));
-        m.setStatus(ServerStatus.ONLINE.name());
-        m.setCreatedAt(LocalDateTime.now());
-        metricsRepository.save(m);
-
-        // 更新服务器状态
-        server.setStatus(ServerStatus.ONLINE);
-        server.setLastUpdate(LocalDateTime.now());
-        serverRepository.save(server);
+        // 增加连续成功健康检查计数
+        Long serverId = server.getId();
+        int successCount = successiveHealthyChecks.getOrDefault(serverId, 0) + 1;
+        successiveHealthyChecks.put(serverId, successCount);
+        
+        // 只有连续两次成功才更新服务器状态为ONLINE
+        if (successCount >= 2) {
+            if (server.getStatus() != ServerStatus.ONLINE) {
+                server.setStatus(ServerStatus.ONLINE);
+                server.setLastUpdate(LocalDateTime.now());
+                serverRepository.save(server);
+                log.info("[健康检测] 服务器 {} 已连续两次检测成功，状态更新为在线", serverId);
+            }
+        } else if (server.getStatus() != ServerStatus.ONLINE) {
+            log.info("[健康检测] 服务器 {} 首次检测成功，等待下一次确认 (1/2)", serverId);
+        }
 
         log.info("[健康检测] 服务器 {} 在线 CPU:{}% MEM:{}% DISK:{}% RX:{}kbps TX:{}kbps",
-                server.getId(), cpu, mem, disk, rx, tx);
+                serverId, cpu, mem, disk, rx, tx);
     }
 
     private void markOffline(Server server, String reason) {
-        try {
-            ServerMetrics m = new ServerMetrics();
-            m.setServer(server);
-            m.setCpuUsage(0d);
-            m.setMemoryUsage(0d);
-            m.setDiskUsage(0d);
-            m.setNetInKbps(0d);
-            m.setNetOutKbps(0d);
-            m.setStatus(ServerStatus.OFFLINE.name());
-            m.setCreatedAt(LocalDateTime.now());
-            metricsRepository.save(m);
-        } catch (Exception ignored) {
-        }
+        // 重置连续成功健康检查计数
+        Long serverId = server.getId();
+        successiveHealthyChecks.remove(serverId);
+        
         server.setStatus(ServerStatus.OFFLINE);
         server.setLastUpdate(LocalDateTime.now());
         serverRepository.save(server);
-        log.info("[健康检测] 服务器 {} 离线: {}", server.getId(), reason);
+        log.info("[健康检测] 服务器 {} 离线: {}", serverId, reason);
     }
 
     private double parseDouble(String s) {
         try { return Double.parseDouble(s.trim()); } catch (Exception e) { return 0d; }
     }
-
-    private double clamp(double v) {
-        if (v < 0) return 0d; if (v > 100) return 100d; return v;
-    }
-
-    private double nonNegative(double v) { return v < 0 ? 0d : v; }
 
     // 生成跨发行版的指标采集脚本
     private String buildMetricsCommand() {

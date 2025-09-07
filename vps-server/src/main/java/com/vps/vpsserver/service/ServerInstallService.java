@@ -96,9 +96,43 @@ public class ServerInstallService {
                 } catch (Exception re) {
                     log.warn("触发重启时发生异常（可能是预期的连接中断）: {}", re.getMessage());
                 }
-                // 安装成功：最终更新服务器字段（操作系统/密码/端口等）
+                
+                // 安装成功：更新服务器操作系统信息和其他字段
+                try {
+                    Server updatedServer = serverRepository.findById(serverId)
+                        .orElseThrow(() -> new RuntimeException("服务器不存在"));
+                    
+                    // 构建操作系统完整名称 (例如: ubuntu24.0.2)
+                    String osFullName = request.getOsName();
+                    if (request.getOsVersion() != null && !request.getOsVersion().isEmpty()) {
+                        osFullName += request.getOsVersion();
+                    }
+                    
+                    // 更新服务器操作系统信息
+                    updatedServer.setOperatingSystem(osFullName);
+                    
+                    // 如果有设置新密码，也更新密码
+                    if (request.getRootPassword() != null && !request.getRootPassword().isEmpty()) {
+                        updatedServer.setPassword(request.getRootPassword());
+                    }
+                    
+                    // 如果有设置新SSH端口，也更新端口
+                    if (request.getSshPort() != null) {
+                        updatedServer.setPort(request.getSshPort());
+                    }
+                    
+                    // 更新最后更新时间
+                    updatedServer.setLastUpdate(LocalDateTime.now());
+                    
+                    // 保存更新
+                    serverRepository.save(updatedServer);
+                    log.info("服务器操作系统已更新为: {}", osFullName);
+                } catch (Exception e) {
+                    log.error("更新服务器操作系统信息失败: {}", e.getMessage(), e);
+                }
             } else {
                 // 安装失败：仅更新安装状态，不覆盖最终字段
+                log.error("安装系统失败: {}", installResult.getError());
             }
             
         } catch (Exception e) {

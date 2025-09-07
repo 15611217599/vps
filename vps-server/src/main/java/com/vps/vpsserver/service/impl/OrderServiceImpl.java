@@ -14,6 +14,7 @@ import com.vps.vpsserver.dto.ServerInstallRequest;
 import com.vps.vpsserver.entity.Order;
 import com.vps.vpsserver.entity.PriceGroup;
 import com.vps.vpsserver.entity.Server;
+import com.vps.vpsserver.entity.Server.ServerStatus;
 import com.vps.vpsserver.entity.ServerGroup;
 import com.vps.vpsserver.entity.User;
 import com.vps.vpsserver.entity.Wallet;
@@ -109,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
         // 标记服务器为已售（保持在线状态）
         if (assignedServer != null) {
             assignedServer.setIsSold(true);
+            assignedServer.setStatus(ServerStatus.OFFLINE);
             serverRepository.save(assignedServer);
             
             // 自动触发操作系统安装（仅触发，不记录进度）

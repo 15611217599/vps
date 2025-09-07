@@ -236,69 +236,158 @@ public class ServerManagementService {
             monitoring.setSshPort(server.getPort());
             monitoring.setLastCheckTime(LocalDateTime.now());
             
-            // 异步获取实时监控数据
-            CompletableFuture.runAsync(() -> {
-                try {
-                    updateServerMonitoring(server, monitoring);
-                } catch (Exception e) {
-                    log.error("获取服务器监控信息失败", e);
+            // 同步获取实时监控数据，直接返回给前端
+            try {
+                // 测试SSH连接
+                boolean sshConnectable = sshService.testConnection(
+                    server.getIp(), server.getPort(), server.getUsername(), server.getPassword()
+                );
+                monitoring.setSshConnectable(sshConnectable);
+                
+                if (sshConnectable) {
+                    // 使用与定时任务相同的监控命令
+                    String monitoringCmd = buildMetricsCommand();
+                    
+                    SSHService.SSHResult result = sshService.executeCommand(
+                        server.getIp(), server.getPort(), server.getUsername(), server.getPassword(), monitoringCmd
+                    ).get();
+                    
+                    if (result.isSuccess()) {
+                        String output = result.getOutput().trim();
+                        log.debug("Raw monitoring output: {}", output);
+                        
+                        // 解析管道分隔的输出格式: cpu|mem|disk|rx|tx
+                        parseMetricsOutput(monitoring, output);
+                        
+                        // 获取运行时间和进程数
+                        getAdditionalMetrics(server, monitoring);
+                        
+                        monitoring.setStatus("online");
+                    } else {
+                        monitoring.setStatus("offline");
+                    }
+                } else {
+                    monitoring.setStatus("offline");
                 }
-            });
-            
+                
+                // 确保所有值都有默认值
+                if (monitoring.getCpuUsage() == null) monitoring.setCpuUsage(0.0);
+                if (monitoring.getMemoryUsage() == null) monitoring.setMemoryUsage(0.0);
+                if (monitoring.getDiskUsage() == null) monitoring.setDiskUsage(0.0);
+                if (monitoring.getUptime() == null) monitoring.setUptime("未知");
+                if (monitoring.getProcessCount() == null) monitoring.setProcessCount(0);
+                
+                monitoring.setLastUpdateTime(LocalDateTime.now());
+            } catch (Exception e) {
+                log.error("获取服务器监控信息失败", e);
+                // 即使监控数据获取失败，也返回基础信息
+                monitoring.setStatus("offline");
+                monitoring.setSshConnectable(false);
+                monitoring.setCpuUsage(0.0);
+                monitoring.setMemoryUsage(0.0);
+                monitoring.setDiskUsage(0.0);
+                monitoring.setUptime("未知");
+                monitoring.setProcessCount(0);
+            }
+        
             return ApiResponse.success(monitoring);
         } catch (Exception e) {
             log.error("获取服务器监控信息失败", e);
             return ApiResponse.error("获取监控信息失败: " + e.getMessage());
         }
     }
+
     
     /**
-     * 更新服务器监控信息
+     * 生成跨发行版的指标采集脚本（与定时任务保持一致）
      */
-    private void updateServerMonitoring(Server server, ServerMonitoringDTO monitoring) {
+    private String buildMetricsCommand() {
+        String script =
+            "set -e; " +
+            // CPU first sample
+            "t1=$(awk '/^cpu /{print $2+$3+$4+$5+$6+$7+$8}' /proc/stat); " +
+            "i1=$(awk '/^cpu /{print $5}' /proc/stat); " +
+            // NET first sample
+            "rx1=$(awk -F'[: ]+' '/:/{if($1!=\"lo\"){rx+=$3}} END{print rx+0}' /proc/net/dev); " +
+            "tx1=$(awk -F'[: ]+' '/:/{if($1!=\"lo\"){tx+=$11}} END{print tx+0}' /proc/net/dev); " +
+            // sleep 1 second
+            "sleep 1; " +
+            // CPU second sample
+            "t2=$(awk '/^cpu /{print $2+$3+$4+$5+$6+$7+$8}' /proc/stat); " +
+            "i2=$(awk '/^cpu /{print $5}' /proc/stat); " +
+            // NET second sample
+            "rx2=$(awk -F'[: ]+' '/:/{if($1!=\"lo\"){rx+=$3}} END{print rx+0}' /proc/net/dev); " +
+            "tx2=$(awk -F'[: ]+' '/:/{if($1!=\"lo\"){tx+=$11}} END{print tx+0}' /proc/net/dev); " +
+            // CPU usage calc
+            "dt=$((t2 - t1)); di=$((i2 - i1)); cpu=0; if [ $dt -gt 0 ]; then cpu=$(awk -v dt=$dt -v di=$di 'BEGIN{print (dt-di)/dt*100}'); fi; " +
+            // MEM usage
+            "mem=$(free -m 2>/dev/null | awk '/^Mem:/{if($2>0) print $3/$2*100; else print 0}'); if [ -z \"$mem\" ]; then mem=$(awk '/MemTotal/{mt=$2} /MemAvailable/{ma=$2} END{if(mt>0) print (mt-ma)/mt*100; else print 0}' /proc/meminfo); fi; " +
+            // DISK usage for /
+            "disk=$(df -P / 2>/dev/null | awk 'NR==2{gsub(\"%\",\"\",$5); print $5+0}'); if [ -z \"$disk\" ]; then disk=0; fi; " +
+            // NET rates kbps
+            "rxk=$(awk -v r1=$rx1 -v r2=$rx2 'BEGIN{print (r2-r1)/1024*8}'); txk=$(awk -v t1=$tx1 -v t2=$tx2 'BEGIN{print (t2-t1)/1024*8}'); " +
+            // print values with 2 decimals and '|' delimiter
+            "printf '%.2f|%.2f|%.2f|%.2f|%.2f\\n' \"$cpu\" \"$mem\" \"$disk\" \"$rxk\" \"$txk\"";
+        return script;
+    }
+
+    /**
+     * 解析管道分隔的监控数据输出
+     * 格式: cpu|mem|disk|rx|tx
+     */
+    private void parseMetricsOutput(ServerMonitoringDTO monitoring, String output) {
         try {
-            // 测试SSH连接
-            boolean sshConnectable = sshService.testConnection(
-                server.getIp(), server.getPort(), server.getUsername(), server.getPassword()
-            );
-            monitoring.setSshConnectable(sshConnectable);
+            String[] parts = output.split("\\|");
+            if (parts.length >= 5) {
+                monitoring.setCpuUsage(parseDouble(parts[0]));
+                monitoring.setMemoryUsage(parseDouble(parts[1]));
+                monitoring.setDiskUsage(parseDouble(parts[2]));
+                // 网络速率可以添加到DTO中，暂时记录到日志
+                double rxKbps = parseDouble(parts[3]);
+                double txKbps = parseDouble(parts[4]);
+                log.debug("网络速率 - RX: {}kbps, TX: {}kbps", rxKbps, txKbps);
+            } else {
+                log.warn("监控数据格式不正确: {}", output);
+            }
+        } catch (Exception e) {
+            log.error("解析监控数据失败", e);
+        }
+    }
+
+    /**
+     * 获取额外的监控指标（运行时间和进程数）
+     */
+    private void getAdditionalMetrics(Server server, ServerMonitoringDTO monitoring) {
+        try {
+            String additionalCmd = "uptime | awk -F'up ' '{print $2}' | awk -F',' '{print $1}' | sed 's/^ *//'; ps aux | wc -l";
+            SSHService.SSHResult result = sshService.executeCommand(
+                server.getIp(), server.getPort(), server.getUsername(), server.getPassword(), additionalCmd
+            ).get();
             
-            if (sshConnectable) {
-                // 获取系统资源使用情况
-                String monitoringCmd = "top -bn1 | grep 'Cpu(s)' | awk '{print $2}' | cut -d'%' -f1 | cut -d',' -f1 | tr -d ' '; " +
-                                     "free | grep Mem | awk '{printf \"%.1f\", $3/$2 * 100.0}'; " +
-                                     "df -h / | awk 'NR==2{print $5}' | cut -d'%' -f1; " +
-                                     "uptime | awk -F'up ' '{print $2}' | awk -F',' '{print $1}'; " +
-                                     "ps aux | wc -l";
-                
-                SSHService.SSHResult result = sshService.executeCommand(
-                    server.getIp(), server.getPort(), server.getUsername(), server.getPassword(), monitoringCmd
-                ).get();
-                
-                if (result.isSuccess()) {
-                    String[] lines = result.getOutput().split("\n");
-                    if (lines.length >= 4) {
-                        try {
-                            monitoring.setCpuUsage(Double.parseDouble(lines[0].trim()));
-                            monitoring.setMemoryUsage(Double.parseDouble(lines[1].trim()));
-                            monitoring.setDiskUsage(Double.parseDouble(lines[2].trim()));
-                            monitoring.setUptime(lines[3].trim());
-                            monitoring.setProcessCount(Integer.parseInt(lines[4].trim()));
-                        } catch (NumberFormatException e) {
-                            log.warn("解析监控数据失败: {}", e.getMessage());
-                        }
+            if (result.isSuccess()) {
+                String[] lines = result.getOutput().trim().split("\n");
+                if (lines.length >= 2) {
+                    monitoring.setUptime(lines[0].trim());
+                    try {
+                        monitoring.setProcessCount(Integer.parseInt(lines[1].trim()));
+                    } catch (NumberFormatException e) {
+                        log.warn("解析进程数失败: {}", lines[1]);
                     }
                 }
-                
-                monitoring.setStatus("online");
-            } else {
-                monitoring.setStatus("offline");
             }
-            
-            monitoring.setLastUpdateTime(LocalDateTime.now());
         } catch (Exception e) {
-            log.error("更新服务器监控信息失败", e);
-            monitoring.setStatus("offline");
+            log.debug("获取额外监控指标失败", e);
+        }
+    }
+
+    /**
+     * 安全解析双精度浮点数
+     */
+    private double parseDouble(String s) {
+        try { 
+            return Double.parseDouble(s.trim()); 
+        } catch (Exception e) { 
+            return 0.0; 
         }
     }
     

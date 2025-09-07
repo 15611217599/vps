@@ -1,27 +1,66 @@
 package com.vps.vpsserver.controller;
 
 import com.vps.vpsserver.dto.*;
+import com.vps.vpsserver.entity.Order;
+import com.vps.vpsserver.entity.Server;
+import com.vps.vpsserver.entity.Server.ServerStatus;
+import com.vps.vpsserver.repository.OrderRepository;
+import com.vps.vpsserver.repository.ServerRepository;
 import com.vps.vpsserver.service.ServerManagementService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/server-management")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class ServerManagementController {
     
     private final ServerManagementService serverManagementService;
+    private final ServerRepository serverRepository;
+    private final OrderRepository orderRepository;
     
     /**
      * 执行服务器操作
      */
     @PostMapping("/action")
     public ResponseEntity<ApiResponse<String>> executeAction(@Valid @RequestBody ServerActionRequest request) {
+        // 检查服务器状态，只有在ONLINE状态下才执行操作
+        Optional<Server> serverOpt = serverRepository.findById(request.getServerId());
+        if (serverOpt.isEmpty()) {
+            return ResponseEntity.ok(ApiResponse.error("服务器不存在"));
+        }
+        
+        Server server = serverOpt.get();
+        // 特殊情况：start操作允许在OFFLINE状态下执行
+        if (!"start".equals(request.getAction()) && server.getStatus() != ServerStatus.ONLINE) {
+            return ResponseEntity.ok(ApiResponse.error("服务器当前不可用，无法执行操作"));
+        }
+        
+        // 检查服务器是否即将到期（前一小时内）
+        Optional<Order> activeOrderOpt = orderRepository.findActiveOrderByServerId(request.getServerId());
+        if (activeOrderOpt.isPresent()) {
+            Order activeOrder = activeOrderOpt.get();
+            LocalDateTime expiresAt = activeOrder.getExpiresAt();
+            LocalDateTime oneHourBeforeExpiry = expiresAt.minus(1, ChronoUnit.HOURS);
+            
+            if (LocalDateTime.now().isAfter(oneHourBeforeExpiry)) {
+                log.warn("服务器 {} 即将到期，拒绝执行操作 {}", request.getServerId(), request.getAction());
+                return ResponseEntity.ok(ApiResponse.error("服务器即将到期（剩余时间不足1小时），为确保数据安全，暂时无法执行操作"));
+            }
+        }
+
+        server.setStatus(ServerStatus.OFFLINE);
+        serverRepository.save(server);
         ApiResponse<String> response = serverManagementService.executeServerAction(request);
         return ResponseEntity.ok(response);
     }
@@ -52,6 +91,30 @@ public class ServerManagementController {
      */
     @PostMapping("/{serverId}/test-connection")
     public ResponseEntity<ApiResponse<Boolean>> testConnection(@PathVariable Long serverId) {
+        // 检查服务器状态，只有在ONLINE状态下才测试连接
+        Optional<Server> serverOpt = serverRepository.findById(serverId);
+        if (serverOpt.isEmpty()) {
+            return ResponseEntity.ok(ApiResponse.error("服务器不存在"));
+        }
+        
+        Server server = serverOpt.get();
+        if (server.getStatus() != ServerStatus.ONLINE) {
+            return ResponseEntity.ok(ApiResponse.error("服务器当前不可用，无法测试连接"));
+        }
+        
+        // 检查服务器是否即将到期（前一小时内）
+        Optional<Order> activeOrderOpt = orderRepository.findActiveOrderByServerId(serverId);
+        if (activeOrderOpt.isPresent()) {
+            Order activeOrder = activeOrderOpt.get();
+            LocalDateTime expiresAt = activeOrder.getExpiresAt();
+            LocalDateTime oneHourBeforeExpiry = expiresAt.minus(1, ChronoUnit.HOURS);
+            
+            if (LocalDateTime.now().isAfter(oneHourBeforeExpiry)) {
+                log.warn("服务器 {} 即将到期，拒绝测试连接", serverId);
+                return ResponseEntity.ok(ApiResponse.error("服务器即将到期（剩余时间不足1小时），为确保数据安全，暂时无法执行操作"));
+            }
+        }
+        
         // 这里可以调用SSH服务测试连接
         return ResponseEntity.ok(ApiResponse.success(true));
     }

@@ -7,7 +7,7 @@
           icon="mdi-arrow-left"
           variant="text"
           class="me-3"
-          @click="$router.push('/servers')"
+          @click="router.back()"
         />
         <div>
           <h1 class="text-h4 font-weight-bold">服务器控制台</h1>
@@ -589,22 +589,11 @@ import { useNotification } from '@/composables/useNotification'
 // 启用模板类型检查
 defineComponent({name: 'ServerManageView'})
 
-// 定义服务器订单DTO
-interface ServerOrderDTO {
-  id: number
-  orderNumber: string
-  status: 'PENDING' | 'PAID' | 'PROCESSING' | 'ACTIVE' | 'SUSPENDED' | 'CANCELLED' | 'EXPIRED' | string
-  ipAddress: string
-  sshPort: number
-  osName: string
-  osVersion: string
-  cpuCores: number
-  memoryGb: number
-  storageGb: number
-  bandwidthMbps: number
-  expiresAt: string
-  // 可能从OrderDTO继承的其他字段
-  [key: string]: any
+// API响应类型
+interface ApiResponse<T> {
+  success: boolean
+  message: string
+  data: T
 }
 
 const route = useRoute()
@@ -850,13 +839,13 @@ const expiryClass = computed(() => {
   return 'text-success'
 })
 
-// 使用formatDateTime函数处理日期
-const getFormattedDateTime = computed(() => {
-  if (monitoring.value?.lastUpdateTime) {
-    return formatDateTime(monitoring.value.lastUpdateTime)
-  }
-  return 'N/A'
-})
+// 注意：如果需要显示监控数据更新时间，可以使用以下代码
+// const formattedUpdateTime = computed(() => {
+//   if (monitoring.value?.lastUpdateTime) {
+//     return formatDateTime(monitoring.value.lastUpdateTime)
+//   }
+//   return 'N/A'
+// })
 
 // 获取状态颜色
 const getStatusColor = (status: string) => {
@@ -1005,10 +994,21 @@ const executeAction = async () => {
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => reject(new Error('请求超时，请稍后重试')), 15000)
     })
-    await Promise.race([apiCall, timeoutPromise])
+    const response = await Promise.race([apiCall, timeoutPromise]) as { data: ApiResponse<string> }
     
-    // 服务器操作API返回字符串消息，成功时不会抛出异常
-    showNotification('操作已提交', 'success')
+    // 检查API响应是否成功
+    if (response && response.data) {
+      if (response.data.success) {
+        // 成功响应
+        showNotification('操作已提交', 'success')
+      } else {
+        // 后端返回了错误信息
+        throw new Error(response.data.message || '操作失败')
+      }
+    } else {
+      // 响应格式不正确
+      throw new Error('服务器响应格式错误')
+    }
     
     // 如果是重置密码成功，更新当前密码显示
     if (action === 'resetPassword') {
