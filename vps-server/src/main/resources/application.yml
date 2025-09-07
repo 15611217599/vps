@@ -2,17 +2,13 @@ spring:
   application:
     name: rabbitvps-server
   datasource:
-    url: jdbc:h2:mem:rabbitvpsdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    url: jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/vps
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: mfZiV@!bmr&n
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: false
@@ -51,16 +47,12 @@ logging:
   level:
     com.rabbitvps: DEBUG
 
-# 应用配置
-app:
-  base-url: "http://localhost:8080"
-
 # 支付配置
 payment:
   ezpay:
-    pid: "1001"
-    key: "89unJUB8HZ54Hj7x4nUj56HN4nUzUJ8i"
+    pid: "4146"
+    key: "ZOTFJ4JWGDD36ZJyQz3dWwJUBv3Jqq3r"
     submit-url: "https://ezfp.cn/submit.php"
     api-url: "https://ezfp.cn/mapi.php"
-    notify-url: "http://localhost:8080/api/payment/notify"
-    return-url: "http://localhost:3000/payment/return"
+    notify-url: "https://rabbitvps.com/api/payment/notify"
+    return-url: "https://rabbitvps.com/recharge"
