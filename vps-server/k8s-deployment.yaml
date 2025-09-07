@@ -16,7 +16,7 @@ data:
       datasource:
         url: jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/vps
         driver-class-name: org.postgresql.Driver
-        username: root
+        username: postgres
         password: mfZiV@!bmr&n
 
       jpa:

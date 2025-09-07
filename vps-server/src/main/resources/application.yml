@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/vps
     driver-class-name: org.postgresql.Driver
-    username: root
+    username: postgres
     password: mfZiV@!bmr&n
 
   jpa:
@@ -15,7 +15,7 @@ spring:
     defer-datasource-initialization: true
   sql:
     init:
-      mode: always
+      mode: EMBEDDED
       data-locations: classpath:data.sql
   security:
     user:
