@@ -63,7 +63,9 @@ jobs:
       with:
         context: ./vps-server
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: |
+          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Set up kubectl
@@ -79,8 +81,9 @@ jobs:
 
     - name: Update deployment image
       run: |
-        # 使用固定的latest标签
-        IMAGE_TAG="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest"
+        # 使用commit SHA作为版本号
+        VERSION="${{ github.sha }}"
+        IMAGE_TAG="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${VERSION}"
         echo "Using image: $IMAGE_TAG"
         
         # 更新部署文件中的镜像标签
