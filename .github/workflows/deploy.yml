@@ -54,9 +54,6 @@ jobs:
         images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
         tags: |
           type=raw,value=latest
-          type=raw,value=v{{date 'YYYY.MM.DD'}}-{{sha}}
-          type=ref,event=branch,suffix=-{{sha}}
-          type=ref,event=pr,suffix=-{{sha}}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
@@ -79,32 +76,11 @@ jobs:
 
     - name: Update deployment image
       run: |
-        # 生成版本标签
-        VERSION_TAG="v$(date +'%Y.%m.%d')-${GITHUB_SHA:0:7}"
-        LATEST_TAG="latest"
-        REGISTRY_PATH="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}"
-        
-        echo "Available image tags:"
-        echo "- ${REGISTRY_PATH}:${LATEST_TAG}"
-        echo "- ${REGISTRY_PATH}:${VERSION_TAG}"
-        
-        # 默认使用latest，但如果设置了特定版本环境变量则使用指定版本
-        if [ -n "${{ vars.DEPLOY_VERSION }}" ]; then
-          IMAGE_TAG="${REGISTRY_PATH}:${{ vars.DEPLOY_VERSION }}"
-          echo "Using specified version: ${{ vars.DEPLOY_VERSION }}"
-        else
-          IMAGE_TAG="${REGISTRY_PATH}:${LATEST_TAG}"
-          echo "Using latest version"
-        fi
-        
-        echo "Final image: $IMAGE_TAG"
+        IMAGE_TAG="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest"
+        echo "Using image: $IMAGE_TAG"
         
         # 更新部署文件中的镜像标签
         sed -i "s|image: ghcr.io/administrator/vps-server:.*|image: $IMAGE_TAG|g" vps-server/k8s-deployment.yaml
-        
-        # 显示更新后的镜像配置
-        echo "Updated deployment image:"
-        grep "image: ghcr.io" vps-server/k8s-deployment.yaml
         
         # 应用更新（跳过验证）
         kubectl apply -f vps-server/k8s-deployment.yaml --validate=false
