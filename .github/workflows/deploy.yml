@@ -63,9 +63,7 @@ jobs:
       with:
         context: ./vps-server
         push: true
-        tags: |
-          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha:0:8 }}
-          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+        tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Set up kubectl
@@ -82,8 +80,7 @@ jobs:
     - name: Update deployment image
       run: |
         # 使用短commit SHA作为版本号（前8位）
-        VERSION="${{ github.sha }}"
-        SHORT_VERSION=${VERSION:0:8}
+        SHORT_VERSION=${GITHUB_SHA:0:8}
         IMAGE_TAG="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${SHORT_VERSION}"
         echo "Using image: $IMAGE_TAG"
         
