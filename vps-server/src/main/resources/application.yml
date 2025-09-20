@@ -2,7 +2,7 @@ spring:
   application:
     name: rabbitvps-server
   datasource:
-    url: jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/vps
+    url: jdbc:postgresql://my-postgresql.postgresql.svc.cluster.local:5432/vps
     driver-class-name: org.postgresql.Driver
     username: vps
     password: vps123456
