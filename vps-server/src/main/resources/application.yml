@@ -4,8 +4,8 @@ spring:
   datasource:
     url: jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/vps
     driver-class-name: org.postgresql.Driver
-    username: root
-    password: Gnc2tKqOsb
+    username: vps
+    password: vps123456
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -14,7 +14,7 @@ spring:
     defer-datasource-initialization: true
   sql:
     init:
-      mode: EMBEDDED
+      mode: ALWAYS
       data-locations: classpath:data.sql
   security:
     user:
