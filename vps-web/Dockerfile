@@ -1,5 +1,5 @@
 # Node.js 版本 Dockerfile
-FROM node:18-alpine
+FROM node:24.5.0-alpine
 
 WORKDIR /app
 

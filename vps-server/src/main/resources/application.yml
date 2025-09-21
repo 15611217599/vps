@@ -68,3 +68,5 @@ management:
   health:
     db:
       enabled: true
+    mail:
+      enabled: false  # 关闭邮件健康检查

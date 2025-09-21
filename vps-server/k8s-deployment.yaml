@@ -47,6 +47,8 @@ data:
       health:
         db:
           enabled: true
+        mail:
+          enabled: false  # 关闭邮件健康检查
       # 邮件配置
       mail:
         host: smtp.163.com
