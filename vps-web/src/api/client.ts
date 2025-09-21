@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8080/api'
+// 根据环境使用不同的 API 地址
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 // 创建axios实例
 const apiClient = axios.create({
