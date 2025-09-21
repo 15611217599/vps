@@ -42,9 +42,9 @@ data:
       endpoint:
         health:
           show-details: always
+          probes:
+            enabled: true
       health:
-        probes:
-          enabled: true
         db:
           enabled: true
       # 邮件配置
