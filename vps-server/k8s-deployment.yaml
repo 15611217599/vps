@@ -16,7 +16,7 @@ data:
       datasource:
         url: jdbc:postgresql://my-postgresql.postgresql.svc.cluster.local:5432/vps
         driver-class-name: org.postgresql.Driver
-        username: vps
+        username: postgres
         password: vps123456
 
       jpa:
@@ -67,22 +67,6 @@ data:
         api-url: "https://ezfp.cn/mapi.php"
         notify-url: "https://rabbitvps.com/api/payment/notify"
         return-url: "https://rabbitvps.com/recharge"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: vps-server-secrets
-  namespace: vps-server
-type: Opaque
-data:
-  # 数据库密码 (base64编码: mfZiV@!bmr&n)
-  db-password: bWZaaVZAIWJtciZu
-  # JWT密钥 (base64编码)
-  jwt-secret: bXlTZWNyZXRLZXkxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTA=
-  # 邮箱密码 (base64编码: FTgbv34HJxAgKimZ)
-  mail-password: RlRnYnYzNEhKeEFnS2ltWg==
-  # 支付密钥 (base64编码: ZOTFJ4JWGDD36ZJyQz3dWwJUBv3Jqq3r)
-  payment-key: Wk9URko0SldHREQzNlpKeVF6M2RXd0pVQnYzSnFxM3I=
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://my-postgresql.postgresql.svc.cluster.local:5432/vps
     driver-class-name: org.postgresql.Driver
-    username: vps
+    username: postgres
     password: vps123456
   jpa:
     hibernate:
