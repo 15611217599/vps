@@ -74,6 +74,8 @@ data:
     logging:
       level:
         com.rabbitvps: DEBUG
+        org.springframework.security: DEBUG
+        org.springframework.web: DEBUG
 
     # 支付配置
     payment:
