@@ -172,24 +172,4 @@ spec:
     name: http
   selector:
     app: vps-server
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: vps-server-ingress
-  namespace: vps-server
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-spec:
-  rules:
-  - host: vps-api.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: vps-server-service
-            port:
-              number: 8080
+

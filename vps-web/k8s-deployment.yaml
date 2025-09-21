@@ -80,21 +80,40 @@ spec:
   selector:
     app: vps-web
 ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: body-size
+  namespace: vps-web
+spec:
+  buffering:
+    maxRequestBodyBytes: 10485760  # 10MB
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vps-web-ingress
   namespace: vps-web
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # 使用 Traefik 作为 Ingress Controller（与 Rancher 一致）
+    kubernetes.io/ingress.class: traefik
+    # 自动重定向到 HTTPS
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    # 启用 TLS
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    # 使用 Let's Encrypt 自动获取 SSL 证书
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     # 启用 gzip 压缩
-    nginx.ingress.kubernetes.io/enable-gzip: "true"
-    # 设置客户端最大请求体大小
-    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    traefik.ingress.kubernetes.io/compress: "true"
+    # 启用请求体大小限制
+    traefik.ingress.kubernetes.io/router.middlewares: vps-web-body-size@kubernetescrd
 spec:
+  tls:
+  - hosts:
+    - rabbitvps.com
+    secretName: vps-web-tls-secret
   rules:
-  - host: rabbitvps.com  # 修改为你的域名
+  - host: rabbitvps.com
     http:
       paths:
       - path: /
