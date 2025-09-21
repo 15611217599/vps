@@ -25,33 +25,33 @@ spec:
         image: ghcr.io/administrator/vps-web:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 4173
+        - containerPort: 80
           name: http
-        # 启动探针 - 给 Node.js 应用启动时间
+        # 启动探针 - 给 Nginx 启动时间
         startupProbe:
           httpGet:
-            path: /
-            port: 4173
-          initialDelaySeconds: 10
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
           periodSeconds: 5
           timeoutSeconds: 3
-          failureThreshold: 20
-        # 存活探针 - 检查应用是否正常运行
+          failureThreshold: 10
+        # 存活探针 - 检查 Nginx 是否正常运行
         livenessProbe:
           httpGet:
-            path: /
-            port: 4173
+            path: /health
+            port: 80
           initialDelaySeconds: 0
-          periodSeconds: 15
-          timeoutSeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
           failureThreshold: 3
         # 就绪探针 - 检查应用是否准备好接收流量
         readinessProbe:
           httpGet:
-            path: /
-            port: 4173
+            path: /health
+            port: 80
           initialDelaySeconds: 0
-          periodSeconds: 10
+          periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 3
         resources:
@@ -74,7 +74,7 @@ spec:
   type: ClusterIP
   ports:
   - port: 80
-    targetPort: 4173
+    targetPort: 80
     protocol: TCP
     name: http
   selector:
