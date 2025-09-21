@@ -95,26 +95,6 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "production"
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: vps-server-secrets
-              key: db-password
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: vps-server-secrets
-              key: jwt-secret
-        - name: SPRING_MAIL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: vps-server-secrets
-              key: mail-password
-        - name: PAYMENT_EZPAY_KEY
-          valueFrom:
-            secretKeyRef:
-              name: vps-server-secrets
-              key: payment-key
         volumeMounts:
         - name: config-volume
           mountPath: /app/config
