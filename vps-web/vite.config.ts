@@ -28,5 +28,15 @@ export default defineConfig({
         secure: false
       }
     }
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 4173,
+    allowedHosts: [
+      'rabbitvps.com',
+      'www.rabbitvps.com',
+      'localhost',
+      '127.0.0.1'
+    ]
   }
 })
