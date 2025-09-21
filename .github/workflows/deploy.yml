@@ -8,11 +8,42 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: vps-server
+  BACKEND_IMAGE_NAME: vps-server
+  FRONTEND_IMAGE_NAME: vps-web
 
 jobs:
-  build-and-deploy:
+  # 检测变更的文件
+  detect-changes:
     runs-on: ubuntu-latest
+    outputs:
+      backend-changed: ${{ steps.changes.outputs.backend }}
+      frontend-changed: ${{ steps.changes.outputs.frontend }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Detect changes
+      id: changes
+      run: |
+        if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '^vps-server/' > /dev/null; then
+          echo "backend=true" >> $GITHUB_OUTPUT
+        else
+          echo "backend=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '^vps-web/' > /dev/null; then
+          echo "frontend=true" >> $GITHUB_OUTPUT
+        else
+          echo "frontend=false" >> $GITHUB_OUTPUT
+        fi
+
+  # 构建和部署后端
+  build-deploy-backend:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend-changed == 'true' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       packages: write
@@ -20,6 +51,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Generate image tag
+      id: image-tag
+      run: |
+        SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
+        IMAGE_TAG="latest-${SHORT_SHA}"
+        echo "tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
 
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -47,21 +86,17 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=raw,value=latest
-
-    - name: Build and push Docker image
+    - name: Build and push Backend Docker image
       uses: docker/build-push-action@v5
       with:
         context: ./vps-server
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: |
+          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BACKEND_IMAGE_NAME }}:${{ steps.image-tag.outputs.tag }}
+        labels: |
+          org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          org.opencontainers.image.revision=${{ github.sha }}
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
@@ -74,21 +109,112 @@ jobs:
         echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
         chmod 600 ~/.kube/config
 
-    - name: Update deployment image
+    - name: Deploy Backend to K8s
       run: |
-        IMAGE_TAG="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest"
-        echo "Using image: $IMAGE_TAG"
+        IMAGE_TAG="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BACKEND_IMAGE_NAME }}:${{ steps.image-tag.outputs.tag }}"
+        echo "Deploying backend image: $IMAGE_TAG"
+        echo "Git commit: ${{ steps.image-tag.outputs.short_sha }}"
         
-        # 更新部署文件中的镜像标签
-        sed -i "s|image: ghcr.io/administrator/vps-server:.*|image: $IMAGE_TAG|g" vps-server/k8s-deployment.yaml
+        # 应用配置
+        kubectl apply -f vps-server/k8s-deployment.yaml
         
-        # 应用更新（跳过验证）
-        kubectl apply -f vps-server/k8s-deployment.yaml --validate=false
+        # 强制更新镜像
+        kubectl set image deployment/vps-server vps-server=$IMAGE_TAG -n vps-server
         
         # 等待部署完成
         kubectl rollout status deployment/vps-server -n vps-server --timeout=300s
 
-    - name: Verify deployment
+    - name: Verify Backend deployment
       run: |
+        echo "Backend deployment status:"
         kubectl get pods -n vps-server
         kubectl get svc -n vps-server
+
+  # 构建和部署前端
+  build-deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend-changed == 'true' || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Generate image tag
+      id: image-tag
+      run: |
+        SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
+        IMAGE_TAG="latest-${SHORT_SHA}"
+        echo "tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: vps-web/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd vps-web
+        npm ci
+
+    - name: Build frontend
+      run: |
+        cd vps-web
+        npm run build
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push Frontend Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./vps-web
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+          ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.image-tag.outputs.tag }}
+        labels: |
+          org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          org.opencontainers.image.revision=${{ github.sha }}
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Configure kubectl
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+        chmod 600 ~/.kube/config
+
+    - name: Deploy Frontend to K8s
+      run: |
+        IMAGE_TAG="${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.image-tag.outputs.tag }}"
+        echo "Deploying frontend image: $IMAGE_TAG"
+        echo "Git commit: ${{ steps.image-tag.outputs.short_sha }}"
+        
+        # 应用配置
+        kubectl apply -f vps-web/k8s-deployment.yaml
+        
+        # 强制更新镜像
+        kubectl set image deployment/vps-web vps-web=$IMAGE_TAG -n vps-web
+        
+        # 等待部署完成
+        kubectl rollout status deployment/vps-web -n vps-web --timeout=300s
+
+    - name: Verify Frontend deployment
+      run: |
+        echo "Frontend deployment status:"
+        kubectl get pods -n vps-web
+        kubectl get svc -n vps-web
