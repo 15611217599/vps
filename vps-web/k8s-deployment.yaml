@@ -11,7 +11,7 @@ metadata:
   labels:
     app: vps-web
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: vps-web
