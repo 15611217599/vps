@@ -26,7 +26,7 @@ data:
         defer-datasource-initialization: true
       sql:
         init:
-          mode: ALWAYS
+          mode: NEVER
           data-locations: classpath:data.sql
       security:
         user:

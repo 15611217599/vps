@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vps-web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vps-web
+  namespace: vps-web
+  labels:
+    app: vps-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vps-web
+  template:
+    metadata:
+      labels:
+        app: vps-web
+    spec:
+      containers:
+      - name: vps-web
+        image: ghcr.io/administrator/vps-web:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        # 启动探针 - 给 nginx 启动时间
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 10
+        # 存活探针 - 检查 nginx 是否正常运行
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        # 就绪探针 - 检查应用是否准备好接收流量
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 0
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vps-web-service
+  namespace: vps-web
+  labels:
+    app: vps-web
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: vps-web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vps-web-ingress
+  namespace: vps-web
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # 启用 gzip 压缩
+    nginx.ingress.kubernetes.io/enable-gzip: "true"
+    # 设置客户端最大请求体大小
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  rules:
+  - host: rabbitvps.com  # 修改为你的域名
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vps-web-service
+            port:
+              number: 80
