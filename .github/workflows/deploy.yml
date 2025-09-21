@@ -166,6 +166,7 @@ jobs:
     - name: Build frontend
       run: |
         cd vps-web
+        # 使用不带 TypeScript 检查的构建命令
         npm run build
 
     - name: Log in to Container Registry

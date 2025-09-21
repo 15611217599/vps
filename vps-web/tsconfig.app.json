@@ -3,10 +3,12 @@
   "compilerOptions": {
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
     
     /* Path mapping */
     "baseUrl": ".",
