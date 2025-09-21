@@ -32,6 +32,21 @@ data:
         user:
           name: admin
           password: admin
+
+    # 启用健康检查端点
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info
+      endpoint:
+        health:
+          show-details: always
+      health:
+        probes:
+          enabled: true
+        db:
+          enabled: true
       # 邮件配置
       mail:
         host: smtp.163.com
@@ -99,20 +114,33 @@ spec:
         - name: config-volume
           mountPath: /app/config
           readOnly: true
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 10
-        readinessProbe:
+        # 启动探针 - 给应用充足的启动时间
+        startupProbe:
           httpGet:
             path: /actuator/health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
+          failureThreshold: 30  # 最多等待 5 分钟启动
+        # 存活探针 - 检查应用是否需要重启
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 0  # startupProbe 成功后立即开始
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        # 就绪探针 - 检查应用是否准备好接收流量
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 0  # startupProbe 成功后立即开始
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
         resources:
           requests:
             memory: "512Mi"
